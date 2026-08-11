@@ -1,0 +1,224 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "phase1_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase2_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/checkpoints.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/privilege.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/execution.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/workers.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:tests/phase3/test_execution.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:adr/ADR-0003-isolated-execution.md",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:.github/workflows/phase3-execution.yml",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "execution_no_shell",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "execution_stdin_disabled",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "execution_timeout",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "execution_active_mission_barrier",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "execution_allowlist",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "execution_minimal_environment",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "execution_task_lease_binding",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "privilege_one_use_table",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "privilege_ttl_300",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "privilege_exact_target",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "checkpoint_hash_inventory",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "checkpoint_tamper_fail_closed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "workspace_derived",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "worker_external_privilege_authorizer",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no_self_elevation_primitive:shell=true",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no_self_elevation_primitive:shellexecutew",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no_self_elevation_primitive:verb=\"runas\"",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no_self_elevation_primitive:['sudo'",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no_self_elevation_primitive:[\"sudo\"",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no_self_elevation_primitive:set-executionpolicy bypass",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_safe_task_completed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_safe_effect",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_failed_change_detected",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_rollback_applied",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_rollback_restored",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_privileged_completed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_privileged_effect",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_privilege_one_use",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_inactive_mission_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_inactive_mission_no_effect",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_audit_chain_valid",
+      "passed": true
+    }
+  ],
+  "controlled_file_sha256": {
+    ".github/workflows/phase3-execution.yml": "ab3c41cfa284ff171680f24f26f466e69569738835c4965f0dec04369d04af8b",
+    "adr/ADR-0003-isolated-execution.md": "52f507c9c87273bedd88807d20a61dbd3af3b7c74559292c8ac7679f3d737d9a",
+    "immune_core/checkpoints.py": "f3c1723186dbd8596218075a2b6a13c06cfc2c11f2efa5058bf6786217de1129",
+    "immune_core/execution.py": "72617250f6d16dda55f62634c2fc65803e2abb5a8acae6e53f22f53f45d5d475",
+    "immune_core/privilege.py": "cf68b068c809ee4140d6102ff82e90753e7d386d2b1d2d316897c13aeaf912c9",
+    "immune_core/workers.py": "9003cc5d053295c5d364efbbde0976e1f5705f505390d3235a15bd2de14096d7",
+    "scripts/validate_phase3.py": "e6f47828a776446c7a239a08b6e9c97c33848b084597e78743dcc75bc0df0561",
+    "tests/phase3/test_execution.py": "2f67cf366949f00de9a1097532846787ce785749510c399d9d7357c3de5f9539"
+  },
+  "phase": "PHASE_3_ISOLATED_EXECUTION",
+  "result": "PHASE3_PROVEN",
+  "schema": 1,
+  "scope_note": "PHASE3_PROVEN proves isolated task execution, checkpoint/rollback and sovereign privilege authorization. It does not claim host OS privilege escalation and is not MISSION_PROVEN for the complete product.",
+  "summary": {
+    "failed": 0,
+    "passed": 40,
+    "total": 40
+  },
+  "validated_at": "2026-08-11T14:31:22.208192+00:00"
+}

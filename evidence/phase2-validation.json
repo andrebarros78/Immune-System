@@ -254,11 +254,15 @@
     "immune_core/__init__.py": "ab7a7d68fe3f253f681aeadaa16b95aaaf7b1869a173800423c5e0515ea4aedb",
     "immune_core/acceptance.py": "53edaad127bb8e103cf86eb94589903a757c6bf11d00bd1e37765beb68c8b14d",
     "immune_core/audit.py": "e48f67c3744312edf34b9d6f02989e9387c5d018a032a5832088bdab1847f6ff",
+    "immune_core/checkpoints.py": "f3c1723186dbd8596218075a2b6a13c06cfc2c11f2efa5058bf6786217de1129",
     "immune_core/engine.py": "c5fdb580208340373e78c543e4f0baad11cf1adb789b305e2e55e1972aba3ab6",
-    "immune_core/identity.py": "03e00738862bd203a5d02bac2950507147dc571f66f9c9f3cc36a735d41ce1e0",
+    "immune_core/execution.py": "72617250f6d16dda55f62634c2fc65803e2abb5a8acae6e53f22f53f45d5d475",
+    "immune_core/identity.py": "e34c9be0c1818d40b10befa18422bf08a0e951b39e538299d94602bcfb7a5e22",
     "immune_core/models.py": "898200aa79bd5631a85ba40d8d6332015033527e3f04eb65fc464c35e65cd410",
     "immune_core/policy.py": "3f7ee8e7cabe88705a58a7e03828de9e6458321b1fab09a61c0dc0862a59c012",
+    "immune_core/privilege.py": "cf68b068c809ee4140d6102ff82e90753e7d386d2b1d2d316897c13aeaf912c9",
     "immune_core/storage.py": "9194cc3629b82f19ce1860b804938a49d020961d1fec6a5b0eeb85cc84b26c12",
+    "immune_core/workers.py": "9003cc5d053295c5d364efbbde0976e1f5705f505390d3235a15bd2de14096d7",
     "scripts/validate_phase2.py": "c78edf1940871a47262a829a2511955c1e7697a9a8d3ccc759404f17fdd870b7",
     "tests/phase2/test_foundation.py": "225bf039e60c3c42478ea86ed6beba9c369628d2ec454eb474456b99a5a41ee8"
   },
@@ -271,5 +275,5 @@
     "passed": 46,
     "total": 46
   },
-  "validated_at": "2026-08-11T13:53:02.045381+00:00"
+  "validated_at": "2026-08-11T14:31:21.238036+00:00"
 }
