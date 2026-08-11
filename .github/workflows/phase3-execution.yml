@@ -5,11 +5,13 @@ on:
     branches:
       - phase/3-isolated-execution
     paths:
+      - immune_core/identity.py
       - immune_core/checkpoints.py
       - immune_core/privilege.py
       - immune_core/execution.py
       - immune_core/workers.py
       - tests/phase3/**
+      - scripts/validate_phase2.py
       - scripts/validate_phase3.py
       - adr/ADR-0003-isolated-execution.md
       - .github/workflows/phase3-execution.yml
@@ -36,10 +38,13 @@ jobs:
           grep -q 'PHASE2_PROVEN' PHASE2_STATUS.md
 
       - name: Compile execution foundation
-        run: python -m compileall -q immune_core scripts/validate_phase3.py tests/phase3
+        run: python -m compileall -q immune_core scripts/validate_phase2.py scripts/validate_phase3.py tests/phase2 tests/phase3
 
       - name: Run Phase 2 regression tests
         run: python -m unittest discover -s tests/phase2 -p 'test_*.py' -v
+
+      - name: Re-prove Phase 2 after identity hardening
+        run: python scripts/validate_phase2.py
 
       - name: Run Phase 3 isolated execution tests
         run: python -m unittest discover -s tests/phase3 -p 'test_*.py' -v
@@ -51,20 +56,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if find immune_core tests/phase3 scripts adr -mindepth 1 -name .git -print -quit | grep -q .; then
+          if find immune_core tests/phase2 tests/phase3 scripts adr -mindepth 1 -name .git -print -quit | grep -q .; then
             echo 'Nested upstream .git metadata detected'
             exit 1
           fi
 
-      - name: Commit Phase 3 proof evidence
+      - name: Commit proof evidence
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add evidence/phase3-validation.json PHASE3_STATUS.md
+          git add evidence/phase2-validation.json PHASE2_STATUS.md evidence/phase3-validation.json PHASE3_STATUS.md
           if git diff --cached --quiet; then
-            echo 'No Phase 3 evidence changes.'
+            echo 'No proof evidence changes.'
           else
             git commit -m 'feat(phase3): record proven isolated execution'
             git push origin HEAD:phase/3-isolated-execution
