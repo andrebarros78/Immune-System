@@ -1,0 +1,40 @@
+name: Collect OSS donor pieces
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - donors/registry.json
+      - scripts/collect_donors.py
+      - .github/workflows/collect-donors.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Immune-System
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Collect and verify donors
+        run: python3 scripts/collect_donors.py
+
+      - name: Commit clean donor vault
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "immune-system-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add donors/LOCK.json donors/collected
+          if git diff --cached --quiet; then
+            echo "No donor changes to commit"
+            exit 0
+          fi
+          git commit -m "chore(donors): collect pinned OSS donor pieces"
+          git push origin HEAD:main
