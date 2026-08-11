@@ -2,7 +2,7 @@
 
 **Estado: PHASE2_PROVEN**
 
-Checks: 45/45 aprovados.
+Checks: 46/46 aprovados.
 
 Capacidades: motor durável, estado SQLite, PolicyGuard executável, identidade interna e ledger de auditoria.
 

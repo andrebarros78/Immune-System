@@ -185,6 +185,11 @@
     },
     {
       "detail": "",
+      "name": "mission_forged_proof_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
       "name": "mission_proof_missing_gate_false",
       "passed": true
     },
@@ -245,26 +250,17 @@
     }
   ],
   "controlled_file_sha256": {
-    "adr/ADR-0002-sovereign-foundation.md": "594eb5d52040c1aaba2cf2fcf171f0f6ea85f8715ab1472341dbc0016cec24be",
+    "adr/ADR-0002-sovereign-foundation.md": "408ad3613784601f6d0374b6caef85414890d5a2238e9c669718258956d73d8c",
     "immune_core/__init__.py": "ab7a7d68fe3f253f681aeadaa16b95aaaf7b1869a173800423c5e0515ea4aedb",
-    "immune_core/__pycache__/__init__.cpython-312.pyc": "1c4b94ac9f9117caa5f2d3f20dd4e1aa9dd4399be891309c39a44050e468db50",
-    "immune_core/__pycache__/acceptance.cpython-312.pyc": "10609a69f6281e49dd480efbcfc654adae9417124894f79eb1ee0ee373133ca2",
-    "immune_core/__pycache__/audit.cpython-312.pyc": "a1e38358c78a8a63859886e3ab49d479ceac962760caefcf570d40ec206a4487",
-    "immune_core/__pycache__/engine.cpython-312.pyc": "465b027b1dd7c96b89318a32e257160c574f463662819b5efec209417ea67351",
-    "immune_core/__pycache__/identity.cpython-312.pyc": "056e95921e96fbc1218b5fb950ae7ed4c1c405a1e2f9a9a523e601cb73c7fc80",
-    "immune_core/__pycache__/models.cpython-312.pyc": "b44c42d474d6dc51eb504850bde1e2e909b3f8b2e937418949bafac302fd02a3",
-    "immune_core/__pycache__/policy.cpython-312.pyc": "a0d203181ac91fa197ab5f28ceea595ed43899b5f29f4b0c4dc16a02fcd6387e",
-    "immune_core/__pycache__/storage.cpython-312.pyc": "946e0e3b96e90e1b933a0bb568e76db7c08a75be784c451eb9e99702e911f61c",
-    "immune_core/acceptance.py": "e9c328f85ba96f197941a78a3117bb7aa75827f1920ceaea8d957b51202a8352",
+    "immune_core/acceptance.py": "53edaad127bb8e103cf86eb94589903a757c6bf11d00bd1e37765beb68c8b14d",
     "immune_core/audit.py": "e48f67c3744312edf34b9d6f02989e9387c5d018a032a5832088bdab1847f6ff",
-    "immune_core/engine.py": "454fd384e02a29d0be228133f9c2741025b89f904ed912b061f17d1e90c52431",
+    "immune_core/engine.py": "c5fdb580208340373e78c543e4f0baad11cf1adb789b305e2e55e1972aba3ab6",
     "immune_core/identity.py": "03e00738862bd203a5d02bac2950507147dc571f66f9c9f3cc36a735d41ce1e0",
     "immune_core/models.py": "898200aa79bd5631a85ba40d8d6332015033527e3f04eb65fc464c35e65cd410",
-    "immune_core/policy.py": "636808d638be6821d482ef6842f1409ab986df160634605ef786016b1ec31062",
+    "immune_core/policy.py": "3f7ee8e7cabe88705a58a7e03828de9e6458321b1fab09a61c0dc0862a59c012",
     "immune_core/storage.py": "9194cc3629b82f19ce1860b804938a49d020961d1fec6a5b0eeb85cc84b26c12",
-    "scripts/validate_phase2.py": "6dac10d538add09abba1c1d5570aa0ade17612cafef73c0d3ab95d30bc5ee3b7",
-    "tests/phase2/__pycache__/test_foundation.cpython-312.pyc": "562c909317877bb6a31daa1ec58adee4ddac8a78481664c79539b2d98a25d0ac",
-    "tests/phase2/test_foundation.py": "9d9b3a54f87a58703ed54de98a4cc57ba98cad3af3dbebe30e649c1a4f5ab11b"
+    "scripts/validate_phase2.py": "c78edf1940871a47262a829a2511955c1e7697a9a8d3ccc759404f17fdd870b7",
+    "tests/phase2/test_foundation.py": "225bf039e60c3c42478ea86ed6beba9c369628d2ec454eb474456b99a5a41ee8"
   },
   "phase": "PHASE_2_SOVEREIGN_FOUNDATION",
   "result": "PHASE2_PROVEN",
@@ -272,8 +268,8 @@
   "scope_note": "PHASE2_PROVEN prova a Fundação Soberana; não é MISSION_PROVEN do produto completo.",
   "summary": {
     "failed": 0,
-    "passed": 45,
-    "total": 45
+    "passed": 46,
+    "total": 46
   },
-  "validated_at": "2026-08-11T13:46:37.066294+00:00"
+  "validated_at": "2026-08-11T13:53:02.045381+00:00"
 }
