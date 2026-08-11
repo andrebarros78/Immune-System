@@ -1,0 +1,64 @@
+name: Phase 2 - Sovereign foundation
+
+on:
+  push:
+    branches:
+      - phase/2-sovereign-foundation
+    paths:
+      - 'immune_core/**'
+      - 'tests/phase2/**'
+      - 'scripts/validate_phase2.py'
+      - 'adr/ADR-0002-sovereign-foundation.md'
+      - '.github/workflows/phase2-foundation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prove-phase2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout phase branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/2-sovereign-foundation
+          fetch-depth: 0
+
+      - name: Verify Phase 1 baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'PHASE1_PROVEN' PHASE1_STATUS.md
+
+      - name: Compile sovereign foundation
+        run: python -m compileall -q immune_core scripts/validate_phase2.py tests/phase2
+
+      - name: Run Phase 2 unit and recovery tests
+        run: python -m unittest discover -s tests/phase2 -v
+
+      - name: Run deterministic Phase 2 proof
+        run: python scripts/validate_phase2.py
+
+      - name: Verify no nested upstream Git metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find immune_core tests/phase2 -mindepth 1 -name .git -print -quit | grep -q .; then
+            echo 'Nested upstream .git metadata detected'
+            exit 1
+          fi
+
+      - name: Commit Phase 2 proof evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add evidence/phase2-validation.json PHASE2_STATUS.md
+          if git diff --cached --quiet; then
+            echo 'No proof artifacts changed.'
+          else
+            git commit -m 'feat(phase2): record proven sovereign foundation'
+            git push origin HEAD:phase/2-sovereign-foundation
+          fi
