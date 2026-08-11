@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "tool",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "scorecard",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "61324beb8841ff62645c758ff5b121164592ec163056dda34d76a0526a0b3b5e",
+  "license_verified": true,
+  "purpose": "Upstream security posture evaluation",
+  "readme_file": "README.md",
+  "readme_sha256": "8fed8241afd335db89ba8077e9883a80693c7d7ecda6ef357402207a48ad940a",
+  "ref": "main",
+  "repo": "ossf/scorecard",
+  "resolved_commit": "40c1e35996730d4fdcbdb2e6a23917a2467e29b7",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/ossf/scorecard/archive/40c1e35996730d4fdcbdb2e6a23917a2467e29b7.tar.gz",
+  "status": "collected"
+}

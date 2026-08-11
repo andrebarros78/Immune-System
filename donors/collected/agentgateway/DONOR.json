@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "agentgateway",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "3b1ee5b1e14fda40515c18ec2f0796d632e65a20b2aca8f017c654bc26ca77bd",
+  "license_verified": true,
+  "purpose": "MCP A2A and agent gateway",
+  "readme_file": "README.md",
+  "readme_sha256": "13aeec0b54803619ffc031922ca26079521d6f8c50c9608f6ddefd57fcc44132",
+  "ref": "main",
+  "repo": "agentgateway/agentgateway",
+  "resolved_commit": "77e45c7330fd7b1cac3f0660a5daa08d65350bbd",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/agentgateway/agentgateway/archive/77e45c7330fd7b1cac3f0660a5daa08d65350bbd.tar.gz",
+  "status": "collected"
+}

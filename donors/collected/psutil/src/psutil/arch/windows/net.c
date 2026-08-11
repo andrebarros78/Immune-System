@@ -1,0 +1,468 @@
+/*
+ * Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+// Fixes clash between winsock2.h and windows.h
+#define WIN32_LEAN_AND_MEAN
+
+#include <Python.h>
+#include <windows.h>
+#include <wchar.h>
+#include <ws2tcpip.h>
+
+#include "../../arch/all/init.h"
+
+// 1st try guesses the size, 2nd uses the size the kernel asked for,
+// 3rd is in case a NIC shows up in between.
+#define MAX_TRIES 3
+
+// net_if_addrs() needs the unicast addresses. Skip the rest.
+#define GAA_FLAGS                                    \
+    (GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST \
+     | GAA_FLAG_SKIP_DNS_SERVER)
+
+// net_io_counters() and net_if_stats() don't need unicast, and it's
+// the expensive bit to collect.
+#define GAA_FLAGS_SKIP_UNICAST (GAA_FLAGS | GAA_FLAG_SKIP_UNICAST)
+
+
+static PIP_ADAPTER_ADDRESSES
+psutil_get_nic_addresses(ULONG flags) {
+    // A 15KB buffer is recommended by MSDN as it's usually big enough
+    // to make GetAdaptersAddresses() succeed on the first call, saving
+    // an extra (expensive) syscall to determine the required size.
+    ULONG bufferLength = 15 * 1024;
+    ULONG ret;
+    PIP_ADAPTER_ADDRESSES buffer;
+    int attempt;
+
+    for (attempt = 0; attempt < MAX_TRIES; attempt++) {
+        buffer = calloc(1, bufferLength);
+        if (buffer == NULL) {
+            PyErr_NoMemory();
+            return NULL;
+        }
+
+        // Queries the network stack, may be slow with many adapters.
+        // On ERROR_BUFFER_OVERFLOW `bufferLength` is set to the
+        // required size, so the retry uses a big enough buffer.
+        Py_BEGIN_ALLOW_THREADS
+        ret = GetAdaptersAddresses(
+            AF_UNSPEC, flags, NULL, buffer, &bufferLength
+        );
+        Py_END_ALLOW_THREADS
+        if (ret == ERROR_SUCCESS)
+            return buffer;
+
+        free(buffer);
+        if (ret != ERROR_BUFFER_OVERFLOW) {
+            psutil_runtime_error(
+                "GetAdaptersAddresses() syscall failed (err=%lu)",
+                (unsigned long)ret
+            );
+            return NULL;
+        }
+        psutil_debug(
+            "GetAdaptersAddresses(): retry with %lu bytes",
+            (unsigned long)bufferLength
+        );
+    }
+
+    psutil_runtime_error(
+        "GetAdaptersAddresses() buffer was still too small after %d attempts",
+        MAX_TRIES
+    );
+    return NULL;
+}
+
+
+// Return a dict of network I/O counters, one entry per NIC.
+PyObject *
+psutil_net_io_counters(PyObject *self, PyObject *args) {
+    DWORD dwRetVal = 0;
+    MIB_IF_ROW2 ifRow;
+    PIP_ADAPTER_ADDRESSES pAddresses = NULL;
+    PIP_ADAPTER_ADDRESSES pCurrAddresses = NULL;
+    PyObject *py_retdict = PyDict_New();
+    PyObject *py_nic_info = NULL;
+    PyObject *py_nic_name = NULL;
+
+    if (py_retdict == NULL)
+        return NULL;
+    pAddresses = psutil_get_nic_addresses(GAA_FLAGS_SKIP_UNICAST);
+    if (pAddresses == NULL)
+        goto error;
+
+    pCurrAddresses = pAddresses;
+
+    while (pCurrAddresses) {
+        py_nic_info = NULL;
+        py_nic_name = NULL;
+
+        SecureZeroMemory(&ifRow, sizeof(ifRow));
+        ifRow.InterfaceIndex = pCurrAddresses->IfIndex;
+
+        Py_BEGIN_ALLOW_THREADS
+        dwRetVal = GetIfEntry2(&ifRow);
+        Py_END_ALLOW_THREADS
+        if (dwRetVal != NO_ERROR) {
+            psutil_debug(
+                "GetIfEntry2() failed for interface %lu (err=%lu); skip it",
+                (unsigned long)ifRow.InterfaceIndex,
+                (unsigned long)dwRetVal
+            );
+            pCurrAddresses = pCurrAddresses->Next;
+            continue;
+        }
+
+        py_nic_info = Py_BuildValue(
+            "(KKKKKKKK)",
+            ifRow.OutOctets,
+            ifRow.InOctets,
+            ifRow.OutUcastPkts + ifRow.OutNUcastPkts,
+            ifRow.InUcastPkts + ifRow.InNUcastPkts,
+            ifRow.InErrors,
+            ifRow.OutErrors,
+            ifRow.InDiscards,
+            ifRow.OutDiscards
+        );
+        if (!py_nic_info)
+            goto error;
+
+        py_nic_name = PyUnicode_FromWideChar(
+            pCurrAddresses->FriendlyName,
+            wcsnlen(pCurrAddresses->FriendlyName, IF_MAX_STRING_SIZE)
+        );
+        if (!py_nic_name)
+            goto error;
+
+        if (PyDict_SetItem(py_retdict, py_nic_name, py_nic_info))
+            goto error;
+
+        Py_CLEAR(py_nic_info);
+        Py_CLEAR(py_nic_name);
+
+        pCurrAddresses = pCurrAddresses->Next;
+    }
+
+    free(pAddresses);
+    return py_retdict;
+
+error:
+    Py_XDECREF(py_nic_info);
+    Py_XDECREF(py_nic_name);
+    Py_DECREF(py_retdict);
+    if (pAddresses)
+        free(pAddresses);
+    return NULL;
+}
+
+
+// Return NICs addresses.
+PyObject *
+psutil_net_if_addrs(PyObject *self, PyObject *args) {
+    unsigned int i = 0;
+    ULONG family;
+    PCTSTR intRet;
+    PCTSTR netmaskIntRet;
+    char *ptr;
+    char buff_addr[INET6_ADDRSTRLEN];
+    char buff_macaddr[MAX_ADAPTER_ADDRESS_LENGTH * 3];
+    char buff_netmask[INET_ADDRSTRLEN];
+    DWORD dwRetVal = 0;
+    ULONG converted_netmask;
+    UINT netmask_bits;
+    int n;
+    size_t remaining;
+    struct in_addr in_netmask;
+    PIP_ADAPTER_ADDRESSES pAddresses = NULL;
+    PIP_ADAPTER_ADDRESSES pCurrAddresses = NULL;
+    PIP_ADAPTER_UNICAST_ADDRESS pUnicast = NULL;
+
+    PyObject *py_retlist = PyList_New(0);
+    PyObject *py_address = NULL;
+    PyObject *py_mac_address = NULL;
+    PyObject *py_nic_name = NULL;
+    PyObject *py_netmask = NULL;
+
+    if (py_retlist == NULL)
+        return NULL;
+
+    pAddresses = psutil_get_nic_addresses(GAA_FLAGS);
+    if (pAddresses == NULL)
+        goto error;
+    pCurrAddresses = pAddresses;
+
+    while (pCurrAddresses) {
+        Py_CLEAR(py_nic_name);
+        Py_CLEAR(py_address);
+        Py_CLEAR(py_mac_address);
+        Py_CLEAR(py_netmask);
+
+        pUnicast = pCurrAddresses->FirstUnicastAddress;
+
+        py_nic_name = PyUnicode_FromWideChar(
+            pCurrAddresses->FriendlyName, wcslen(pCurrAddresses->FriendlyName)
+        );
+        if (py_nic_name == NULL)
+            goto error;
+
+        // MAC address
+        if (pCurrAddresses->PhysicalAddressLength != 0) {
+            ptr = buff_macaddr;
+            remaining = sizeof(buff_macaddr);
+            for (i = 0; i < pCurrAddresses->PhysicalAddressLength; i++) {
+                if (i == pCurrAddresses->PhysicalAddressLength - 1) {
+                    n = str_format(
+                        ptr,
+                        remaining,
+                        "%.2X",
+                        (int)pCurrAddresses->PhysicalAddress[i]
+                    );
+                }
+                else {
+                    n = str_format(
+                        ptr,
+                        remaining,
+                        "%.2X-",
+                        (int)pCurrAddresses->PhysicalAddress[i]
+                    );
+                }
+                if (n < 0) {  // error or truncated
+                    psutil_runtime_error("str_format() error");
+                    goto error;
+                }
+                ptr += n;
+                remaining -= n;
+            }
+
+            py_mac_address = PyUnicode_FromString(buff_macaddr);
+            if (py_mac_address == NULL)
+                goto error;
+
+            if (!pylist_append_fmt(
+                    py_retlist,
+                    "(OiOOOO)",
+                    py_nic_name,
+                    -1,  // this will be converted later to AF_LINK
+                    py_mac_address,
+                    Py_None,  // netmask (not supported)
+                    Py_None,  // broadcast (not supported)
+                    Py_None  // ptp (not supported on Windows)
+                ))
+            {
+                goto error;
+            }
+
+            Py_CLEAR(py_mac_address);
+        }
+
+        // find out the IP address associated with the NIC
+        if (pUnicast != NULL) {
+            for (i = 0; pUnicast != NULL; i++) {
+                netmaskIntRet = NULL;
+                family = pUnicast->Address.lpSockaddr->sa_family;
+                if (family == AF_INET) {
+                    struct sockaddr_in *sa_in = (struct sockaddr_in *)pUnicast
+                                                    ->Address.lpSockaddr;
+                    intRet = inet_ntop(
+                        AF_INET,
+                        &(sa_in->sin_addr),
+                        buff_addr,
+                        sizeof(buff_addr)
+                    );
+                    if (!intRet) {
+                        psutil_oserror_wsyscall("inet_ntop");
+                        goto error;
+                    }
+                    netmask_bits = pUnicast->OnLinkPrefixLength;
+                    dwRetVal = ConvertLengthToIpv4Mask(
+                        netmask_bits, &converted_netmask
+                    );
+                    if (dwRetVal == NO_ERROR) {
+                        in_netmask.s_addr = converted_netmask;
+                        netmaskIntRet = inet_ntop(
+                            AF_INET,
+                            &in_netmask,
+                            buff_netmask,
+                            sizeof(buff_netmask)
+                        );
+                        if (!netmaskIntRet) {
+                            psutil_oserror_wsyscall("inet_ntop");
+                            goto error;
+                        }
+                    }
+                }
+                else if (family == AF_INET6) {
+                    struct sockaddr_in6 *sa_in6 = (struct sockaddr_in6 *)
+                                                      pUnicast->Address
+                                                          .lpSockaddr;
+                    intRet = inet_ntop(
+                        AF_INET6,
+                        &(sa_in6->sin6_addr),
+                        buff_addr,
+                        sizeof(buff_addr)
+                    );
+                    if (!intRet) {
+                        psutil_oserror_wsyscall("inet_ntop");
+                        goto error;
+                    }
+                }
+                else {
+                    // we should never get here
+                    pUnicast = pUnicast->Next;
+                    continue;
+                }
+
+                Py_CLEAR(py_address);
+                Py_CLEAR(py_netmask);
+
+                py_address = PyUnicode_FromString(buff_addr);
+                if (py_address == NULL)
+                    goto error;
+
+                if (netmaskIntRet != NULL) {
+                    py_netmask = PyUnicode_FromString(buff_netmask);
+                }
+                else {
+                    Py_INCREF(Py_None);
+                    py_netmask = Py_None;
+                }
+
+                if (!pylist_append_fmt(
+                        py_retlist,
+                        "(OiOOOO)",
+                        py_nic_name,
+                        family,
+                        py_address,
+                        py_netmask,
+                        Py_None,  // broadcast (not supported)
+                        Py_None  // ptp (not supported on Windows)
+                    ))
+                {
+                    goto error;
+                }
+
+                Py_CLEAR(py_address);
+                Py_CLEAR(py_netmask);
+
+                pUnicast = pUnicast->Next;
+            }
+        }
+
+        Py_CLEAR(py_nic_name);
+        pCurrAddresses = pCurrAddresses->Next;
+    }
+
+    free(pAddresses);
+    return py_retlist;
+
+error:
+    if (pAddresses)
+        free(pAddresses);
+    Py_XDECREF(py_retlist);
+    Py_XDECREF(py_address);
+    Py_XDECREF(py_mac_address);
+    Py_XDECREF(py_nic_name);
+    Py_XDECREF(py_netmask);
+    return NULL;
+}
+
+
+// Provides stats about NIC interfaces installed on the system.
+// TODO: get 'duplex' (currently it's hard coded to '2', aka 'full duplex')
+PyObject *
+psutil_net_if_stats(PyObject *self, PyObject *args) {
+    MIB_IF_ROW2 ifRow;
+    DWORD dwRetVal = 0;
+    PIP_ADAPTER_ADDRESSES pAddresses = NULL;
+    PIP_ADAPTER_ADDRESSES pCurrAddresses = NULL;
+
+    PyObject *py_nic_name = NULL;
+    PyObject *py_retdict = PyDict_New();
+    PyObject *py_ifc_info = NULL;
+    PyObject *py_is_up = NULL;
+
+    if (py_retdict == NULL)
+        return NULL;
+
+    pAddresses = psutil_get_nic_addresses(GAA_FLAGS_SKIP_UNICAST);
+    if (pAddresses == NULL)
+        goto error;
+
+    pCurrAddresses = pAddresses;
+
+    while (pCurrAddresses) {
+        Py_CLEAR(py_nic_name);
+        Py_CLEAR(py_ifc_info);
+        Py_CLEAR(py_is_up);
+
+        SecureZeroMemory(&ifRow, sizeof(ifRow));
+        ifRow.InterfaceIndex = pCurrAddresses->IfIndex;
+
+        Py_BEGIN_ALLOW_THREADS
+        dwRetVal = GetIfEntry2(&ifRow);
+        Py_END_ALLOW_THREADS
+        if (dwRetVal != NO_ERROR) {
+            psutil_debug(
+                "GetIfEntry2() failed for interface %lu (err=%lu); skip it",
+                (unsigned long)ifRow.InterfaceIndex,
+                (unsigned long)dwRetVal
+            );
+            pCurrAddresses = pCurrAddresses->Next;
+            continue;
+        }
+
+        py_nic_name = PyUnicode_FromWideChar(
+            pCurrAddresses->FriendlyName,
+            wcsnlen(pCurrAddresses->FriendlyName, IF_MAX_STRING_SIZE)
+        );
+        if (py_nic_name == NULL)
+            goto error;
+
+        if (ifRow.OperStatus == IfOperStatusUp
+            && ifRow.AdminStatus == NET_IF_ADMIN_STATUS_UP)
+        {
+            py_is_up = Py_True;
+        }
+        else {
+            py_is_up = Py_False;
+        }
+        Py_INCREF(py_is_up);
+
+        py_ifc_info = Py_BuildValue(
+            "(OiKk)",
+            py_is_up,
+            2,  // duplex is hard coded to 'full'
+            ifRow.TransmitLinkSpeed / 1000000,  // bits/s, we want Mb/s
+            ifRow.Mtu
+        );
+        if (!py_ifc_info)
+            goto error;
+
+        if (PyDict_SetItem(py_retdict, py_nic_name, py_ifc_info))
+            goto error;
+
+        Py_CLEAR(py_ifc_info);
+        Py_CLEAR(py_nic_name);
+
+        pCurrAddresses = pCurrAddresses->Next;
+    }
+
+    free(pAddresses);
+    Py_CLEAR(py_nic_name);
+    Py_CLEAR(py_ifc_info);
+    Py_CLEAR(py_is_up);
+    return py_retdict;
+
+error:
+    Py_XDECREF(py_is_up);
+    Py_XDECREF(py_ifc_info);
+    Py_XDECREF(py_nic_name);
+    Py_XDECREF(py_retdict);
+    if (pAddresses)
+        free(pAddresses);
+    return NULL;
+}

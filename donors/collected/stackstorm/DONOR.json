@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "architecture",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "stackstorm",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "9582c2284e6a675092c09c4ece994269aebfdae41ee0577831789ceb9394da3f",
+  "license_verified": true,
+  "purpose": "Automation actions sensors triggers and workflow donor",
+  "readme_file": "README.md",
+  "readme_sha256": "489229df48032f43c3e2fed75cd8f1108b26fb1722e0bc9cd30c164d91ea6be1",
+  "ref": "master",
+  "repo": "StackStorm/st2",
+  "resolved_commit": "f05312e29be199c28b3f208e33502b23b62ac8e5",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/StackStorm/st2/archive/f05312e29be199c28b3f208e33502b23b62ac8e5.tar.gz",
+  "status": "collected"
+}

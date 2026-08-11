@@ -1,0 +1,20 @@
+{
+  "capture": "snapshot",
+  "class": "library",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "fastmcp",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1",
+  "license_verified": true,
+  "purpose": "MCP adapter construction",
+  "readme_file": "README.md",
+  "readme_sha256": "7e220443644d5b54f2555df5e2b32ac1da6d0e938e3e9d7112c82814868bc8c2",
+  "ref": "main",
+  "repo": "PrefectHQ/fastmcp",
+  "resolved_commit": "052889a3597fe11fb9fe922fe407ddbfb9341766",
+  "snapshot": false,
+  "snapshot_reason": "working tree 59030016 bytes exceeds 30 MiB vault limit",
+  "source_archive": "https://github.com/PrefectHQ/fastmcp/archive/052889a3597fe11fb9fe922fe407ddbfb9341766.tar.gz",
+  "status": "collected"
+}

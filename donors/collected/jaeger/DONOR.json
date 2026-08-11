@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "jaeger",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+  "license_verified": true,
+  "purpose": "Distributed tracing backend",
+  "readme_file": "README.md",
+  "readme_sha256": "669d40843b9ef5242c798cc4f055c3a1da6ba76d4a01603f616614246f9318d9",
+  "ref": "main",
+  "repo": "jaegertracing/jaeger",
+  "resolved_commit": "2487d690445e0d51b04075f04ea70abe078b4a35",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/jaegertracing/jaeger/archive/2487d690445e0d51b04075f04ea70abe078b4a35.tar.gz",
+  "status": "collected"
+}

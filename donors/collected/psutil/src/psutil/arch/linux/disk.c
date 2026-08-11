@@ -1,0 +1,73 @@
+/*
+ * Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+#include "../../arch/all/init.h"
+
+#include <Python.h>
+#include <mntent.h>
+
+
+// Return disk mounted partitions as a list of tuples including device,
+// mount point and filesystem type.
+PyObject *
+psutil_disk_partitions(PyObject *self, PyObject *args) {
+    FILE *file = NULL;
+    struct mntent *entry;
+    char *mtab_path;
+    PyObject *py_dev = NULL;
+    PyObject *py_mountp = NULL;
+    PyObject *py_retlist;
+
+    if (!PyArg_ParseTuple(args, "s", &mtab_path))
+        return NULL;
+
+    py_retlist = PyList_New(0);
+    if (py_retlist == NULL)
+        return NULL;
+
+    Py_BEGIN_ALLOW_THREADS
+    file = setmntent(mtab_path, "r");
+    Py_END_ALLOW_THREADS
+    if ((file == 0) || (file == NULL)) {
+        psutil_debug("setmntent() failed");
+        PyErr_SetFromErrnoWithFilename(PyExc_OSError, mtab_path);
+        goto error;
+    }
+
+    // NOTE: getmntent() is MT-Unsafe (it returns a pointer to a static
+    // buffer), so we can't release the GIL around it.
+    while ((entry = getmntent(file)) != NULL) {
+        py_dev = PyUnicode_DecodeFSDefault(entry->mnt_fsname);
+        if (!py_dev)
+            goto error;
+        py_mountp = PyUnicode_DecodeFSDefault(entry->mnt_dir);
+        if (!py_mountp)
+            goto error;
+        if (!pylist_append_fmt(
+                py_retlist,
+                "(OOss)",
+                py_dev,  // device
+                py_mountp,  // mount point
+                entry->mnt_type,  // fs type
+                entry->mnt_opts  // options
+            ))
+        {
+            goto error;
+        }
+        Py_CLEAR(py_dev);
+        Py_CLEAR(py_mountp);
+    }
+    endmntent(file);
+    return py_retlist;
+
+error:
+    if (file != NULL)
+        endmntent(file);
+    Py_XDECREF(py_dev);
+    Py_XDECREF(py_mountp);
+    Py_DECREF(py_retlist);
+    return NULL;
+}

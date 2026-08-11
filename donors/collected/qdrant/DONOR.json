@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "qdrant",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+  "license_verified": true,
+  "purpose": "Semantic memory candidate",
+  "readme_file": "README.md",
+  "readme_sha256": "f1455d12252bf40235ad0128d8e98b2cd6d42583e441ac832b01f4daf08df2e4",
+  "ref": "master",
+  "repo": "qdrant/qdrant",
+  "resolved_commit": "74f3e85b9473c62560006c043e13737ce6b48412",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/qdrant/qdrant/archive/74f3e85b9473c62560006c043e13737ce6b48412.tar.gz",
+  "status": "collected"
+}

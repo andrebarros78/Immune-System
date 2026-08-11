@@ -1,0 +1,21 @@
+{
+  "capture": "snapshot",
+  "class": "library",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "testcontainers-python",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE.txt",
+  "license_sha256": "f885d4d66ef7cbb5e54c14a89d6e611efb505a567329b1156aa1842b840093eb",
+  "license_verified": true,
+  "purpose": "Disposable integration environments",
+  "readme_file": "README.md",
+  "readme_sha256": "70d488d0d3e0c68448b63f6626e4a0192508b3b368e71e146252cdef91d1aa58",
+  "ref": "main",
+  "repo": "testcontainers/testcontainers-python",
+  "resolved_commit": "f7d3887fe7c78e0b3a8b6eae82e105a4d3e0bca0",
+  "snapshot": true,
+  "snapshot_bytes": 2408900,
+  "snapshot_tree_sha256": "d4cf2b9dc48409355939fdc96260cff89139514094e19367876c9566fbf3d56d",
+  "source_archive": "https://github.com/testcontainers/testcontainers-python/archive/f7d3887fe7c78e0b3a8b6eae82e105a4d3e0bca0.tar.gz",
+  "status": "collected"
+}

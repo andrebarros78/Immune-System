@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "library",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "agent-framework",
+  "license": "MIT",
+  "license_file": "LICENSE",
+  "license_sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+  "license_verified": true,
+  "purpose": "Bounded multi-agent coordination",
+  "readme_file": "README.md",
+  "readme_sha256": "a6e1a0fb1cbdee49fe08811182b18b81d7966b2190007208894f058797156a34",
+  "ref": "main",
+  "repo": "microsoft/agent-framework",
+  "resolved_commit": "0d753653318723aa322050a754832e5e599f3499",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/microsoft/agent-framework/archive/0d753653318723aa322050a754832e5e599f3499.tar.gz",
+  "status": "collected"
+}

@@ -1,0 +1,20 @@
+{
+  "capture": "snapshot",
+  "class": "tool",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "inspect-ai",
+  "license": "MIT",
+  "license_file": "LICENSE",
+  "license_sha256": "c593c2afc81388521eaeb03f0d1a4b01bc3e5147ed9cb16c1f129e5be353b6af",
+  "license_verified": true,
+  "purpose": "Reproducible agent evaluations",
+  "readme_file": "README.md",
+  "readme_sha256": "a9a1e07b955d869137d8ad109f1c238268f361dcdfac30cfcc94983a51a99b17",
+  "ref": "main",
+  "repo": "UKGovernmentBEIS/inspect_ai",
+  "resolved_commit": "030bcb6cbff16e598b6a233e20333316e826b559",
+  "snapshot": false,
+  "snapshot_reason": "working tree 45053932 bytes exceeds 30 MiB vault limit",
+  "source_archive": "https://github.com/UKGovernmentBEIS/inspect_ai/archive/030bcb6cbff16e598b6a233e20333316e826b559.tar.gz",
+  "status": "collected"
+}

@@ -1,0 +1,22 @@
+syntax: glob
+*.al
+*.bak
+*.egg-info
+*.la
+*.lo
+*.o
+*.orig
+*.pyc
+*.pyd
+*.rej
+*.so
+*.swp
+.failed-tests.txt
+.cache/
+.idea/
+.tox/
+build/
+docs/_build/
+dist/
+wheelhouse/
+.tests/

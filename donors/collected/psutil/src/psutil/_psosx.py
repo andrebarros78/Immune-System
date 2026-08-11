@@ -1,0 +1,504 @@
+# Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+"""macOS platform implementation."""
+
+import errno
+import functools
+import os
+
+from . import _ntuples as ntp
+from . import _psposix
+from . import _psutil
+from ._common import AccessDenied
+from ._common import NoSuchProcess
+from ._common import ZombieProcess
+from ._common import conn_tmap
+from ._common import conn_to_ntuple
+from ._common import debug
+from ._common import isfile_strict
+from ._common import memoize_when_activated
+from ._common import parse_environ_block
+from ._common import usage_percent
+from ._common import warn
+from ._enums import BatteryTime
+from ._enums import ConnectionStatus
+from ._enums import NicDuplex
+from ._enums import ProcessStatus
+
+__extra__all__ = []
+
+
+# =====================================================================
+# --- globals
+# =====================================================================
+
+
+PAGESIZE = _psutil.getpagesize()
+AF_LINK = _psutil.AF_LINK
+
+TCP_STATUSES = {
+    _psutil.TCPS_ESTABLISHED: ConnectionStatus.CONN_ESTABLISHED,
+    _psutil.TCPS_SYN_SENT: ConnectionStatus.CONN_SYN_SENT,
+    _psutil.TCPS_SYN_RECEIVED: ConnectionStatus.CONN_SYN_RECV,
+    _psutil.TCPS_FIN_WAIT_1: ConnectionStatus.CONN_FIN_WAIT1,
+    _psutil.TCPS_FIN_WAIT_2: ConnectionStatus.CONN_FIN_WAIT2,
+    _psutil.TCPS_TIME_WAIT: ConnectionStatus.CONN_TIME_WAIT,
+    _psutil.TCPS_CLOSED: ConnectionStatus.CONN_CLOSE,
+    _psutil.TCPS_CLOSE_WAIT: ConnectionStatus.CONN_CLOSE_WAIT,
+    _psutil.TCPS_LAST_ACK: ConnectionStatus.CONN_LAST_ACK,
+    _psutil.TCPS_LISTEN: ConnectionStatus.CONN_LISTEN,
+    _psutil.TCPS_CLOSING: ConnectionStatus.CONN_CLOSING,
+    _psutil.PSUTIL_CONN_NONE: ConnectionStatus.CONN_NONE,
+}
+
+PROC_STATUSES = {
+    _psutil.SIDL: ProcessStatus.STATUS_IDLE,
+    _psutil.SRUN: ProcessStatus.STATUS_RUNNING,
+    _psutil.SSLEEP: ProcessStatus.STATUS_SLEEPING,
+    _psutil.SSTOP: ProcessStatus.STATUS_STOPPED,
+    _psutil.SZOMB: ProcessStatus.STATUS_ZOMBIE,
+}
+
+
+# =====================================================================
+# --- memory
+# =====================================================================
+
+
+def virtual_memory():
+    """System virtual memory as a named tuple."""
+    d = _psutil.virtual_mem()
+    d["percent"] = usage_percent(
+        (d["total"] - d["available"]), d["total"], round_=1
+    )
+    return ntp.svmem(**d)
+
+
+def swap_memory():
+    """Swap system memory as a (total, used, free, sin, sout) tuple."""
+    d = _psutil.swap_mem()
+    d["percent"] = usage_percent(d["used"], d["total"], round_=1)
+    return ntp.sswap(**d)
+
+
+# malloc / heap functions
+heap_info = _psutil.heap_info
+heap_trim = _psutil.heap_trim
+
+
+# =====================================================================
+# --- CPU
+# =====================================================================
+
+
+def cpu_times():
+    """Return system CPU times as a named tuple."""
+    user, nice, system, idle = _psutil.cpu_times()
+    return ntp.scputimes(user, system, idle, nice)
+
+
+def per_cpu_times():
+    """Return system CPU times as a named tuple."""
+    ret = []
+    for cpu_t in _psutil.per_cpu_times():
+        user, nice, system, idle = cpu_t
+        item = ntp.scputimes(user, system, idle, nice)
+        ret.append(item)
+    return ret
+
+
+def cpu_count_logical():
+    """Return the number of logical CPUs in the system."""
+    return _psutil.cpu_count_logical()
+
+
+def cpu_count_cores():
+    """Return the number of CPU cores in the system."""
+    return _psutil.cpu_count_cores()
+
+
+def cpu_stats():
+    ctx_switches, interrupts, soft_interrupts, syscalls, _traps = (
+        _psutil.cpu_stats()
+    )
+    return ntp.scpustats(ctx_switches, interrupts, soft_interrupts, syscalls)
+
+
+def cpu_freq():
+    """Return CPU frequency.
+    On macOS per-cpu frequency is not supported.
+    Also, the returned frequency never changes, see:
+    https://arstechnica.com/civis/viewtopic.php?f=19&t=465002.
+    """
+    ret = _psutil.cpu_freq()
+    if ret is None:  # not available on virtualized ARM64, see #2382
+        return []
+    curr, min_, max_ = ret
+    return [ntp.scpufreq(float(curr), float(min_), float(max_))]
+
+
+# =====================================================================
+# --- disks
+# =====================================================================
+
+
+disk_usage = _psposix.disk_usage
+disk_io_counters = _psutil.disk_io_counters
+
+
+def disk_partitions(all=False):
+    """Return mounted disk partitions as a list of named tuples."""
+    retlist = []
+    partitions = _psutil.disk_partitions()
+    for partition in partitions:
+        device, mountpoint, fstype, opts = partition
+        if device == 'none':
+            device = ''
+        if not all:
+            if not os.path.isabs(device) or not os.path.exists(device):
+                continue
+        ntuple = ntp.sdiskpart(device, mountpoint, fstype, opts)
+        retlist.append(ntuple)
+    return retlist
+
+
+# =====================================================================
+# --- sensors
+# =====================================================================
+
+
+def sensors_battery():
+    """Return battery information."""
+    try:
+        percent, minsleft, power_plugged = _psutil.sensors_battery()
+    except NotImplementedError:
+        # no power source - return None according to interface
+        return None
+    power_plugged = power_plugged == 1
+    if power_plugged:
+        secsleft = BatteryTime.POWER_TIME_UNLIMITED
+    elif minsleft == -1:
+        secsleft = BatteryTime.POWER_TIME_UNKNOWN
+    else:
+        secsleft = minsleft * 60
+    return ntp.sbattery(percent, secsleft, power_plugged)
+
+
+# =====================================================================
+# --- network
+# =====================================================================
+
+
+net_io_counters = _psutil.net_io_counters
+net_if_addrs = _psutil.net_if_addrs
+
+
+def net_connections(kind='inet'):
+    """System-wide network connections."""
+    # Note: on macOS this will fail with AccessDenied unless
+    # the process is owned by root.
+    ret = []
+    for pid in pids():
+        try:
+            cons = Process(pid).net_connections(kind)
+        except NoSuchProcess:
+            continue
+        else:
+            if cons:
+                for c in cons:
+                    c = list(c) + [pid]
+                    ret.append(ntp.sconn(*c))
+    return ret
+
+
+def net_if_stats():
+    """Get NIC stats (isup, duplex, speed, mtu)."""
+    names = net_io_counters().keys()
+    ret = {}
+    for name in names:
+        try:
+            mtu = _psutil.net_if_mtu(name)
+            flags = _psutil.net_if_flags(name)
+            duplex, speed = _psutil.net_if_duplex_speed(name)
+        except OSError as err:
+            # https://github.com/giampaolo/psutil/issues/1279
+            if err.errno != errno.ENODEV:
+                raise
+        else:
+            duplex = NicDuplex(duplex)
+            output_flags = ','.join(flags)
+            isup = 'running' in flags
+            ret[name] = ntp.snicstats(isup, duplex, speed, mtu, output_flags)
+    return ret
+
+
+# =====================================================================
+# --- other system functions
+# =====================================================================
+
+
+def boot_time():
+    """The system boot time expressed in seconds since the epoch."""
+    return _psutil.boot_time()
+
+
+try:
+    INIT_BOOT_TIME = boot_time()
+except Exception as err:  # noqa: BLE001
+    # Don't want to crash at import time.
+    warn(f"boot_time() failed on import: {err!r}")
+    INIT_BOOT_TIME = 0
+
+
+def adjust_proc_create_time(ctime):
+    """Account for system clock updates."""
+    if INIT_BOOT_TIME == 0:
+        return ctime
+
+    diff = INIT_BOOT_TIME - boot_time()
+    if diff == 0 or abs(diff) < 1:
+        return ctime
+
+    debug("system clock was updated; adjusting process create_time()")
+    if diff < 0:
+        return ctime - diff
+    return ctime + diff
+
+
+def users():
+    """Return currently connected users as a list of named tuples."""
+    retlist = []
+    rawlist = _psutil.users()
+    for item in rawlist:
+        user, tty, hostname, tstamp, pid = item
+        if tty == '~':
+            continue  # reboot or shutdown
+        if not tstamp:
+            continue
+        nt = ntp.suser(user, tty or None, hostname or None, tstamp, pid)
+        retlist.append(nt)
+    return retlist
+
+
+# =====================================================================
+# --- processes
+# =====================================================================
+
+
+def pids():
+    ls = _psutil.pids()
+    if 0 not in ls:
+        # On certain macOS versions pids() C doesn't return PID 0 but
+        # "ps" does and the process is querable via sysctl():
+        # https://travis-ci.org/giampaolo/psutil/jobs/309619941
+        try:
+            Process(0).create_time()
+            ls.insert(0, 0)
+        except NoSuchProcess:
+            pass
+        except AccessDenied:
+            ls.insert(0, 0)
+    return ls
+
+
+pid_exists = _psposix.pid_exists
+
+
+def wrap_exceptions(fun):
+    """Decorator which translates bare OSError exceptions into
+    NoSuchProcess and AccessDenied.
+    """
+
+    @functools.wraps(fun)
+    def wrapper(self, *args, **kwargs):
+        pid, ppid, name = self.pid, self._ppid, self._name
+        try:
+            return fun(self, *args, **kwargs)
+        except ProcessLookupError as err:
+            if _psutil.proc_is_zombie(pid):
+                raise ZombieProcess(pid, name, ppid) from err
+            raise NoSuchProcess(pid, name) from err
+        except PermissionError as err:
+            raise AccessDenied(pid, name) from err
+        except _psutil.ZombieProcessError as err:
+            raise ZombieProcess(pid, name, ppid) from err
+
+    return wrapper
+
+
+class Process:
+    """Wrapper class around underlying C implementation."""
+
+    __slots__ = ["_cache", "_name", "_ppid", "pid"]
+
+    def __init__(self, pid):
+        self.pid = pid
+        self._name = None
+        self._ppid = None
+
+    @wrap_exceptions
+    @memoize_when_activated
+    def _oneshot_kinfo(self):
+        # Note: should work with all PIDs without permission issues.
+        return _psutil.proc_oneshot_kinfo(self.pid)
+
+    @wrap_exceptions
+    @memoize_when_activated
+    def _oneshot_pidtaskinfo(self):
+        # Note: should work for PIDs owned by user only.
+        return _psutil.proc_oneshot_pidtaskinfo(self.pid)
+
+    def oneshot_enter(self):
+        self._oneshot_kinfo.cache_activate(self)
+        self._oneshot_pidtaskinfo.cache_activate(self)
+
+    def oneshot_exit(self):
+        self._oneshot_kinfo.cache_deactivate(self)
+        self._oneshot_pidtaskinfo.cache_deactivate(self)
+
+    @wrap_exceptions
+    def name(self):
+        name = self._oneshot_kinfo()["name"]
+        return name if name is not None else _psutil.proc_name(self.pid)
+
+    @wrap_exceptions
+    def exe(self):
+        return _psutil.proc_exe(self.pid)
+
+    @wrap_exceptions
+    def cmdline(self):
+        return _psutil.proc_cmdline(self.pid)
+
+    @wrap_exceptions
+    def environ(self):
+        return parse_environ_block(_psutil.proc_environ(self.pid))
+
+    @wrap_exceptions
+    def ppid(self):
+        self._ppid = self._oneshot_kinfo()["ppid"]
+        return self._ppid
+
+    @wrap_exceptions
+    def cwd(self):
+        return _psutil.proc_cwd(self.pid)
+
+    @wrap_exceptions
+    def uids(self):
+        d = self._oneshot_kinfo()
+        return ntp.puids(d["ruid"], d["euid"], d["suid"])
+
+    @wrap_exceptions
+    def gids(self):
+        d = self._oneshot_kinfo()
+        return ntp.pgids(d["rgid"], d["egid"], d["sgid"])
+
+    @wrap_exceptions
+    def terminal(self):
+        tty_nr = self._oneshot_kinfo()["ttynr"]
+        if tty_nr == _psutil.NODEV:
+            return None
+        return _psposix.get_terminal(tty_nr)
+
+    @wrap_exceptions
+    def memory_info(self):
+        d = self._oneshot_pidtaskinfo()
+        return ntp.pmem(d["rss"], d["vms"])
+
+    @wrap_exceptions
+    def memory_info_ex(self):
+        return _psutil.proc_memory_info_ex(self.pid)
+
+    @wrap_exceptions
+    def memory_footprint(self):
+        uss = _psutil.proc_memory_uss(self.pid)
+        return ntp.pfootprint(uss)
+
+    @wrap_exceptions
+    def page_faults(self):
+        d = self._oneshot_pidtaskinfo()
+        return ntp.ppagefaults(d["minor_faults"], d["major_faults"])
+
+    @wrap_exceptions
+    def cpu_times(self):
+        d = self._oneshot_pidtaskinfo()
+        # children user / system times are not retrievable (set to 0)
+        return ntp.pcputimes(d["cpu_utime"], d["cpu_stime"], 0.0, 0.0)
+
+    @wrap_exceptions
+    def create_time(self, monotonic=False):
+        ctime = self._oneshot_kinfo()["ctime"]
+        if not monotonic:
+            ctime = adjust_proc_create_time(ctime)
+        return ctime
+
+    @wrap_exceptions
+    def num_ctx_switches(self):
+        # Unvoluntary value seems not to be available;
+        # getrusage() numbers seems to confirm this theory.
+        # We set it to 0.
+        vol = self._oneshot_pidtaskinfo()["volctxsw"]
+        return ntp.pctxsw(vol, 0)
+
+    @wrap_exceptions
+    def num_threads(self):
+        return self._oneshot_pidtaskinfo()["num_threads"]
+
+    @wrap_exceptions
+    def open_files(self):
+        if self.pid == 0:
+            return []
+        files = []
+        rawlist = _psutil.proc_open_files(self.pid)
+        for path, fd in rawlist:
+            if isfile_strict(path):
+                ntuple = ntp.popenfile(path, fd)
+                files.append(ntuple)
+        return files
+
+    @wrap_exceptions
+    def net_connections(self, kind='inet'):
+        families, types = conn_tmap[kind]
+        rawlist = _psutil.proc_net_connections(self.pid, families, types)
+        ret = []
+        for item in rawlist:
+            fd, fam, type, laddr, raddr, status = item
+            nt = conn_to_ntuple(
+                fd, fam, type, laddr, raddr, status, TCP_STATUSES
+            )
+            ret.append(nt)
+        return ret
+
+    @wrap_exceptions
+    def num_fds(self):
+        if self.pid == 0:
+            return 0
+        return _psutil.proc_num_fds(self.pid)
+
+    @wrap_exceptions
+    def wait(self, timeout=None):
+        return _psposix.wait_pid(self.pid, timeout)
+
+    @wrap_exceptions
+    def nice_get(self):
+        return _psutil.proc_priority_get(self.pid)
+
+    @wrap_exceptions
+    def nice_set(self, value):
+        return _psutil.proc_priority_set(self.pid, value)
+
+    @wrap_exceptions
+    def status(self):
+        code = self._oneshot_kinfo()["status"]
+        # XXX is '?' legit? (we're not supposed to return it anyway)
+        return PROC_STATUSES.get(code, '?')
+
+    @wrap_exceptions
+    def threads(self):
+        rawlist = _psutil.proc_threads(self.pid)
+        retlist = []
+        for thread_id, utime, stime in rawlist:
+            ntuple = ntp.pthread(thread_id, utime, stime)
+            retlist.append(ntuple)
+        return retlist

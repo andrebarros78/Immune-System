@@ -1,0 +1,181 @@
+/*
+ * Copyright (c) 2009, Giampaolo Rodola'.
+ * All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+#include <Python.h>
+#include <sys/sysctl.h>
+#include <sys/socket.h>
+#include <kvm.h>
+#define _KERNEL  // silence compiler warning
+#include <sys/file.h>  // DTYPE_SOCKET
+#include <netdb.h>  // INET6_ADDRSTRLEN, in6_addr
+#undef _KERNEL
+
+#include "../../arch/all/init.h"
+
+
+PyObject *
+psutil_net_connections(PyObject *self, PyObject *args) {
+    pid_t pid;
+    int i;
+    int cnt;
+    int state;
+    int lport;
+    int rport;
+    char lip[INET6_ADDRSTRLEN];
+    char rip[INET6_ADDRSTRLEN];
+    psutil_conn_filters filters;
+
+    char errbuf[_POSIX2_LINE_MAX];
+    kvm_t *kd = NULL;
+
+    struct kinfo_file *kif;
+    struct kinfo_file *ikf;
+    struct in6_addr laddr6;
+
+    PyObject *py_retlist = PyList_New(0);
+    PyObject *py_laddr = NULL;
+    PyObject *py_raddr = NULL;
+    PyObject *py_lpath = NULL;
+    PyObject *py_af_filter = NULL;
+    PyObject *py_type_filter = NULL;
+
+
+    if (py_retlist == NULL)
+        return NULL;
+    if (!PyArg_ParseTuple(
+            args, _Py_PARSE_PID "OO", &pid, &py_af_filter, &py_type_filter
+        ))
+    {
+        goto error;
+    }
+    if (psutil_parse_conn_filters(py_af_filter, py_type_filter, &filters) != 0)
+        goto error;
+
+    Py_BEGIN_ALLOW_THREADS
+    kd = kvm_openfiles(NULL, NULL, NULL, KVM_NO_FILES, errbuf);
+    Py_END_ALLOW_THREADS
+    if (!kd) {
+        convert_kvm_err("kvm_openfiles", errbuf);
+        goto error;
+    }
+
+    // Walks the whole kernel file table, may take a while.
+    Py_BEGIN_ALLOW_THREADS
+    ikf = kvm_getfiles(kd, KERN_FILE_BYPID, -1, sizeof(*ikf), &cnt);
+    Py_END_ALLOW_THREADS
+    if (!ikf) {
+        psutil_oserror_wsyscall("kvm_getfiles");
+        goto error;
+    }
+
+    for (int i = 0; i < cnt; i++) {
+        const struct kinfo_file *kif = ikf + i;
+        py_laddr = NULL;
+        py_raddr = NULL;
+        py_lpath = NULL;
+
+        // apply filters
+        if (kif->f_type != DTYPE_SOCKET)
+            continue;
+        if (pid != -1 && kif->p_pid != (uint32_t)pid)
+            continue;
+        if (!((kif->so_family == AF_INET && filters.v4)
+              || (kif->so_family == AF_INET6 && filters.v6)
+              || (kif->so_family == AF_UNIX && filters.unix_)))
+        {
+            continue;
+        }
+        if (!((kif->so_type == SOCK_STREAM && filters.tcp)
+              || (kif->so_type == SOCK_DGRAM && filters.udp)))
+        {
+            continue;
+        }
+
+        // IPv4 / IPv6 socket
+        if ((kif->so_family == AF_INET) || (kif->so_family == AF_INET6)) {
+            // status
+            if (kif->so_type == SOCK_STREAM)
+                state = kif->t_state;
+            else
+                state = PSUTIL_CONN_NONE;
+
+            // local & remote port
+            lport = ntohs(kif->inp_lport);
+            rport = ntohs(kif->inp_fport);
+
+            // local addr
+            inet_ntop(kif->so_family, &kif->inp_laddru, lip, sizeof(lip));
+            py_laddr = Py_BuildValue("(si)", lip, lport);
+            if (!py_laddr)
+                goto error;
+
+            // remote addr
+            if (rport != 0) {
+                inet_ntop(kif->so_family, &kif->inp_faddru, rip, sizeof(rip));
+                py_raddr = Py_BuildValue("(si)", rip, rport);
+            }
+            else {
+                py_raddr = Py_BuildValue("()");
+            }
+            if (!py_raddr)
+                goto error;
+
+            // populate tuple and list
+            if (!pylist_append_fmt(
+                    py_retlist,
+                    "(iiiNNil)",
+                    kif->fd_fd,
+                    kif->so_family,
+                    kif->so_type,
+                    py_laddr,
+                    py_raddr,
+                    state,
+                    kif->p_pid
+                ))
+            {
+                goto error;
+            }
+            py_laddr = NULL;
+            py_raddr = NULL;
+        }
+        // UNIX socket
+        else if (kif->so_family == AF_UNIX) {
+            py_lpath = PyUnicode_DecodeFSDefault(kif->unp_path);
+            if (!py_lpath)
+                goto error;
+
+            if (!pylist_append_fmt(
+                    py_retlist,
+                    "(iiiOsil)",
+                    kif->fd_fd,
+                    kif->so_family,
+                    kif->so_type,
+                    py_lpath,
+                    "",  // raddr
+                    PSUTIL_CONN_NONE,
+                    kif->p_pid
+                ))
+            {
+                goto error;
+            }
+            Py_DECREF(py_lpath);
+            py_lpath = NULL;
+        }
+    }
+
+    kvm_close(kd);
+    return py_retlist;
+
+error:
+    Py_XDECREF(py_laddr);
+    Py_XDECREF(py_raddr);
+    Py_XDECREF(py_lpath);
+    Py_DECREF(py_retlist);
+    if (kd != NULL)
+        kvm_close(kd);
+    return NULL;
+}

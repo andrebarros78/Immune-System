@@ -1,0 +1,1064 @@
+# Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+"""Windows platform implementation."""
+
+from __future__ import annotations
+
+import contextlib
+import enum
+import functools
+import os
+import signal
+import sys
+import threading
+import time
+
+from . import _ntuples as ntp
+from ._common import ENCODING
+from ._common import AccessDenied
+from ._common import NoSuchProcess
+from ._common import TimeoutExpired
+from ._common import conn_tmap
+from ._common import conn_to_ntuple
+from ._common import debug
+from ._common import memoize_when_activated
+from ._common import parse_environ_block
+from ._common import usage_percent
+from ._enums import BatteryTime
+from ._enums import ConnectionStatus
+from ._enums import NicDuplex
+from ._enums import ProcessIOPriority
+from ._enums import ProcessPriority
+from ._enums import ProcessStatus
+
+try:
+    from . import _psutil
+except ImportError as err:
+    if (
+        str(err).lower().startswith("dll load failed")
+        and sys.getwindowsversion()[0] < 6
+    ):
+        # We may get here if:
+        # 1) we are on an old Windows version
+        # 2) psutil was installed via pip + wheel
+        # See: https://github.com/giampaolo/psutil/issues/811
+        msg = "this Windows version is too old (< Windows Vista); "
+        msg += "psutil 3.4.2 is the latest version which supports Windows "
+        msg += "2000, XP and 2003 server"
+        raise RuntimeError(msg) from err
+    else:
+        raise
+
+
+# process priority constants, import from __init__.py:
+# http://msdn.microsoft.com/en-us/library/ms686219(v=vs.85).aspx
+__extra__all__ = ["win_service_iter", "win_service_get", "AF_LINK"]
+
+
+# =====================================================================
+# --- globals
+# =====================================================================
+
+ERROR_PARTIAL_COPY = 299
+PYPY = '__pypy__' in sys.builtin_module_names
+
+AddressFamily = enum.IntEnum('AddressFamily', {'AF_LINK': -1})
+AF_LINK = AddressFamily.AF_LINK
+
+TCP_STATUSES = {
+    _psutil.MIB_TCP_STATE_ESTAB: ConnectionStatus.CONN_ESTABLISHED,
+    _psutil.MIB_TCP_STATE_SYN_SENT: ConnectionStatus.CONN_SYN_SENT,
+    _psutil.MIB_TCP_STATE_SYN_RCVD: ConnectionStatus.CONN_SYN_RECV,
+    _psutil.MIB_TCP_STATE_FIN_WAIT1: ConnectionStatus.CONN_FIN_WAIT1,
+    _psutil.MIB_TCP_STATE_FIN_WAIT2: ConnectionStatus.CONN_FIN_WAIT2,
+    _psutil.MIB_TCP_STATE_TIME_WAIT: ConnectionStatus.CONN_TIME_WAIT,
+    _psutil.MIB_TCP_STATE_CLOSED: ConnectionStatus.CONN_CLOSE,
+    _psutil.MIB_TCP_STATE_CLOSE_WAIT: ConnectionStatus.CONN_CLOSE_WAIT,
+    _psutil.MIB_TCP_STATE_LAST_ACK: ConnectionStatus.CONN_LAST_ACK,
+    _psutil.MIB_TCP_STATE_LISTEN: ConnectionStatus.CONN_LISTEN,
+    _psutil.MIB_TCP_STATE_CLOSING: ConnectionStatus.CONN_CLOSING,
+    _psutil.MIB_TCP_STATE_DELETE_TCB: ConnectionStatus.CONN_DELETE_TCB,
+    _psutil.PSUTIL_CONN_NONE: ConnectionStatus.CONN_NONE,
+}
+
+
+# =====================================================================
+# --- utils
+# =====================================================================
+
+
+@functools.lru_cache(maxsize=512)
+def convert_dos_path(s):
+    r"""Convert paths using native DOS format like:
+        "\Device\HarddiskVolume1\Windows\systemew\file.txt" or
+        "\??\C:\Windows\systemew\file.txt"
+    into:
+        "C:\Windows\systemew\file.txt".
+    """
+    if s.startswith('\\\\'):
+        return s
+    rawdrive = '\\'.join(s.split('\\')[:3])
+    if rawdrive in {"\\??\\UNC", "\\Device\\Mup"}:
+        rawdrive = '\\'.join(s.split('\\')[:5])
+        driveletter = '\\\\' + '\\'.join(s.split('\\')[3:5])
+    elif rawdrive.startswith('\\??\\'):
+        driveletter = s.split('\\')[2]
+    else:
+        driveletter = _psutil.QueryDosDevice(rawdrive)
+    remainder = s[len(rawdrive) :]
+    return os.path.join(driveletter, remainder)
+
+
+@functools.lru_cache
+def getpagesize():
+    return _psutil.getpagesize()
+
+
+# =====================================================================
+# --- memory
+# =====================================================================
+
+
+def virtual_memory():
+    """System virtual memory as a named tuple."""
+    info = _psutil.GetPerformanceInfo()
+    pagesize = info["PageSize"]
+    total = info["PhysicalTotal"] * pagesize
+    avail = info["PhysicalAvailable"] * pagesize
+    cached = info["SystemCache"] * pagesize
+    wired = info["KernelNonpaged"] * pagesize
+    free = avail
+    used = total - avail
+    percent = usage_percent((total - avail), total, round_=1)
+    return ntp.svmem(total, avail, percent, used, free, cached, wired)
+
+
+def swap_memory():
+    """Swap system memory as a (total, used, free, sin, sout) tuple."""
+    info = _psutil.GetPerformanceInfo()
+    pagesize = info["PageSize"]
+    total_phys = info["PhysicalTotal"] * pagesize
+    # CommitLimit == Maximum pages that can be committed into RAM +
+    # page file (swap). In the context of swap, it's the total "system
+    # memory" (physical + virtual), thus subtract the physical part
+    # from it to get the "total swap".
+    total_system = info["CommitLimit"] * pagesize  # physical + swap
+    total = total_system - total_phys
+
+    # commit total is incremented immediately (decrementing free_system)
+    # while the corresponding free physical value is not decremented until
+    # pages are accessed, so we can't use free system memory for swap.
+    # instead, we calculate page file usage based on performance counter
+    if total > 0:
+        percentswap = _psutil.swap_percent()
+        used = int(0.01 * percentswap * total)
+    else:
+        percentswap = 0.0
+        used = 0
+
+    free = total - used
+    percent = round(percentswap, 1)
+    return ntp.sswap(total, used, free, percent, 0, 0)
+
+
+# malloc / heap functions
+heap_info = _psutil.heap_info
+heap_trim = _psutil.heap_trim
+
+
+# =====================================================================
+# --- disk
+# =====================================================================
+
+
+disk_io_counters = _psutil.disk_io_counters
+
+
+def disk_usage(path):
+    """Return disk usage associated with path."""
+    if isinstance(path, bytes):
+        # XXX: do we want to use "strict"? Probably yes, in order
+        # to fail immediately. After all we are accepting input here...
+        path = path.decode(ENCODING, errors="strict")
+    try:
+        total, used, free = _psutil.disk_usage(path)
+    except NotADirectoryError:
+        if not os.path.isabs(path):
+            path = os.path.join(os.getcwd(), path)
+        total, used, free = _psutil.disk_usage(os.path.dirname(path))
+    percent = usage_percent(used, total, round_=1)
+    return ntp.sdiskusage(total, used, free, percent)
+
+
+def disk_partitions(all):
+    """Return disk partitions."""
+    rawlist = _psutil.disk_partitions(all)
+    return [ntp.sdiskpart(*x) for x in rawlist]
+
+
+# =====================================================================
+# --- CPU
+# =====================================================================
+
+
+def cpu_times():
+    """Return system CPU times as a named tuple."""
+    user, system, idle = _psutil.cpu_times()
+    # Internally, GetSystemTimes() is used, and it doesn't return
+    # interrupt and dpc times. _psutil.per_cpu_times() does, so we
+    # rely on it to get those only.
+    percpu_summed = ntp.scputimes(
+        *[sum(n) for n in zip(*_psutil.per_cpu_times())]
+    )
+    return ntp.scputimes(
+        user, system, idle, percpu_summed.irq, percpu_summed.dpc
+    )
+
+
+def per_cpu_times():
+    """Return system per-CPU times as a list of named tuples."""
+    ret = []
+    for user, system, idle, irq, dpc in _psutil.per_cpu_times():
+        item = ntp.scputimes(user, system, idle, irq, dpc)
+        ret.append(item)
+    return ret
+
+
+def cpu_count_logical():
+    """Return the number of logical CPUs in the system."""
+    return _psutil.cpu_count_logical()
+
+
+def cpu_count_cores():
+    """Return the number of CPU cores in the system."""
+    return _psutil.cpu_count_cores()
+
+
+def cpu_stats():
+    """Return CPU statistics."""
+    ctx_switches, interrupts, _dpcs, syscalls = _psutil.cpu_stats()
+    soft_interrupts = 0
+    return ntp.scpustats(ctx_switches, interrupts, soft_interrupts, syscalls)
+
+
+def cpu_freq():
+    """Return CPU frequency.
+    On Windows per-cpu frequency is not supported.
+    """
+    curr, max_ = _psutil.cpu_freq()
+    min_ = 0.0
+    return [ntp.scpufreq(float(curr), min_, float(max_))]
+
+
+_loadavg_initialized = False
+_lock = threading.Lock()
+
+
+def _getloadavg_impl():
+    # Drop to 2 decimal points which is what Linux does
+    raw_loads = _psutil.getloadavg()
+    return tuple(round(load, 2) for load in raw_loads)
+
+
+def getloadavg():
+    """Return the number of processes in the system run queue averaged
+    over the last 1, 5, and 15 minutes respectively as a tuple.
+    """
+    global _loadavg_initialized
+
+    if _loadavg_initialized:
+        return _getloadavg_impl()
+
+    with _lock:
+        if not _loadavg_initialized:
+            _psutil.init_loadavg_counter()
+            _loadavg_initialized = True
+
+    return _getloadavg_impl()
+
+
+# =====================================================================
+# --- network
+# =====================================================================
+
+
+def net_connections(kind, _pid=-1):
+    """Return socket connections.  If pid == -1 return system-wide
+    connections (as opposed to connections opened by one process only).
+    """
+    families, types = conn_tmap[kind]
+    rawlist = _psutil.net_connections(_pid, families, types)
+    ret = set()
+    for item in rawlist:
+        fd, fam, type, laddr, raddr, status, pid = item
+        nt = conn_to_ntuple(
+            fd,
+            fam,
+            type,
+            laddr,
+            raddr,
+            status,
+            TCP_STATUSES,
+            pid=pid if _pid == -1 else None,
+        )
+        ret.add(nt)
+    return list(ret)
+
+
+def net_if_stats():
+    """Get NIC stats (isup, duplex, speed, mtu)."""
+    ret = {}
+    rawdict = _psutil.net_if_stats()
+    for name, items in rawdict.items():
+        isup, duplex, speed, mtu = items
+        duplex = NicDuplex(duplex)
+        ret[name] = ntp.snicstats(isup, duplex, speed, mtu, '')
+    return ret
+
+
+def net_io_counters():
+    """Return network I/O statistics for every network interface
+    installed on the system as a dict of raw tuples.
+    """
+    return _psutil.net_io_counters()
+
+
+def net_if_addrs():
+    """Return the addresses associated to each NIC."""
+    return _psutil.net_if_addrs()
+
+
+# =====================================================================
+# --- sensors
+# =====================================================================
+
+
+def sensors_battery():
+    """Return battery information."""
+    # For constants meaning see:
+    # https://msdn.microsoft.com/en-us/library/windows/desktop/aa373232(v=vs.85).aspx
+    acline_status, flags, percent, secsleft = _psutil.sensors_battery()
+    power_plugged = acline_status == 1
+    no_battery = bool(flags & 128)
+    charging = bool(flags & 8)
+
+    if no_battery:
+        return None
+    if power_plugged or charging:
+        secsleft = BatteryTime.POWER_TIME_UNLIMITED
+    elif secsleft == -1:
+        secsleft = BatteryTime.POWER_TIME_UNKNOWN
+
+    return ntp.sbattery(percent, secsleft, power_plugged)
+
+
+# =====================================================================
+# --- other system functions
+# =====================================================================
+
+
+def boot_time():
+    """The system boot time expressed in seconds since the epoch. This
+    also includes the time spent during hibernate / suspend.
+    """
+    return _psutil.boot_time()
+
+
+def users():
+    """Return currently connected users as a list of named tuples."""
+    retlist = []
+    rawlist = _psutil.users()
+    for item in rawlist:
+        user, hostname, tstamp = item
+        nt = ntp.suser(user, None, hostname, tstamp, None)
+        retlist.append(nt)
+    return retlist
+
+
+# =====================================================================
+# --- Windows services
+# =====================================================================
+
+
+def win_service_iter():
+    """Yields a list of WindowsService instances."""
+    for name, display_name in _psutil.winservice_enumerate():
+        yield WindowsService(name, display_name)
+
+
+def win_service_get(name):
+    """Open a Windows service and return it as a WindowsService instance."""
+    service = WindowsService(name, None)
+    service._display_name = service._query_config()['display_name']
+    return service
+
+
+class WindowsService:  # noqa: PLW1641
+    """Represents an installed Windows service."""
+
+    def __init__(self, name: str, display_name: str):
+        self._name = name
+        self._display_name = display_name
+
+    def __str__(self):
+        details = f"(name={self._name!r}, display_name={self._display_name!r})"
+        return f"{self.__class__.__name__}{details}"
+
+    def __repr__(self):
+        return f"<{self.__str__()} at {id(self)}>"
+
+    def __eq__(self, other: object):
+        # Test for equality with another WindosService object based
+        # on name.
+        if not isinstance(other, WindowsService):
+            return NotImplemented
+        return self._name == other._name
+
+    def __ne__(self, other: object):
+        return not self == other
+
+    def _query_config(self):
+        with self._wrap_exceptions():
+            display_name, binpath, username, start_type = (
+                _psutil.winservice_query_config(self._name)
+            )
+        # XXX - update _self.display_name?
+        return dict(
+            display_name=display_name,
+            binpath=binpath,
+            username=username,
+            start_type=start_type,
+        )
+
+    def _query_status(self):
+        with self._wrap_exceptions():
+            status, pid = _psutil.winservice_query_status(self._name)
+        if pid == 0:
+            pid = None
+        return dict(status=status, pid=pid)
+
+    @contextlib.contextmanager
+    def _wrap_exceptions(self):
+        """Ctx manager which translates bare OSError and WindowsError
+        exceptions into NoSuchProcess and AccessDenied.
+        """
+        try:
+            yield
+        except OSError as err:
+            name = self._name
+            if is_permission_err(err):
+                msg = (
+                    f"service {name!r} is not querable (not enough privileges)"
+                )
+                raise AccessDenied(pid=None, name=name, msg=msg) from err
+            elif err.winerror in {
+                _psutil.ERROR_INVALID_NAME,
+                _psutil.ERROR_SERVICE_DOES_NOT_EXIST,
+            }:
+                msg = f"service {name!r} does not exist"
+                raise NoSuchProcess(pid=None, name=name, msg=msg) from err
+            else:
+                raise
+
+    # config query
+
+    def name(self) -> str:
+        """The service name. This string is how a service is referenced
+        and can be passed to win_service_get() to get a new
+        WindowsService instance.
+        """
+        return self._name
+
+    def display_name(self) -> str:
+        """The service display name. The value is cached when this class
+        is instantiated.
+        """
+        return self._display_name
+
+    def binpath(self) -> str:
+        """The fully qualified path to the service binary/exe file as
+        a string, including command line arguments.
+        """
+        return self._query_config()['binpath']
+
+    def username(self) -> str:
+        """The name of the user that owns this service."""
+        return self._query_config()['username']
+
+    def start_type(self) -> str:
+        """A string which can either be "automatic", "manual" or
+        "disabled".
+        """
+        return self._query_config()['start_type']
+
+    # status query
+
+    def pid(self) -> int | None:
+        """The process PID, if any, else None. This can be passed
+        to Process class to control the service's process.
+        """
+        return self._query_status()['pid']
+
+    def status(self) -> str:
+        """Service status as a string."""
+        return self._query_status()['status']
+
+    def description(self) -> str:
+        """Service long description."""
+        return _psutil.winservice_query_descr(self.name())
+
+    # utils
+
+    def as_dict(self) -> dict[str, str | int | None]:
+        """Utility method retrieving all the information above as a
+        dictionary.
+        """
+        d = self._query_config()
+        d.update(self._query_status())
+        d['name'] = self.name()
+        d['display_name'] = self.display_name()
+        d['description'] = self.description()
+        return d
+
+    # actions
+    # XXX: the necessary C bindings for start() and stop() are
+    # implemented but for now I prefer not to expose them.
+    # I may change my mind in the future. Reasons:
+    # - they require Administrator privileges
+    # - can't implement a timeout for stop() (unless by using a thread,
+    #   which sucks)
+    # - would require adding ServiceAlreadyStarted and
+    #   ServiceAlreadyStopped exceptions, adding two new APIs.
+    # - we might also want to have modify(), which would basically mean
+    #   rewriting win32serviceutil.ChangeServiceConfig, which involves a
+    #   lot of stuff (and API constants which would pollute the API), see:
+    #   http://pyxr.sourceforge.net/PyXR/c/python24/lib/site-packages/
+    #       win32/lib/win32serviceutil.py.html#0175
+    # - psutil is typically about "read only" monitoring stuff;
+    #   win_service_* APIs should only be used to retrieve a service and
+    #   check whether it's running
+
+    # def start(self, timeout=None):
+    #     with self._wrap_exceptions():
+    #         _psutil.winservice_start(self.name())
+    #         if timeout:
+    #             giveup_at = time.time() + timeout
+    #             while True:
+    #                 if self.status() == "running":
+    #                     return
+    #                 else:
+    #                     if time.time() > giveup_at:
+    #                         raise TimeoutExpired(timeout)
+    #                     else:
+    #                         time.sleep(.1)
+
+    # def stop(self):
+    #     # Note: timeout is not implemented because it's just not
+    #     # possible, see:
+    #     # http://stackoverflow.com/questions/11973228/
+    #     with self._wrap_exceptions():
+    #         return _psutil.winservice_stop(self.name())
+
+
+# =====================================================================
+# --- processes
+# =====================================================================
+
+
+pids = _psutil.pids
+pid_exists = _psutil.pid_exists
+ppid_map = _psutil.ppid_map  # used internally by Process.children()
+
+
+def is_permission_err(exc):
+    """Return True if this is a permission error."""
+    assert isinstance(exc, OSError), exc
+    return isinstance(exc, PermissionError) or exc.winerror in {
+        _psutil.ERROR_ACCESS_DENIED,
+        _psutil.ERROR_PRIVILEGE_NOT_HELD,
+    }
+
+
+def convert_oserror(exc, pid=None, name=None):
+    """Convert OSError into NoSuchProcess or AccessDenied."""
+    assert isinstance(exc, OSError), exc
+    if is_permission_err(exc):
+        return AccessDenied(pid=pid, name=name)
+    if isinstance(exc, ProcessLookupError):
+        return NoSuchProcess(pid=pid, name=name)
+    raise exc
+
+
+def wrap_exceptions(fun):
+    """Decorator which converts OSError into NoSuchProcess or AccessDenied."""
+
+    @functools.wraps(fun)
+    def wrapper(self, *args, **kwargs):
+        try:
+            return fun(self, *args, **kwargs)
+        except OSError as err:
+            raise convert_oserror(err, pid=self.pid, name=self._name) from err
+
+    return wrapper
+
+
+def retry_error_partial_copy(fun):
+    """Workaround for https://github.com/giampaolo/psutil/issues/875.
+    See: https://stackoverflow.com/questions/4457745#4457745.
+    """
+
+    @functools.wraps(fun)
+    def wrapper(self, *args, **kwargs):
+        delay = 0.0001
+        times = 33
+        for _ in range(times):  # retries for roughly 1 second
+            try:
+                return fun(self, *args, **kwargs)
+            except OSError as _:
+                err = _
+                if err.winerror == ERROR_PARTIAL_COPY:
+                    time.sleep(delay)
+                    delay = min(delay * 2, 0.04)
+                    continue
+                raise
+        msg = (
+            f"{fun} retried {times} times, converted to AccessDenied as it's "
+            f"still returning {err}"
+        )
+        raise AccessDenied(pid=self.pid, name=self._name, msg=msg)
+
+    return wrapper
+
+
+class Process:
+    """Wrapper class around underlying C implementation."""
+
+    __slots__ = ["_cache", "_name", "_ppid", "pid"]
+
+    def __init__(self, pid):
+        self.pid = pid
+        self._name = None
+        self._ppid = None
+
+    # --- oneshot() stuff
+
+    def oneshot_enter(self):
+        self._oneshot.cache_activate(self)
+        self.exe.cache_activate(self)
+
+    def oneshot_exit(self):
+        self._oneshot.cache_deactivate(self)
+        self.exe.cache_deactivate(self)
+
+    @memoize_when_activated
+    def _oneshot(self):
+        """Return multiple information about this process as a
+        raw dict.
+        """
+        return _psutil.proc_oneshot(self.pid)
+
+    def name(self):
+        """Return process name, which on Windows is always the final
+        part of the executable.
+        """
+        # This is how PIDs 0 and 4 are always represented in taskmgr
+        # and process-hacker.
+        if self.pid == 0:
+            return "System Idle Process"
+        if self.pid == 4:
+            return "System"
+        return os.path.basename(self.exe())
+
+    @wrap_exceptions
+    @memoize_when_activated
+    def exe(self):
+        if PYPY:
+            try:
+                exe = _psutil.proc_exe(self.pid)
+            except OSError as err:
+                # 24 = ERROR_TOO_MANY_OPEN_FILES. Not sure why this happens
+                # (perhaps PyPy's JIT delaying garbage collection of files?).
+                if err.errno == 24:
+                    debug(f"{err!r} translated into AccessDenied")
+                    raise AccessDenied(self.pid, self._name) from err
+                raise
+        else:
+            exe = _psutil.proc_exe(self.pid)
+        if exe.startswith('\\'):
+            return convert_dos_path(exe)
+        return exe  # May be "Registry", "MemCompression", ...
+
+    @wrap_exceptions
+    @retry_error_partial_copy
+    def cmdline(self):
+        # PEB method detects cmdline changes but requires more
+        # privileges: https://github.com/giampaolo/psutil/pull/1398
+        try:
+            return _psutil.proc_cmdline(self.pid, use_peb=True)
+        except OSError as err:
+            if is_permission_err(err):
+                return _psutil.proc_cmdline(self.pid, use_peb=False)
+            else:
+                raise
+
+    @wrap_exceptions
+    @retry_error_partial_copy
+    def environ(self):
+        s = _psutil.proc_environ(self.pid)
+        return parse_environ_block(s)
+
+    @wrap_exceptions
+    def ppid(self):
+        try:
+            return _psutil.proc_ppid(self.pid)
+        except OSError as err:
+            if is_permission_err(err):
+                debug("attempting ppid() fallback (slower)")
+                try:
+                    return ppid_map()[self.pid]
+                except KeyError:
+                    raise NoSuchProcess(self.pid, self._name) from None
+            raise
+
+    def _get_raw_meminfo(self):
+        try:
+            return _psutil.proc_memory_info(self.pid)
+        except OSError as err:
+            if is_permission_err(err):
+                # TODO: the C ext can probably be refactored in order
+                # to get this from _psutil.proc_oneshot()
+                debug("attempting memory_info() fallback (slower)")
+                info = self._oneshot()
+                return {
+                    "PageFaultCount": info["PageFaultCount"],
+                    "PeakWorkingSetSize": info["PeakWorkingSetSize"],
+                    "WorkingSetSize": info["WorkingSetSize"],
+                    "QuotaPeakPagedPoolUsage": info["QuotaPeakPagedPoolUsage"],
+                    "QuotaPagedPoolUsage": info["QuotaPagedPoolUsage"],
+                    "QuotaPeakNonPagedPoolUsage": info[
+                        "QuotaPeakNonPagedPoolUsage"
+                    ],
+                    "QuotaNonPagedPoolUsage": info["QuotaNonPagedPoolUsage"],
+                    "PagefileUsage": info["PagefileUsage"],
+                    "PeakPagefileUsage": info["PeakPagefileUsage"],
+                    "PrivateUsage": info["PrivatePageCount"],  # adjust name
+                }
+            raise
+
+    @wrap_exceptions
+    def memory_info(self):
+        # Underlying C function returns fields of PROCESS_MEMORY_COUNTERS
+        # struct.
+        d = self._get_raw_meminfo()
+        return ntp.pmem(
+            rss=d["WorkingSetSize"],
+            vms=d["PrivateUsage"],
+            peak_rss=d["PeakWorkingSetSize"],
+            peak_vms=d["PeakPagefileUsage"],
+            _deprecated={
+                # old aliases
+                "wset": d["WorkingSetSize"],  # 'rss'
+                "peak_wset": d["PeakWorkingSetSize"],  # 'peak_rss'
+                "pagefile": d["PrivateUsage"],  # 'vms'
+                "private": d["PrivateUsage"],  # 'vms'
+                "peak_pagefile": d["PeakPagefileUsage"],  # 'vms'
+                # fields which were moved to memory_info_ex()
+                "paged_pool": d["QuotaPagedPoolUsage"],
+                "nonpaged_pool": d["QuotaNonPagedPoolUsage"],
+                "peak_paged_pool": d["QuotaPeakPagedPoolUsage"],
+                "peak_nonpaged_pool": d["QuotaPeakNonPagedPoolUsage"],
+                # moved to page_faults()
+                "num_page_faults": d["PageFaultCount"],
+            },
+        )
+
+    @wrap_exceptions
+    def memory_info_ex(self):
+        d = self._oneshot()
+        raw = self._get_raw_meminfo()
+        return {
+            "virtual": d["VirtualSize"],
+            "peak_virtual": d["PeakVirtualSize"],
+            "paged_pool": raw["QuotaPagedPoolUsage"],
+            "nonpaged_pool": raw["QuotaNonPagedPoolUsage"],
+            "peak_paged_pool": raw["QuotaPeakPagedPoolUsage"],
+            "peak_nonpaged_pool": raw["QuotaPeakNonPagedPoolUsage"],
+        }
+
+    @wrap_exceptions
+    def memory_footprint(self):
+        uss = _psutil.proc_memory_uss(self.pid)
+        uss *= getpagesize()
+        return ntp.pfootprint(uss)
+
+    @wrap_exceptions
+    def page_faults(self):
+        # PageFaultCount is the total (soft + hard), while
+        # HardFaultCount tracks hard (major) faults only. Minor faults
+        # are derived by subtracting the two.
+        info = self._oneshot()
+        major = info["HardFaultCount"]
+        minor = info["PageFaultCount"] - major
+        return ntp.ppagefaults(minor, major)
+
+    def memory_maps(self):
+        try:
+            raw = _psutil.proc_memory_maps(self.pid)
+        except OSError as err:
+            # XXX - can't use wrap_exceptions decorator as we're
+            # returning a generator; probably needs refactoring.
+            raise convert_oserror(err, self.pid, self._name) from err
+        else:
+            for addr, perm, path, rss in raw:
+                path = convert_dos_path(path)
+                addr = hex(addr)
+                yield (addr, perm, path, rss)
+
+    @wrap_exceptions
+    def kill(self):
+        return _psutil.proc_kill(self.pid)
+
+    @wrap_exceptions
+    def send_signal(self, sig):
+        if sig == signal.SIGTERM:
+            _psutil.proc_kill(self.pid)
+        elif sig in {signal.CTRL_C_EVENT, signal.CTRL_BREAK_EVENT}:
+            os.kill(self.pid, sig)
+        else:
+            msg = (
+                "only SIGTERM, CTRL_C_EVENT and CTRL_BREAK_EVENT signals "
+                "are supported on Windows"
+            )
+            raise ValueError(msg)
+
+    @wrap_exceptions
+    def wait(self, timeout=None):
+        if timeout is None:
+            cext_timeout = _psutil.INFINITE
+        else:
+            # WaitForSingleObject() expects time in milliseconds.
+            cext_timeout = int(timeout * 1000)
+
+        timer = getattr(time, 'monotonic', time.time)
+        stop_at = timer() + timeout if timeout is not None else None
+
+        try:
+            # Exit code is supposed to come from GetExitCodeProcess().
+            # May also be None if OpenProcess() failed with
+            # ERROR_INVALID_PARAMETER, meaning PID is already gone.
+            exit_code = _psutil.proc_wait(self.pid, cext_timeout)
+        except _psutil.TimeoutExpired as err:
+            # WaitForSingleObject() returned WAIT_TIMEOUT. Just raise.
+            raise TimeoutExpired(timeout, self.pid, self._name) from err
+        except _psutil.TimeoutAbandoned:
+            # WaitForSingleObject() returned WAIT_ABANDONED, see:
+            # https://github.com/giampaolo/psutil/issues/1224
+            # We'll just rely on the internal polling and return None
+            # when the PID disappears. Subprocess module does the same
+            # (return None):
+            # https://github.com/python/cpython/blob/be50a7b627d0/Lib/subprocess.py#L1193-L1194
+            exit_code = None
+
+        # At this point WaitForSingleObject() returned WAIT_OBJECT_0,
+        # meaning the process is gone. Stupidly there are cases where
+        # its PID may still stick around so we do a further internal
+        # polling.
+        delay = 0.0001
+        while True:
+            if not pid_exists(self.pid):
+                return exit_code
+            if stop_at and timer() >= stop_at:
+                raise TimeoutExpired(timeout, pid=self.pid, name=self._name)
+            time.sleep(delay)
+            delay = min(delay * 2, 0.04)  # incremental delay
+
+    @wrap_exceptions
+    def username(self):
+        if self.pid in {0, 4}:
+            return 'NT AUTHORITY\\SYSTEM'
+        domain, user = _psutil.proc_username(self.pid)
+        return f"{domain}\\{user}"
+
+    @wrap_exceptions
+    def create_time(self, fast_only=False):
+        # Note: proc_times() not put under oneshot() 'cause create_time()
+        # is already cached by the main Process class.
+        try:
+            _user, _system, created = _psutil.proc_times(self.pid)
+            return created
+        except OSError as err:
+            if is_permission_err(err):
+                if fast_only:
+                    raise
+                debug("attempting create_time() fallback (slower)")
+                return self._oneshot()["create_time"]
+            raise
+
+    @wrap_exceptions
+    def num_threads(self):
+        return self._oneshot()["num_threads"]
+
+    @wrap_exceptions
+    def threads(self):
+        rawlist = _psutil.proc_threads(self.pid)
+        retlist = []
+        for thread_id, utime, stime in rawlist:
+            ntuple = ntp.pthread(thread_id, utime, stime)
+            retlist.append(ntuple)
+        return retlist
+
+    @wrap_exceptions
+    def cpu_times(self):
+        try:
+            user, system, _created = _psutil.proc_times(self.pid)
+        except OSError as err:
+            if not is_permission_err(err):
+                raise
+            debug("attempting cpu_times() fallback (slower)")
+            info = self._oneshot()
+            user = info["user_time"]
+            system = info["kernel_time"]
+        # Children user/system times are not retrievable (set to 0).
+        return ntp.pcputimes(user, system, 0.0, 0.0)
+
+    @wrap_exceptions
+    def suspend(self):
+        _psutil.proc_suspend_or_resume(self.pid, True)
+
+    @wrap_exceptions
+    def resume(self):
+        _psutil.proc_suspend_or_resume(self.pid, False)
+
+    @wrap_exceptions
+    @retry_error_partial_copy
+    def cwd(self):
+        if self.pid in {0, 4}:
+            raise AccessDenied(self.pid, self._name)
+        # return a normalized pathname since the native C function appends
+        # "\\" at the and of the path
+        path = _psutil.proc_cwd(self.pid)
+        return os.path.normpath(path)
+
+    @wrap_exceptions
+    def open_files(self):
+        if self.pid in {0, 4}:
+            return []
+        # Filenames come in in native format like:
+        # "\Device\HarddiskVolume1\Windows\systemew\file.txt"
+        # Convert the first part in the corresponding drive letter
+        # (e.g. "C:\") by using Windows's QueryDosDevice(). Directories
+        # are already filtered out by the C extension.
+        raw_file_names = _psutil.proc_open_files(self.pid)
+        ret = {
+            ntp.popenfile(convert_dos_path(file), -1)
+            for file in raw_file_names
+        }
+        return list(ret)
+
+    @wrap_exceptions
+    def net_connections(self, kind='inet'):
+        return net_connections(kind, _pid=self.pid)
+
+    @wrap_exceptions
+    def nice_get(self):
+        value = _psutil.proc_priority_get(self.pid)
+        value = ProcessPriority(value)
+        return value
+
+    @wrap_exceptions
+    def nice_set(self, value):
+        return _psutil.proc_priority_set(self.pid, value)
+
+    @wrap_exceptions
+    def ionice_get(self):
+        ret = _psutil.proc_io_priority_get(self.pid)
+        ret = ProcessIOPriority(ret)
+        return ret
+
+    @wrap_exceptions
+    def ionice_set(self, ioclass, value):
+        if value:
+            msg = "value argument not accepted on Windows"
+            raise TypeError(msg)
+        if ioclass not in ProcessIOPriority:
+            msg = f"{ioclass} is not a valid priority"
+            raise ValueError(msg)
+        _psutil.proc_io_priority_set(self.pid, ioclass)
+
+    @wrap_exceptions
+    def io_counters(self):
+        try:
+            ret = _psutil.proc_io_counters(self.pid)
+        except OSError as err:
+            if not is_permission_err(err):
+                raise
+            debug("attempting io_counters() fallback (slower)")
+            info = self._oneshot()
+            ret = (
+                info["io_rcount"],
+                info["io_wcount"],
+                info["io_rbytes"],
+                info["io_wbytes"],
+                info["io_count_others"],
+                info["io_bytes_others"],
+            )
+        return ntp.pio(*ret)
+
+    @wrap_exceptions
+    def status(self):
+        if self._oneshot()["is_suspended"]:
+            return ProcessStatus.STATUS_STOPPED
+        else:
+            return ProcessStatus.STATUS_RUNNING
+
+    @wrap_exceptions
+    def cpu_affinity_get(self):
+        def from_bitmask(x):
+            return [i for i in range(64) if (1 << i) & x]
+
+        bitmask = _psutil.proc_cpu_affinity_get(self.pid)
+        return from_bitmask(bitmask)
+
+    @wrap_exceptions
+    def cpu_affinity_set(self, value):
+        def to_bitmask(ls):
+            if not ls:
+                msg = f"invalid argument {ls!r}"
+                raise ValueError(msg)
+            out = 0
+            for b in ls:
+                out |= 2**b
+            return out
+
+        # SetProcessAffinityMask() states that ERROR_INVALID_PARAMETER
+        # is returned for an invalid CPU but this seems not to be true,
+        # therefore we check CPUs validy beforehand.
+        allcpus = list(range(len(per_cpu_times())))
+        for cpu in value:
+            if cpu not in allcpus:
+                if not isinstance(cpu, int):
+                    msg = f"invalid CPU {cpu!r}; an integer is required"
+                    raise TypeError(msg)
+                msg = f"invalid CPU {cpu!r}"
+                raise ValueError(msg)
+
+        bitmask = to_bitmask(value)
+        _psutil.proc_cpu_affinity_set(self.pid, bitmask)
+
+    @wrap_exceptions
+    def num_handles(self):
+        try:
+            return _psutil.proc_num_handles(self.pid)
+        except OSError as err:
+            if is_permission_err(err):
+                debug("attempting num_handles() fallback (slower)")
+                return self._oneshot()["num_handles"]
+            raise
+
+    @wrap_exceptions
+    def num_ctx_switches(self):
+        ctx_switches = self._oneshot()["ctx_switches"]
+        # only voluntary ctx switches are supported
+        return ntp.pctxsw(ctx_switches, 0)

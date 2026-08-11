@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "library",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "llama-cpp",
+  "license": "MIT",
+  "license_file": "LICENSE",
+  "license_sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d",
+  "license_verified": true,
+  "purpose": "Lightweight local model runtime",
+  "readme_file": "README.md",
+  "readme_sha256": "89456b8d390774dd3fa0a99fe25a9bb99c46bdcbabc12a0fc0e7cf0ee092aaca",
+  "ref": "master",
+  "repo": "ggml-org/llama.cpp",
+  "resolved_commit": "6e62ba538478202094edc6c100c782719e310aa3",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/ggml-org/llama.cpp/archive/6e62ba538478202094edc6c100c782719e310aa3.tar.gz",
+  "status": "collected"
+}

@@ -1,0 +1,754 @@
+# Also see https://github.com/locustio/locust/releases
+
+## [2.46.3](https://github.com/locustio/locust/tree/2.46.3) (2026-08-01)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.46.2...2.46.3)
+
+**Fixed bugs:**
+
+- Workers spawned by `--processes` crash when using `--csv-full-history` [\#3428](https://github.com/locustio/locust/issues/3428)
+
+**Merged pull requests:**
+
+- Fix url possibly unbound in headless non-worker mode [\#3488](https://github.com/locustio/locust/pull/3488) ([reachsridhard](https://github.com/reachsridhard))
+- Update uv to 0.12 [\#3487](https://github.com/locustio/locust/pull/3487) ([cyberw](https://github.com/cyberw))
+- Explicitly close csv file handles before exit [\#3486](https://github.com/locustio/locust/pull/3486) ([reachsridhard](https://github.com/reachsridhard))
+- Fix variable shadowing in \_aggregate\_dispatched\_users [\#3484](https://github.com/locustio/locust/pull/3484) ([reachsridhard](https://github.com/reachsridhard))
+- \[FEAT\] : add active user metric as an observable gauge [\#3483](https://github.com/locustio/locust/pull/3483) ([RamachandraBhardwaj](https://github.com/RamachandraBhardwaj))
+
+## [2.46.2](https://github.com/locustio/locust/tree/2.46.2) (2026-07-24)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.46.1...2.46.2)
+
+**Closed issues:**
+
+- get\_response\_time\_percentile counts None \(async\) requests in the denominator, deflating all reported percentiles [\#3472](https://github.com/locustio/locust/issues/3472)
+
+**Merged pull requests:**
+
+- build\(deps-dev\): bump cryptography from 46.0.7 to 48.0.1 [\#3481](https://github.com/locustio/locust/pull/3481) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump picomatch from 2.3.1 to 2.3.2 in /locust/webui [\#3480](https://github.com/locustio/locust/pull/3480) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump minimatch from 3.1.2 to 3.1.5 in /locust/webui [\#3479](https://github.com/locustio/locust/pull/3479) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump brace-expansion from 1.1.12 to 1.1.16 in /locust/webui [\#3478](https://github.com/locustio/locust/pull/3478) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump tar from 7.5.7 to 7.5.22 in /locust/webui [\#3477](https://github.com/locustio/locust/pull/3477) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Change StatsEntry typing to not allow None for stats [\#3476](https://github.com/locustio/locust/pull/3476) ([reachsridhard](https://github.com/reachsridhard))
+- Fix response time percentiles being deflated by requests logged with response\_time=None [\#3473](https://github.com/locustio/locust/pull/3473) ([haskiindahouse](https://github.com/haskiindahouse))
+- build\(deps\): bump shell-quote from 1.8.1 to 1.10.0 in /locust/webui [\#3471](https://github.com/locustio/locust/pull/3471) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [2.46.1](https://github.com/locustio/locust/tree/2.46.1) (2026-07-20)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.46.0...2.46.1)
+
+**Closed issues:**
+
+- \[Feature-Request\]\[Web UI\] Preserve Custom Parameters/Options values during edit [\#3462](https://github.com/locustio/locust/issues/3462)
+
+**Merged pull requests:**
+
+- Allow new gevent versions [\#3470](https://github.com/locustio/locust/pull/3470) ([cyberw](https://github.com/cyberw))
+- Update swarm state with extraOptions [\#3469](https://github.com/locustio/locust/pull/3469) ([yukha-dw](https://github.com/yukha-dw))
+- Remove support for Python 3.10 [\#3468](https://github.com/locustio/locust/pull/3468) ([cyberw](https://github.com/cyberw))
+
+## [2.46.0](https://github.com/locustio/locust/tree/2.46.0) (2026-07-19)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.45.0...2.46.0)
+
+**Closed issues:**
+
+- Unexpected Behaviour When Using the json Method with --class-picker [\#3435](https://github.com/locustio/locust/issues/3435)
+- parse\_options\(\) emits deprecation warning via print\(\) instead of warnings.warn\(DeprecationWarning\) [\#3433](https://github.com/locustio/locust/issues/3433)
+- proper\_round gives wrong result for integer inputs when digits \> 0 [\#3430](https://github.com/locustio/locust/issues/3430)
+- Code quality observations \(3 high priority\) [\#3427](https://github.com/locustio/locust/issues/3427)
+
+**Merged pull requests:**
+
+- skip python3.15 tests [\#3466](https://github.com/locustio/locust/pull/3466) ([even-even](https://github.com/even-even))
+- Fix two exception handling bugs [\#3464](https://github.com/locustio/locust/pull/3464) ([reachsridhard](https://github.com/reachsridhard))
+- Move --csv-full-history validation before process forking [\#3461](https://github.com/locustio/locust/pull/3461) ([reachsridhard](https://github.com/reachsridhard))
+- chore: add support python3.15 [\#3460](https://github.com/locustio/locust/pull/3460) ([even-even](https://github.com/even-even))
+- docs: fix class-picker json\(\) example and clarify behavior [\#3459](https://github.com/locustio/locust/pull/3459) ([reachsridhard](https://github.com/reachsridhard))
+- minor improvements to type hinting [\#3457](https://github.com/locustio/locust/pull/3457) ([cyberw](https://github.com/cyberw))
+- build\(deps-dev\): bump sphinxcontrib-applehelp from 1.0.4 to 2.0.0 [\#3445](https://github.com/locustio/locust/pull/3445) ([dependabot[bot]](https://github.com/apps/dependabot))
+- fix: proper\_round gives wrong result for integer inputs when digits \> 0 [\#3431](https://github.com/locustio/locust/pull/3431) ([JSap0914](https://github.com/JSap0914))
+
+## [2.45.0](https://github.com/locustio/locust/tree/2.45.0) (2026-07-09)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.44.4...2.45.0)
+
+**Fixed bugs:**
+
+- Live stats regression as of 2.43.4 [\#3451](https://github.com/locustio/locust/issues/3451)
+
+**Closed issues:**
+
+- is\_url treats http:// without a host as a valid URL [\#3438](https://github.com/locustio/locust/issues/3438)
+
+**Merged pull requests:**
+
+- Fix Echart Styles [\#3456](https://github.com/locustio/locust/pull/3456) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Fix rps display issue \(caused by inconsistencies in current\_rps vs total\_rps\) [\#3455](https://github.com/locustio/locust/pull/3455) ([cyberw](https://github.com/cyberw))
+- Bump Webui Deps [\#3453](https://github.com/locustio/locust/pull/3453) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- build\(deps-dev\): bump opentelemetry-instrumentation-requests from 0.62b1 to 0.64b0 [\#3446](https://github.com/locustio/locust/pull/3446) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps-dev\): bump opentelemetry-exporter-otlp-proto-grpc from 1.41.1 to 1.43.0 [\#3444](https://github.com/locustio/locust/pull/3444) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps-dev\): bump opentelemetry-exporter-otlp-proto-http from 1.41.1 to 1.43.0 [\#3443](https://github.com/locustio/locust/pull/3443) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump the all\_dependencies group with 6 updates [\#3442](https://github.com/locustio/locust/pull/3442) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump the vite group in /locust/webui with 5 updates [\#3441](https://github.com/locustio/locust/pull/3441) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps-dev\): bump the eslint group in /locust/webui with 7 updates [\#3440](https://github.com/locustio/locust/pull/3440) ([dependabot[bot]](https://github.com/apps/dependabot))
+- fix: require host when detecting URLs [\#3439](https://github.com/locustio/locust/pull/3439) ([JSap0914](https://github.com/JSap0914))
+- Add perf ruff rule [\#3432](https://github.com/locustio/locust/pull/3432) ([even-even](https://github.com/even-even))
+- CLI: remove --csv-full-history for workers with --processes [\#3429](https://github.com/locustio/locust/pull/3429) ([tobast](https://github.com/tobast))
+
+## [2.44.4](https://github.com/locustio/locust/tree/2.44.4) (2026-06-18)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.44.3...2.44.4)
+
+**Merged pull requests:**
+
+- docs: fix typos [\#3426](https://github.com/locustio/locust/pull/3426) ([juliosuas](https://github.com/juliosuas))
+- fix: reject partially-matched timespan strings in parse\_timespan [\#3425](https://github.com/locustio/locust/pull/3425) ([JSap0914](https://github.com/JSap0914))
+
+## [2.44.3](https://github.com/locustio/locust/tree/2.44.3) (2026-06-12)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.44.2...2.44.3)
+
+## [2.44.2](https://github.com/locustio/locust/tree/2.44.2) (2026-06-12)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.44.1...2.44.2)
+
+**Merged pull requests:**
+
+- Add OTEL locust.client.duration histogram for response times [\#3424](https://github.com/locustio/locust/pull/3424) ([cyberw](https://github.com/cyberw))
+- docs: add Azure Load Testing callout banner to Hosted load testing page [\#3422](https://github.com/locustio/locust/pull/3422) ([Arun-Thangaraj](https://github.com/Arun-Thangaraj))
+
+## [2.44.1](https://github.com/locustio/locust/tree/2.44.1) (2026-06-01)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.44.0...2.44.1)
+
+**Merged pull requests:**
+
+- Add logging support to for OTEL [\#3421](https://github.com/locustio/locust/pull/3421) ([cyberw](https://github.com/cyberw))
+- Add hostname, locustfile and profile to otel Resource [\#3420](https://github.com/locustio/locust/pull/3420) ([cyberw](https://github.com/cyberw))
+- docs: guard custom web routes without web UI [\#3416](https://github.com/locustio/locust/pull/3416) ([puneetdixit200](https://github.com/puneetdixit200))
+- Add aiolocust and azure load testing to docs [\#3414](https://github.com/locustio/locust/pull/3414) ([cyberw](https://github.com/cyberw))
+- up pre-commit 3.xx to 4.xxx [\#3412](https://github.com/locustio/locust/pull/3412) ([even-even](https://github.com/even-even))
+
+## [2.44.0](https://github.com/locustio/locust/tree/2.44.0) (2026-05-11)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.43.4...2.44.0)
+
+**Fixed bugs:**
+
+- FastHttpUser crashes with TypeError: on\_request\(\) missing 4 required positional arguments on Python 3.13+ [\#3388](https://github.com/locustio/locust/issues/3388)
+
+**Closed issues:**
+
+- Show when each failure was first and last seen in the Failures tab [\#3402](https://github.com/locustio/locust/issues/3402)
+- Add CSV Export of Detailed Request Logs [\#3389](https://github.com/locustio/locust/issues/3389)
+- \[Docs\] Publish AI-optimized documentation [\#3372](https://github.com/locustio/locust/issues/3372)
+
+**Merged pull requests:**
+
+- unify ruff in pyproject.toml and pre-commits [\#3409](https://github.com/locustio/locust/pull/3409) ([even-even](https://github.com/even-even))
+- Disable UI lib npm package publication [\#3408](https://github.com/locustio/locust/pull/3408) ([cyberw](https://github.com/cyberw))
+- fix\(fasthttp\): add 308 to redirect\_resonse\_codes in LocustUserAgent [\#3406](https://github.com/locustio/locust/pull/3406) ([jorgetamayo21](https://github.com/jorgetamayo21))
+- fix\(fasthttp\): handle zlib.error for truncated gzip streams under high load [\#3405](https://github.com/locustio/locust/pull/3405) ([jorgetamayo21](https://github.com/jorgetamayo21))
+- Add first seen / last seen timestamps to failure stats [\#3403](https://github.com/locustio/locust/pull/3403) ([tugkanboz](https://github.com/tugkanboz))
+- Add AI-optimized documentation \(llms.txt\) [\#3399](https://github.com/locustio/locust/pull/3399) ([nk-tedo-001](https://github.com/nk-tedo-001))
+- Fix FastHttpUser crash on Python 3.13+ due to GC collecting \_\_dict\_\_ reference cycle [\#3398](https://github.com/locustio/locust/pull/3398) ([armorbreak001](https://github.com/armorbreak001))
+- fix\(fasthttp\): catch FAILURE\_EXCEPTIONS during response body read [\#3397](https://github.com/locustio/locust/pull/3397) ([jorgetamayo21](https://github.com/jorgetamayo21))
+
+## [2.43.4](https://github.com/locustio/locust/tree/2.43.4) (2026-04-01)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.43.3...2.43.4)
+
+**Fixed bugs:**
+
+- HTML report uses current\_rps instead of total\_rps for req/s column [\#3355](https://github.com/locustio/locust/issues/3355)
+- Using --processes with --print-stats causes all workers to print stats [\#3352](https://github.com/locustio/locust/issues/3352)
+- Docker image does not have OTEL libraries installed [\#3309](https://github.com/locustio/locust/issues/3309)
+
+**Merged pull requests:**
+
+- fix: use total\_rps instead of current\_rps in HTML report and navbar stats [\#3384](https://github.com/locustio/locust/pull/3384) ([juliosuas](https://github.com/juliosuas))
+- Fix false "--run-time limit reached" log message when shape test completes [\#3382](https://github.com/locustio/locust/pull/3382) ([Krishnachaitanyakc](https://github.com/Krishnachaitanyakc))
+- Fix typos in docs, docstrings, and UI string [\#3381](https://github.com/locustio/locust/pull/3381) ([r266-tech](https://github.com/r266-tech))
+- Add locust-otel Docker image with OpenTelemetry dependencies [\#3379](https://github.com/locustio/locust/pull/3379) ([eyupcanakman](https://github.com/eyupcanakman))
+- Bump the vite group across 1 directory with 3 updates [\#3375](https://github.com/locustio/locust/pull/3375) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Improve Type Hinting for Wait Time Functions [\#3374](https://github.com/locustio/locust/pull/3374) ([abstract-333](https://github.com/abstract-333))
+- Extract response time bucketing into an overridable function [\#3373](https://github.com/locustio/locust/pull/3373) ([thessem](https://github.com/thessem))
+- Bump typescript from 5.7.2 to 5.9.3 in /locust/webui [\#3367](https://github.com/locustio/locust/pull/3367) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the vite group in /locust/webui with 2 updates [\#3364](https://github.com/locustio/locust/pull/3364) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the eslint group in /locust/webui with 8 updates [\#3363](https://github.com/locustio/locust/pull/3363) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump qdrant-client from 1.16.2 to 1.17.0 [\#3362](https://github.com/locustio/locust/pull/3362) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump sphinxcontrib-serializinghtml from 1.1.10 to 2.0.0 [\#3361](https://github.com/locustio/locust/pull/3361) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump sphinxcontrib-htmlhelp from 2.0.1 to 2.1.0 [\#3359](https://github.com/locustio/locust/pull/3359) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump snowballstemmer from 2.2.0 to 3.0.1 [\#3358](https://github.com/locustio/locust/pull/3358) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the all\_dependencies group with 2 updates [\#3356](https://github.com/locustio/locust/pull/3356) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Add Qdrant support [\#3354](https://github.com/locustio/locust/pull/3354) ([Anush008](https://github.com/Anush008))
+- Unset print\_stats on workers created by --processes option [\#3353](https://github.com/locustio/locust/pull/3353) ([markogle](https://github.com/markogle))
+- adding mqtt user feature that works around the paho mqtt 340 connections limit issue [\#3268](https://github.com/locustio/locust/pull/3268) ([ionutab](https://github.com/ionutab))
+
+## [2.43.3](https://github.com/locustio/locust/tree/2.43.3) (2026-02-12)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.43.2...2.43.3)
+
+**Closed issues:**
+
+- Documentation Improvement - Event hooks [\#3338](https://github.com/locustio/locust/issues/3338)
+
+**Merged pull requests:**
+
+- Bump diff from 8.0.2 to 8.0.3 in /locust/webui [\#3349](https://github.com/locustio/locust/pull/3349) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump lodash from 4.17.21 to 4.17.23 in /locust/webui [\#3348](https://github.com/locustio/locust/pull/3348) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump cryptography from 43.0.3 to 46.0.5 [\#3347](https://github.com/locustio/locust/pull/3347) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump tar from 7.4.3 to 7.5.7 in /locust/webui [\#3346](https://github.com/locustio/locust/pull/3346) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @isaacs/brace-expansion from 5.0.0 to 5.0.1 in /locust/webui [\#3345](https://github.com/locustio/locust/pull/3345) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Add missing event hook parameter documentation [\#3344](https://github.com/locustio/locust/pull/3344) ([veeceey](https://github.com/veeceey))
+
+## [2.43.2](https://github.com/locustio/locust/tree/2.43.2) (2026-02-01)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.43.1...2.43.2)
+
+**Merged pull requests:**
+
+- Bump flask-cors from 6.0.1 to 6.0.2 [\#3343](https://github.com/locustio/locust/pull/3343) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump hatch from 1.16.2 to 1.16.3 [\#3342](https://github.com/locustio/locust/pull/3342) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump werkzeug from 3.1.4 to 3.1.5 [\#3341](https://github.com/locustio/locust/pull/3341) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump opentelemetry-exporter-otlp-proto-grpc from 1.39.0 to 1.39.1 [\#3340](https://github.com/locustio/locust/pull/3340) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump sphinx-rtd-theme from 3.0.2 to 3.1.0 [\#3339](https://github.com/locustio/locust/pull/3339) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update operator docs [\#3333](https://github.com/locustio/locust/pull/3333) ([amadeuppereira](https://github.com/amadeuppereira))
+
+## [2.43.1](https://github.com/locustio/locust/tree/2.43.1) (2026-01-12)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.43.0...2.43.1)
+
+**Merged pull requests:**
+
+- Bump packages [\#3331](https://github.com/locustio/locust/pull/3331) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Stabilize tests [\#3326](https://github.com/locustio/locust/pull/3326) ([amadeuppereira](https://github.com/amadeuppereira))
+- Stabilize tests [\#3325](https://github.com/locustio/locust/pull/3325) ([amadeuppereira](https://github.com/amadeuppereira))
+- Bump @emotion/styled from 11.14.0 to 11.14.1 in /locust/webui in the emotion group [\#3322](https://github.com/locustio/locust/pull/3322) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the eslint group in /locust/webui with 5 updates [\#3319](https://github.com/locustio/locust/pull/3319) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the all\_dependencies group with 2 updates [\#3318](https://github.com/locustio/locust/pull/3318) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [2.43.0](https://github.com/locustio/locust/tree/2.43.0) (2025-12-30)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.42.6...2.43.0)
+
+**Closed issues:**
+
+- Support for requests \>=2.32.5 \(compatibility with LangChain/AI ecosystem\) [\#3307](https://github.com/locustio/locust/issues/3307)
+- Multiple select in web UI for custom arguments [\#3260](https://github.com/locustio/locust/issues/3260)
+- Suggestion to Add  "iter\_lines"  Support for  "FastHttpUser"  in Locust [\#3018](https://github.com/locustio/locust/issues/3018)
+
+**Merged pull requests:**
+
+- Provide a better error message when spawn rate is set to zero [\#3317](https://github.com/locustio/locust/pull/3317) ([amadeuppereira](https://github.com/amadeuppereira))
+- Support requests\>=2.32.5, reimplement the fix previously there for only loading ssl certificates once [\#3316](https://github.com/locustio/locust/pull/3316) ([amadeuppereira](https://github.com/amadeuppereira))
+- Remove references to locust.cloud now that it is shutting down [\#3314](https://github.com/locustio/locust/pull/3314) ([amadeuppereira](https://github.com/amadeuppereira))
+- Allow users to stop test run by raising StopTest, use it on missing host in locustfile \(and no --host param\) [\#3313](https://github.com/locustio/locust/pull/3313) ([amadeuppereira](https://github.com/amadeuppereira))
+- Locust Cloud demo tab: update domain from auth.locust.cloud to app.locust.cloud [\#3312](https://github.com/locustio/locust/pull/3312) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Solving the iter\_lines problem [\#3311](https://github.com/locustio/locust/pull/3311) ([MasterKey-Pro](https://github.com/MasterKey-Pro))
+- Refactor parse\_options [\#3310](https://github.com/locustio/locust/pull/3310) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Capture stacktrace on KeyboardInterrupt on greenlets [\#3306](https://github.com/locustio/locust/pull/3306) ([amadeuppereira](https://github.com/amadeuppereira))
+- Bump js-yaml from 4.1.0 to 4.1.1 in /locust/webui [\#3305](https://github.com/locustio/locust/pull/3305) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump glob from 10.4.5 to 10.5.0 in /locust/webui [\#3304](https://github.com/locustio/locust/pull/3304) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [2.42.6](https://github.com/locustio/locust/tree/2.42.6) (2025-11-29)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.42.5...2.42.6)
+
+**Fixed bugs:**
+
+- After Locust upgrade, parameter 'headless = true' in conf file does not work as expected. [\#3225](https://github.com/locustio/locust/issues/3225)
+
+**Merged pull requests:**
+
+- Don't import pytest unless it is really needed, to speed up startup [\#3302](https://github.com/locustio/locust/pull/3302) ([cyberw](https://github.com/cyberw))
+- refactor case statements and update to use 3.10 set syntax [\#3301](https://github.com/locustio/locust/pull/3301) ([cyberw](https://github.com/cyberw))
+- Update OTel setup [\#3300](https://github.com/locustio/locust/pull/3300) ([amadeuppereira](https://github.com/amadeuppereira))
+- Use match-case instead of gigantic if-elif statement when handling zmq messages in master-worker communication [\#3299](https://github.com/locustio/locust/pull/3299) ([cyberw](https://github.com/cyberw))
+- Add OTel documentation [\#3298](https://github.com/locustio/locust/pull/3298) ([amadeuppereira](https://github.com/amadeuppereira))
+- Improve tests [\#3297](https://github.com/locustio/locust/pull/3297) ([amadeuppereira](https://github.com/amadeuppereira))
+- Log duplicate client\_ready messages as debug instead of info level [\#3296](https://github.com/locustio/locust/pull/3296) ([cyberw](https://github.com/cyberw))
+- Add otel unit tests [\#3295](https://github.com/locustio/locust/pull/3295) ([amadeuppereira](https://github.com/amadeuppereira))
+- Only log "OpenTelemetry enabled" message when success [\#3294](https://github.com/locustio/locust/pull/3294) ([amadeuppereira](https://github.com/amadeuppereira))
+- Fix Toml Parser Being Called on Conf Files [\#3293](https://github.com/locustio/locust/pull/3293) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- GH Actions: Bump actions/checkout from 5 to 6 in the all\_dependencies group [\#3287](https://github.com/locustio/locust/pull/3287) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [2.42.5](https://github.com/locustio/locust/tree/2.42.5) (2025-11-20)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.42.4...2.42.5)
+
+**Merged pull requests:**
+
+- Log when otel is enabled [\#3284](https://github.com/locustio/locust/pull/3284) ([amadeuppereira](https://github.com/amadeuppereira))
+
+## [2.42.4](https://github.com/locustio/locust/tree/2.42.4) (2025-11-20)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.42.3...2.42.4)
+
+**Closed issues:**
+
+- bumb pytest to support 9.x [\#3262](https://github.com/locustio/locust/issues/3262)
+
+**Merged pull requests:**
+
+- Avoid duplicated action run on pull requests [\#3282](https://github.com/locustio/locust/pull/3282) ([jairhenrique](https://github.com/jairhenrique))
+- Forward explicitly set request name to OTEL span [\#3281](https://github.com/locustio/locust/pull/3281) ([amadeuppereira](https://github.com/amadeuppereira))
+- Verbose request span name [\#3279](https://github.com/locustio/locust/pull/3279) ([amadeuppereira](https://github.com/amadeuppereira))
+- Add OpenTelemetry flag [\#3278](https://github.com/locustio/locust/pull/3278) ([amadeuppereira](https://github.com/amadeuppereira))
+- Disable uv.lock check in GH action [\#3277](https://github.com/locustio/locust/pull/3277) ([cyberw](https://github.com/cyberw))
+- Add otlp http exporter dependency [\#3276](https://github.com/locustio/locust/pull/3276) ([amadeuppereira](https://github.com/amadeuppereira))
+- Add OpenTelemetry support [\#3275](https://github.com/locustio/locust/pull/3275) ([amadeuppereira](https://github.com/amadeuppereira))
+- Bump the eslint group in /locust/webui with 11 updates [\#3270](https://github.com/locustio/locust/pull/3270) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Includes npm and uv on dependabot file [\#3269](https://github.com/locustio/locust/pull/3269) ([jairhenrique](https://github.com/jairhenrique))
+- Enables FURB ruff lint [\#3265](https://github.com/locustio/locust/pull/3265) ([jairhenrique](https://github.com/jairhenrique))
+- Updates pytest dependency range [\#3263](https://github.com/locustio/locust/pull/3263) ([jairhenrique](https://github.com/jairhenrique))
+- Allow multiple dropdown in Web UI [\#3261](https://github.com/locustio/locust/pull/3261) ([jFompe](https://github.com/jFompe))
+
+## [2.42.3](https://github.com/locustio/locust/tree/2.42.3) (2025-11-15)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.42.2...2.42.3)
+
+**Merged pull requests:**
+
+- Bump the all\_dependencies group with 7 updates [\#3266](https://github.com/locustio/locust/pull/3266) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Creates dependabot file to keep gh actions updated [\#3264](https://github.com/locustio/locust/pull/3264) ([jairhenrique](https://github.com/jairhenrique))
+- GH Actions: update uv version, ensure uv.lock doesn't contain anything not in pyproject.toml [\#3259](https://github.com/locustio/locust/pull/3259) ([cyberw](https://github.com/cyberw))
+- Fix single line .conf files incorrectly being treated as toml [\#3257](https://github.com/locustio/locust/pull/3257) ([cyberw](https://github.com/cyberw))
+
+## [2.42.2](https://github.com/locustio/locust/tree/2.42.2) (2025-11-06)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.42.1...2.42.2)
+
+**Merged pull requests:**
+
+- Bump locust-cloud version, fixing an issue with .conf-files [\#3256](https://github.com/locustio/locust/pull/3256) ([cyberw](https://github.com/cyberw))
+- Revert "modified ui\_extra\_args\_dict function to pick arguments" [\#3255](https://github.com/locustio/locust/pull/3255) ([cyberw](https://github.com/cyberw))
+- Update uv.lock [\#3254](https://github.com/locustio/locust/pull/3254) ([cyberw](https://github.com/cyberw))
+- remove setuptools from dependencies [\#3253](https://github.com/locustio/locust/pull/3253) ([dotlambda](https://github.com/dotlambda))
+- fix: MQTT client\_id and protocol not passed down to Client [\#3252](https://github.com/locustio/locust/pull/3252) ([ionutab](https://github.com/ionutab))
+
+## [2.42.1](https://github.com/locustio/locust/tree/2.42.1) (2025-10-27)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.42.0...2.42.1)
+
+**Merged pull requests:**
+
+- Add VS Code Extension and k8s operator to documentation [\#3251](https://github.com/locustio/locust/pull/3251) ([cyberw](https://github.com/cyberw))
+- Bump vite from 6.3.5 to 6.4.1 in /locust/webui [\#3249](https://github.com/locustio/locust/pull/3249) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bumped the gRPC example server’s worker pool to 100 [\#3248](https://github.com/locustio/locust/pull/3248) ([sonianuj287](https://github.com/sonianuj287))
+- modified ui\_extra\_args\_dict function to pick arguments [\#3245](https://github.com/locustio/locust/pull/3245) ([sonianuj287](https://github.com/sonianuj287))
+
+## [2.42.0](https://github.com/locustio/locust/tree/2.42.0) (2025-10-17)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.41.6...2.42.0)
+
+**Fixed bugs:**
+
+- Extend Locust UI with new tab does not work [\#3240](https://github.com/locustio/locust/issues/3240)
+- Reset button not working after stopping the run [\#3197](https://github.com/locustio/locust/issues/3197)
+
+**Merged pull requests:**
+
+- Avoid using most recent python-requests because it may introduce performance issues [\#3244](https://github.com/locustio/locust/pull/3244) ([cyberw](https://github.com/cyberw))
+- Introduce DNSUser [\#3243](https://github.com/locustio/locust/pull/3243) ([cyberw](https://github.com/cyberw))
+- Fix reset button not working after stopping the run [\#3238](https://github.com/locustio/locust/pull/3238) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Added readme badge for supported python versions [\#3237](https://github.com/locustio/locust/pull/3237) ([Nirzak](https://github.com/Nirzak))
+- loosen dependency on gevent [\#3236](https://github.com/locustio/locust/pull/3236) ([bollwyvl](https://github.com/bollwyvl))
+
+## [2.41.6](https://github.com/locustio/locust/tree/2.41.6) (2025-10-10)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.41.5...2.41.6)
+
+**Merged pull requests:**
+
+- Officially support Python 3.14 and test it [\#3235](https://github.com/locustio/locust/pull/3235) ([cyberw](https://github.com/cyberw))
+
+## [2.41.5](https://github.com/locustio/locust/tree/2.41.5) (2025-10-06)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.41.4...2.41.5)
+
+**Merged pull requests:**
+
+- Use www host instead of bare locust.cloud in examples and tests [\#3234](https://github.com/locustio/locust/pull/3234) ([cyberw](https://github.com/cyberw))
+
+## [2.41.4](https://github.com/locustio/locust/tree/2.41.4) (2025-10-06)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.41.3...2.41.4)
+
+**Merged pull requests:**
+
+- Fix Unsafe Template Arg [\#3232](https://github.com/locustio/locust/pull/3232) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.41.3](https://github.com/locustio/locust/tree/2.41.3) (2025-10-01)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.41.2...2.41.3)
+
+**Merged pull requests:**
+
+- Make workers correctly ignore the --run-time flag [\#3230](https://github.com/locustio/locust/pull/3230) ([cyberw](https://github.com/cyberw))
+- Enhance MilvusUser constructor to support additional collection parameters [\#3229](https://github.com/locustio/locust/pull/3229) ([zhuwenxing](https://github.com/zhuwenxing))
+
+## [2.41.2](https://github.com/locustio/locust/tree/2.41.2) (2025-09-29)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.41.1...2.41.2)
+
+**Fixed bugs:**
+
+- Locust pytest plugin option '--host' conflicts with common user options; suggest renaming to '--locust-host' [\#3227](https://github.com/locustio/locust/issues/3227)
+
+**Merged pull requests:**
+
+- Pytest plugin: Workaround issue with potential duplicate --host argument definition [\#3228](https://github.com/locustio/locust/pull/3228) ([cyberw](https://github.com/cyberw))
+- Fix Alignment of View Column Selector [\#3226](https://github.com/locustio/locust/pull/3226) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.41.1](https://github.com/locustio/locust/tree/2.41.1) (2025-09-25)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.41.0...2.41.1)
+
+## [2.41.0](https://github.com/locustio/locust/tree/2.41.0) (2025-09-25)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.40.5...2.41.0)
+
+**Fixed bugs:**
+
+- Master doesn't distribute user equally among workers [\#3209](https://github.com/locustio/locust/issues/3209)
+
+**Merged pull requests:**
+
+- Suggest possibly misspelled command line arguments \(Did you mean ...\) [\#3224](https://github.com/locustio/locust/pull/3224) ([cyberw](https://github.com/cyberw))
+- Add Locust Feedback Form [\#3223](https://github.com/locustio/locust/pull/3223) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Add MqttUser [\#3216](https://github.com/locustio/locust/pull/3216) ([ionutab](https://github.com/ionutab))
+
+## [2.40.5](https://github.com/locustio/locust/tree/2.40.5) (2025-09-17)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.40.4...2.40.5)
+
+**Merged pull requests:**
+
+- Avoid wrapping fast response in response context manager when not needed [\#3222](https://github.com/locustio/locust/pull/3222) ([cyberw](https://github.com/cyberw))
+
+## [2.40.4](https://github.com/locustio/locust/tree/2.40.4) (2025-09-11)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.40.3...2.40.4)
+
+**Merged pull requests:**
+
+- Avoid pytest style locustfiles capturing keyboard input [\#3219](https://github.com/locustio/locust/pull/3219) ([cyberw](https://github.com/cyberw))
+
+## [2.40.3](https://github.com/locustio/locust/tree/2.40.3) (2025-09-11)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.40.2...2.40.3)
+
+**Merged pull requests:**
+
+- Bump requests minimum version [\#3218](https://github.com/locustio/locust/pull/3218) ([cyberw](https://github.com/cyberw))
+- Make ResponseContextManager.raise\_for\_status\(\) consider calls to failure\(\) and success\(\) [\#3217](https://github.com/locustio/locust/pull/3217) ([cyberw](https://github.com/cyberw))
+
+## [2.40.2](https://github.com/locustio/locust/tree/2.40.2) (2025-09-08)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.40.1...2.40.2)
+
+**Fixed bugs:**
+
+- Python 3.13: KeyError: 'name' on request\_meta in ResponseContextManager.\_\_exit\_\_ [\#3207](https://github.com/locustio/locust/issues/3207)
+
+**Merged pull requests:**
+
+- Refactor SocketIOUser to create separate SocketIOClient class [\#3211](https://github.com/locustio/locust/pull/3211) ([cyberw](https://github.com/cyberw))
+- Refactor clients.ResponseContextManager and fix gc issue [\#3210](https://github.com/locustio/locust/pull/3210) ([cyberw](https://github.com/cyberw))
+
+## [2.40.1](https://github.com/locustio/locust/tree/2.40.1) (2025-09-05)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.40.0...2.40.1)
+
+**Fixed bugs:**
+
+- 2.40.0 with pytest and xdist [\#3202](https://github.com/locustio/locust/issues/3202)
+
+**Merged pull requests:**
+
+- Move pytest plugin to its own directory, to prevent accidental import [\#3205](https://github.com/locustio/locust/pull/3205) ([cyberw](https://github.com/cyberw))
+- Pytest plugin: Delay imports to avoid monkey patching until someone uses the fixtures [\#3204](https://github.com/locustio/locust/pull/3204) ([cyberw](https://github.com/cyberw))
+
+## [2.40.0](https://github.com/locustio/locust/tree/2.40.0) (2025-09-04)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.39.1...2.40.0)
+
+**Fixed bugs:**
+
+- HTTP response 0 [\#3199](https://github.com/locustio/locust/issues/3199)
+
+**Merged pull requests:**
+
+- Avoid exception in HttpUser if requests has lost track of the request it made [\#3201](https://github.com/locustio/locust/pull/3201) ([cyberw](https://github.com/cyberw))
+- Support pytests as locustfiles [\#3200](https://github.com/locustio/locust/pull/3200) ([cyberw](https://github.com/cyberw))
+- Refactor FastHttpSession to be more like HttpSession [\#3198](https://github.com/locustio/locust/pull/3198) ([cyberw](https://github.com/cyberw))
+- Update Dockerfile base to Python 3.13 [\#3193](https://github.com/locustio/locust/pull/3193) ([adaamz](https://github.com/adaamz))
+
+## [2.39.1](https://github.com/locustio/locust/tree/2.39.1) (2025-08-29)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.39.0...2.39.1)
+
+**Merged pull requests:**
+
+- Avoid broken gevent version for now [\#3196](https://github.com/locustio/locust/pull/3196) ([cyberw](https://github.com/cyberw))
+- Remove duplicated line in pyproject.toml [\#3195](https://github.com/locustio/locust/pull/3195) ([JumboBear](https://github.com/JumboBear))
+
+## [2.39.0](https://github.com/locustio/locust/tree/2.39.0) (2025-08-19)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.38.1...2.39.0)
+
+**Merged pull requests:**
+
+- Add SocketIOUser [\#3189](https://github.com/locustio/locust/pull/3189) ([cyberw](https://github.com/cyberw))
+- Add MilvusUser and example [\#3168](https://github.com/locustio/locust/pull/3168) ([zhuwenxing](https://github.com/zhuwenxing))
+
+## [2.38.1](https://github.com/locustio/locust/tree/2.38.1) (2025-08-12)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.38.0...2.38.1)
+
+**Closed issues:**
+
+- Support for markov chains to describe a user's behavior [\#3156](https://github.com/locustio/locust/issues/3156)
+- Switch docker base image to one with uv preinstalled [\#3061](https://github.com/locustio/locust/issues/3061)
+
+**Merged pull requests:**
+
+- FastHttpUser: Dont send zstd in Accept-Encoding header  [\#3188](https://github.com/locustio/locust/pull/3188) ([cyberw](https://github.com/cyberw))
+- Fix test flakyness and update error message [\#3187](https://github.com/locustio/locust/pull/3187) ([amadeuppereira](https://github.com/amadeuppereira))
+
+## [2.38.0](https://github.com/locustio/locust/tree/2.38.0) (2025-08-07)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.14...2.38.0)
+
+**Fixed bugs:**
+
+- Failures table sorting is reset to ascending after a few seconds [\#3184](https://github.com/locustio/locust/issues/3184)
+- argparse.ArgumentError: argument --profile: conflicting option string: --profile \(locust==2.37.14\) [\#3180](https://github.com/locustio/locust/issues/3180)
+
+**Merged pull requests:**
+
+- Webui: Fix useSortByField [\#3185](https://github.com/locustio/locust/pull/3185) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Optimize unit tests [\#3183](https://github.com/locustio/locust/pull/3183) ([amadeuppereira](https://github.com/amadeuppereira))
+- Support for list based custom arguments [\#3181](https://github.com/locustio/locust/pull/3181) ([mickdwyer](https://github.com/mickdwyer))
+- Bump form-data from 4.0.0 to 4.0.4 in /locust/webui [\#3179](https://github.com/locustio/locust/pull/3179) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Webui: Hide no Host Warning when one is Provided [\#3177](https://github.com/locustio/locust/pull/3177) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Add MarkovTaskSet [\#3176](https://github.com/locustio/locust/pull/3176) ([Matthieu-Beauchamp](https://github.com/Matthieu-Beauchamp))
+- Add yarn lint precommit [\#3175](https://github.com/locustio/locust/pull/3175) ([cyberw](https://github.com/cyberw))
+
+## [2.37.14](https://github.com/locustio/locust/tree/2.37.14) (2025-07-16)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.13...2.37.14)
+
+**Merged pull requests:**
+
+- Web UI: Fix Chart Zoom Slider [\#3174](https://github.com/locustio/locust/pull/3174) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Web UI: Improve Locust Cloud Tab [\#3172](https://github.com/locustio/locust/pull/3172) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.37.13](https://github.com/locustio/locust/tree/2.37.13) (2025-07-15)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.12...2.37.13)
+
+**Fixed bugs:**
+
+- Locust can't install on alpine linux anymore [\#3166](https://github.com/locustio/locust/issues/3166)
+
+**Closed issues:**
+
+- Decouple the JavaScript asset code from the report [\#3064](https://github.com/locustio/locust/issues/3064)
+
+**Merged pull requests:**
+
+- Remove safe\_name from /stats/requests response [\#3171](https://github.com/locustio/locust/pull/3171) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Web UI: Shrink Bundle Size [\#3169](https://github.com/locustio/locust/pull/3169) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.37.12](https://github.com/locustio/locust/tree/2.37.12) (2025-07-08)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.11...2.37.12)
+
+**Fixed bugs:**
+
+- Error shutting down when using processes [\#3161](https://github.com/locustio/locust/issues/3161)
+- 1279 Locust instances makes master run at 100% continously [\#3142](https://github.com/locustio/locust/issues/3142)
+
+**Merged pull requests:**
+
+- Attempt to increase open file limit \(RLIMIT\_NOFILE\) even on master. [\#3162](https://github.com/locustio/locust/pull/3162) ([cyberw](https://github.com/cyberw))
+- Bump brace-expansion from 1.1.11 to 1.1.12 in /locust/webui [\#3160](https://github.com/locustio/locust/pull/3160) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [2.37.11](https://github.com/locustio/locust/tree/2.37.11) (2025-06-23)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.10...2.37.11)
+
+**Fixed bugs:**
+
+- FastHttpUser uses incorrect regex to hide home directory [\#3159](https://github.com/locustio/locust/issues/3159)
+
+**Closed issues:**
+
+- Define a list of paths to simulate an user journey [\#3150](https://github.com/locustio/locust/issues/3150)
+- export the results as a json file [\#3089](https://github.com/locustio/locust/issues/3089)
+
+**Merged pull requests:**
+
+- Forward locustfiles to locust cloud [\#3157](https://github.com/locustio/locust/pull/3157) ([amadeuppereira](https://github.com/amadeuppereira))
+- Web UI: Always Warn of Invalid Host [\#3155](https://github.com/locustio/locust/pull/3155) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.37.10](https://github.com/locustio/locust/tree/2.37.10) (2025-06-07)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.9...2.37.10)
+
+**Merged pull requests:**
+
+- Revert accidental removal of --json-file option [\#3154](https://github.com/locustio/locust/pull/3154) ([brtkwr](https://github.com/brtkwr))
+
+## [2.37.9](https://github.com/locustio/locust/tree/2.37.9) (2025-06-05)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.8...2.37.9)
+
+**Merged pull requests:**
+
+- Web UI: Fix host field name missing if host is not required [\#3152](https://github.com/locustio/locust/pull/3152) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.37.8](https://github.com/locustio/locust/tree/2.37.8) (2025-06-05)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.7...2.37.8)
+
+**Closed issues:**
+
+- Support gevent \>= 25.4.1 [\#3143](https://github.com/locustio/locust/issues/3143)
+
+**Merged pull requests:**
+
+- Bump locust-cloud dependency, allow 25.x versions of gevent [\#3151](https://github.com/locustio/locust/pull/3151) ([cyberw](https://github.com/cyberw))
+
+## [2.37.7](https://github.com/locustio/locust/tree/2.37.7) (2025-06-03)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.6...2.37.7)
+
+**Merged pull requests:**
+
+- Web Ui: Add host field validation [\#3149](https://github.com/locustio/locust/pull/3149) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.37.6](https://github.com/locustio/locust/tree/2.37.6) (2025-05-28)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.5...2.37.6)
+
+**Fixed bugs:**
+
+- Documentation is Now Missing Table of "All available configuration options" [\#3144](https://github.com/locustio/locust/issues/3144)
+
+**Merged pull requests:**
+
+- Fix Docs Config Options [\#3145](https://github.com/locustio/locust/pull/3145) ([amadeuppereira](https://github.com/amadeuppereira))
+
+## [2.37.5](https://github.com/locustio/locust/tree/2.37.5) (2025-05-22)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.4...2.37.5)
+
+**Fixed bugs:**
+
+- Web UI Does Not Switch to Details Page Immediately on Test Start in Current Version [\#3128](https://github.com/locustio/locust/issues/3128)
+
+**Merged pull requests:**
+
+- Do not require locustfile on specific locust-cloud arguments [\#3141](https://github.com/locustio/locust/pull/3141) ([amadeuppereira](https://github.com/amadeuppereira))
+
+## [2.37.4](https://github.com/locustio/locust/tree/2.37.4) (2025-05-19)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.3...2.37.4)
+
+## [2.37.3](https://github.com/locustio/locust/tree/2.37.3) (2025-05-14)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.2...2.37.3)
+
+**Merged pull requests:**
+
+- Webui: Warn on Missing Host [\#3140](https://github.com/locustio/locust/pull/3140) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.37.2](https://github.com/locustio/locust/tree/2.37.2) (2025-05-13)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.1...2.37.2)
+
+**Fixed bugs:**
+
+- p95 response time increases with the number of unique URLs [\#3134](https://github.com/locustio/locust/issues/3134)
+- FastResponse.failure\(\) takes 1 positional argument but 2 were given [\#3084](https://github.com/locustio/locust/issues/3084)
+
+**Merged pull requests:**
+
+- Webui: Block Submitting SwarmForm in Distributed Mode with no Workers [\#3138](https://github.com/locustio/locust/pull/3138) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Fixes \#3134 - Improve the performance of the `/stats/requests` endpoint [\#3136](https://github.com/locustio/locust/pull/3136) ([orf](https://github.com/orf))
+- Bump vite from 6.3.2 to 6.3.4 in /locust/webui [\#3132](https://github.com/locustio/locust/pull/3132) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [2.37.1](https://github.com/locustio/locust/tree/2.37.1) (2025-05-07)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.37.0...2.37.1)
+
+**Fixed bugs:**
+
+- --json-file always creates empty file [\#3130](https://github.com/locustio/locust/issues/3130)
+
+**Closed issues:**
+
+- Forced Dependency Updates \(e.g., python-socketio\) May Cause Version Mismatch with Java Services [\#3129](https://github.com/locustio/locust/issues/3129)
+
+**Merged pull requests:**
+
+- Fix --json-file \(actually save data to file\) [\#3131](https://github.com/locustio/locust/pull/3131) ([zed](https://github.com/zed))
+
+## [2.37.0](https://github.com/locustio/locust/tree/2.37.0) (2025-05-05)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.36.2...2.37.0)
+
+**Merged pull requests:**
+
+- Webui: Fix Failing Tests [\#3126](https://github.com/locustio/locust/pull/3126) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Update uv to 0.7.2 [\#3125](https://github.com/locustio/locust/pull/3125) ([cyberw](https://github.com/cyberw))
+- Add command line option to export json results into a file [\#3124](https://github.com/locustio/locust/pull/3124) ([ajt89](https://github.com/ajt89))
+- Add locust exporter import \(used in Locust Cloud\) [\#3122](https://github.com/locustio/locust/pull/3122) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- fix error message to be idiomatically correct English [\#3121](https://github.com/locustio/locust/pull/3121) ([davidxia](https://github.com/davidxia))
+- Web UI: Use mutations for state buttons [\#3120](https://github.com/locustio/locust/pull/3120) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.36.2](https://github.com/locustio/locust/tree/2.36.2) (2025-04-25)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.36.1...2.36.2)
+
+**Merged pull requests:**
+
+- Remove circular dependency for locust-cloud [\#3119](https://github.com/locustio/locust/pull/3119) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.36.1](https://github.com/locustio/locust/tree/2.36.1) (2025-04-24)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.36.0...2.36.1)
+
+**Merged pull requests:**
+
+- Fix setting version for tag and pre-release [\#3118](https://github.com/locustio/locust/pull/3118) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+
+## [2.36.0](https://github.com/locustio/locust/tree/2.36.0) (2025-04-24)
+
+[Full Changelog](https://github.com/locustio/locust/compare/2.35.0...2.36.0)
+
+**Merged pull requests:**
+
+- Bump locust-cloud dependency to 1.20.0 and remove it from docs dependencies [\#3117](https://github.com/locustio/locust/pull/3117) ([cyberw](https://github.com/cyberw))
+- Fix yarn publish [\#3116](https://github.com/locustio/locust/pull/3116) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Web Ui: Ensure form element has name [\#3115](https://github.com/locustio/locust/pull/3115) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Web UI: Add profile field [\#3113](https://github.com/locustio/locust/pull/3113) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Restrict gevent versions to ensure compatibility [\#3112](https://github.com/locustio/locust/pull/3112) ([amadeuppereira](https://github.com/amadeuppereira))
+- Bump vite [\#3111](https://github.com/locustio/locust/pull/3111) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Web UI: Optionally Extend Advanced Options [\#3110](https://github.com/locustio/locust/pull/3110) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Yarn Berry: Update publish command [\#3108](https://github.com/locustio/locust/pull/3108) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- Web UI: Fix npm publish failing [\#3107](https://github.com/locustio/locust/pull/3107) ([andrewbaldwin44](https://github.com/andrewbaldwin44))
+- chore: set yarn to yarn berry [\#3104](https://github.com/locustio/locust/pull/3104) ([schwannden](https://github.com/schwannden))
+- Refactoring: Extract locustfile content merger from main function [\#3102](https://github.com/locustio/locust/pull/3102) ([insspb](https://github.com/insspb))
+- Refactoring: Extract validate stats configuration from main function [\#3101](https://github.com/locustio/locust/pull/3101) ([insspb](https://github.com/insspb))
+- Add locust-cloud as a dependency, update sphinx and some other docs stuff [\#3097](https://github.com/locustio/locust/pull/3097) ([amadeuppereira](https://github.com/amadeuppereira))
+
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*

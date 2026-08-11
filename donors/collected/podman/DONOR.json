@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "podman",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "62fb8a3a9621dc2388174caaabe9c2317b694bb9a1d46c98bcf5655b68f51be3",
+  "license_verified": true,
+  "purpose": "Open source container and sandbox runtime",
+  "readme_file": "README.md",
+  "readme_sha256": "a4bd359952bca78617cd03900fc27da6f16028fae7acc88628100254b32bcf5e",
+  "ref": "main",
+  "repo": "containers/podman",
+  "resolved_commit": "6394caebcd2671aa511c82f2647995564efd0070",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/containers/podman/archive/6394caebcd2671aa511c82f2647995564efd0070.tar.gz",
+  "status": "collected"
+}

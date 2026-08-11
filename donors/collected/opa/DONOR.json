@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "opa",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+  "license_verified": true,
+  "purpose": "PolicyGuard policy engine",
+  "readme_file": "README.md",
+  "readme_sha256": "bae5f346ae825a0ef50a6ca32ccf2e1cdb78b2e426f51a61db849f0710c356b8",
+  "ref": "main",
+  "repo": "open-policy-agent/opa",
+  "resolved_commit": "922cf80223f584d6ee89d9ee6c78259f18ff0392",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/open-policy-agent/opa/archive/922cf80223f584d6ee89d9ee6c78259f18ff0392.tar.gz",
+  "status": "collected"
+}

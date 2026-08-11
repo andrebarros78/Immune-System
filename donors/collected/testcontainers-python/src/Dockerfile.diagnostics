@@ -1,0 +1,7 @@
+ARG version=3.8
+FROM python:${version}
+
+WORKDIR /workspace
+COPY core core
+RUN pip install --no-cache-dir -e core
+COPY scripts/diagnostics.py .

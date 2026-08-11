@@ -1,0 +1,22 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check
+        language: system
+        types_or: [python, pyi]
+        args: [--fix, --show-fixes]
+
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format
+        language: system
+        types_or: [python, pyi]
+
+      - id: yarn-lint
+        name: yarn lint
+        files: ^locust/webui/
+        entry: bash -c "cd locust/webui && yarn lint"
+        language: system
+        pass_filenames: false

@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "nats-server",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+  "license_verified": true,
+  "purpose": "Event bus and JetStream persistence",
+  "readme_file": "README.md",
+  "readme_sha256": "af1a7d8d9cc9314ac8ccaa5b851b148de1ca0a781e48a63b7204921abce0b3e6",
+  "ref": "main",
+  "repo": "nats-io/nats-server",
+  "resolved_commit": "674a7bcab30da055e3225b8e6d48ec6bb642dc6e",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/nats-io/nats-server/archive/674a7bcab30da055e3225b8e6d48ec6bb642dc6e.tar.gz",
+  "status": "collected"
+}

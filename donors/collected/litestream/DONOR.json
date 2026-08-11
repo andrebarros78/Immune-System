@@ -1,0 +1,21 @@
+{
+  "capture": "snapshot",
+  "class": "tool",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "litestream",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "license_verified": true,
+  "purpose": "SQLite continuous recovery",
+  "readme_file": "README.md",
+  "readme_sha256": "be4deb279d625f9f4bf91870c40673e4427c874f99dcd6fe1de19fb5fa7e16be",
+  "ref": "main",
+  "repo": "benbjohnson/litestream",
+  "resolved_commit": "6d61ef5d007756d62e473daee4c760ac395a55c6",
+  "snapshot": true,
+  "snapshot_bytes": 3604485,
+  "snapshot_tree_sha256": "a5f9fbd38b415fbe11486dc3a41629123339ae0b3f914bc805e78964878192e5",
+  "source_archive": "https://github.com/benbjohnson/litestream/archive/6d61ef5d007756d62e473daee4c760ac395a55c6.tar.gz",
+  "status": "collected"
+}

@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "hatchet",
+  "license": "MIT",
+  "license_file": "LICENSE",
+  "license_sha256": "7388b34bd1ad4b9db3c72dcb73f434ea27c88e5ca8f02a24d4f970c906d79be3",
+  "license_verified": true,
+  "purpose": "Queue scheduler and worker runtime candidate",
+  "readme_file": "README.md",
+  "readme_sha256": "6b77299bfdcab9f68db34568334ba068a19cd075958fee093d82fd2b1dd3abab",
+  "ref": "main",
+  "repo": "hatchet-dev/hatchet",
+  "resolved_commit": "54c9ee960169d177337745625d5cbeb882db93c0",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/hatchet-dev/hatchet/archive/54c9ee960169d177337745625d5cbeb882db93c0.tar.gz",
+  "status": "collected"
+}

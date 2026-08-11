@@ -1,0 +1,21 @@
+{
+  "capture": "snapshot",
+  "class": "agent",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "mini-swe-agent",
+  "license": "MIT",
+  "license_file": "LICENSE.md",
+  "license_sha256": "0f796e58f91d1c07bb2c1b1d0f8bf3a83017c3a5dec1bdc6fae733b2cd2e875b",
+  "license_verified": true,
+  "purpose": "Independent adversarial software repair reviewer",
+  "readme_file": "README.md",
+  "readme_sha256": "9982d90b7566f2f3fa5e9811b475d5e8e2a84e2df80cf3f1e4be6e820b129835",
+  "ref": "main",
+  "repo": "SWE-agent/mini-swe-agent",
+  "resolved_commit": "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+  "snapshot": true,
+  "snapshot_bytes": 1506905,
+  "snapshot_tree_sha256": "a2a4cfc83bd8e1f07a8d22130fce94238ad3217a46932ae2a7b4f4a54c4bbd10",
+  "source_archive": "https://github.com/SWE-agent/mini-swe-agent/archive/a83fcae82d2a08f0ee0c688f9d137b3566c097f8.tar.gz",
+  "status": "collected"
+}

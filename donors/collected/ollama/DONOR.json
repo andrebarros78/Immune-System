@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "ollama",
+  "license": "MIT",
+  "license_file": "LICENSE",
+  "license_sha256": "5934ed2ce0d15154bcdb9c85203210abac0da4314af34081e36df4599f90b226",
+  "license_verified": true,
+  "purpose": "Local model runtime candidate",
+  "readme_file": "README.md",
+  "readme_sha256": "38f94429ec63c78f2c87dc47ff2bbba91bd93edd697c638b9daa7eda3ae5adb2",
+  "ref": "main",
+  "repo": "ollama/ollama",
+  "resolved_commit": "400164d47c0e48c53dfe095bb078780947035d40",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/ollama/ollama/archive/400164d47c0e48c53dfe095bb078780947035d40.tar.gz",
+  "status": "collected"
+}

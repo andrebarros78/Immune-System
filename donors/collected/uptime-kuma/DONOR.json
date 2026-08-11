@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "uptime-kuma",
+  "license": "MIT",
+  "license_file": "LICENSE",
+  "license_sha256": "a0e4fe6bed45a817794411c8ddf2deffbe010ac3a2b2f47e5b8d2fe2f9486883",
+  "license_verified": true,
+  "purpose": "Availability dashboard and probes",
+  "readme_file": "README.md",
+  "readme_sha256": "46dfa3c6c7c4a0b889dc0add3f021e5e16b81f91ec30936a928399dc08c36135",
+  "ref": "master",
+  "repo": "louislam/uptime-kuma",
+  "resolved_commit": "41ecaf17bdda1a16285dd1f164ba67ff7ad54fd3",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/louislam/uptime-kuma/archive/41ecaf17bdda1a16285dd1f164ba67ff7ad54fd3.tar.gz",
+  "status": "collected"
+}

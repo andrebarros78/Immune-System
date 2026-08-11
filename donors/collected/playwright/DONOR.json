@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "tool",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "playwright",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb",
+  "license_verified": true,
+  "purpose": "Browser and end to end testing",
+  "readme_file": "README.md",
+  "readme_sha256": "1d5c4005905412059fc5035c86acfce1a6883279948feb60a83a0005349f4219",
+  "ref": "main",
+  "repo": "microsoft/playwright",
+  "resolved_commit": "2b1e2f67e84904b816d0ca0c8f2dcad5588d82e4",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/microsoft/playwright/archive/2b1e2f67e84904b816d0ca0c8f2dcad5588d82e4.tar.gz",
+  "status": "collected"
+}

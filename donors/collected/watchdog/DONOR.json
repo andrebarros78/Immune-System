@@ -1,0 +1,21 @@
+{
+  "capture": "snapshot",
+  "class": "library",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "watchdog",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "license_verified": true,
+  "purpose": "Filesystem event sensor",
+  "readme_file": "README.rst",
+  "readme_sha256": "cc8a7c7d3274f80844143349eac8ded8510a9a826242cf364d5e5e5e1f62abc7",
+  "ref": "master",
+  "repo": "gorakhargosh/watchdog",
+  "resolved_commit": "a0bb46c54bc26b9f62975d5d0d625d8cac82e968",
+  "snapshot": true,
+  "snapshot_bytes": 611687,
+  "snapshot_tree_sha256": "afe39f182d037c03efe34f92913a74a2c357677674054020bd7d690cc4d7d817",
+  "source_archive": "https://github.com/gorakhargosh/watchdog/archive/a0bb46c54bc26b9f62975d5d0d625d8cac82e968.tar.gz",
+  "status": "collected"
+}

@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+
+# Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+"""Show fans information.
+
+$ python fans.py
+asus
+    cpu_fan              3200 RPM
+"""
+
+import sys
+
+import psutil
+
+
+def main():
+    if not hasattr(psutil, "sensors_fans"):
+        return sys.exit("platform not supported")
+    fans = psutil.sensors_fans()
+    if not fans:
+        print("no fans detected")
+        return None
+    for name, entries in fans.items():
+        print(name)
+        for entry in entries:
+            print(f"    {entry.label or name:<20} {entry.current} RPM")
+        print()
+
+
+if __name__ == '__main__':
+    main()

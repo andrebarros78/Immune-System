@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "alertmanager",
+  "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+  "license_verified": true,
+  "purpose": "Alert grouping deduplication and routing",
+  "readme_file": "README.md",
+  "readme_sha256": "815b847f34bd84afc784d2bdf77060e3a7099da36766ac1dacfa0c76fcc5f3e5",
+  "ref": "main",
+  "repo": "prometheus/alertmanager",
+  "resolved_commit": "8d7515af74678b8a854938e5ddfef1e34d69f55e",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/prometheus/alertmanager/archive/8d7515af74678b8a854938e5ddfef1e34d69f55e.tar.gz",
+  "status": "collected"
+}

@@ -1,0 +1,324 @@
+[project]
+name = "testcontainers"
+version = "4.15.0"  # auto-incremented by release-please
+description = "Python library for throwaway instances of anything that can run in a Docker container"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-file = ["LICENSE.txt"]
+
+authors = [{ name = "Sergey Pirogov", email = "automationremarks@gmail.com" }]
+
+maintainers = [
+  { name = "Balint Bartha", email = "totallyzen@users.noreply.github.com" },
+  { name = "David Ankin", email = "daveankin@gmail.com" },
+  { name = "Vemund Santi", email = "vemund@santi.no" },
+]
+
+keywords = ["testing", "logging", "docker", "test automation"]
+
+classifiers = [
+  "License :: OSI Approved :: Apache Software License",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Operating System :: MacOS",
+]
+dependencies = [
+  "docker",
+  "urllib3",
+  "wrapt",
+  "typing-extensions",
+  "python-dotenv",
+]
+
+[project.urls]
+Homepage = "https://github.com/testcontainers/testcontainers-python"
+Repository = "https://github.com/testcontainers/testcontainers-python"
+"Issue Tracker" = "https://github.com/testcontainers/testcontainers-python/issues"
+
+[project.optional-dependencies]
+arangodb = ["python-arango>=8"]
+aws = ["boto3>=1", "httpx"]
+azurite = ["azure-storage-blob>=12"]
+cassandra = []
+clickhouse = ["clickhouse-driver"]
+cosmosdb = ["azure-cosmos>=4"]
+cockroachdb = []
+cratedb = [
+  "httpx",
+  "sqlalchemy-cratedb"
+]
+db2 = [
+  "sqlalchemy",
+  "ibm_db_sa; platform_machine != 'aarch64' and platform_machine != 'arm64'",
+]
+elasticsearch = []
+generic = [
+  "httpx",
+  "redis>=7",
+  "sqlalchemy",
+]
+test_module_import = ["httpx"]
+google = [
+  "google-cloud-pubsub>=2",
+  "google-cloud-datastore>=2",
+]
+influxdb = [
+  "influxdb>=5",
+  "influxdb-client>=1",
+]
+k3s = ["kubernetes", "pyyaml>=6.0.3"]
+kafka = []
+keycloak = ["python-keycloak>=6; python_version < '4.0'"]
+localstack = ["boto3>=1"]
+mailpit = ["cryptography"]
+memcached = []
+minio = ["minio>=7"]
+milvus = []
+mongodb = ["pymongo>=4"]
+mqtt = []
+mssql = ["sqlalchemy", "pymssql>=2"]
+mysql = ["sqlalchemy", "pymysql[rsa]>=1"]
+nats = ["nats-py>=2"]
+neo4j = ["neo4j>=6"]
+nginx = []
+openfga = ["openfga-sdk"]
+opensearch = ["opensearch-py>=3; python_version < '4.0'"]
+ollama = []
+oracle = ["sqlalchemy", "oracledb>=3"]
+oracle-free = ["sqlalchemy", "oracledb>=3"]
+postgres = []
+qdrant = ["qdrant-client>=1"]
+rabbitmq = ["pika>=1"]
+redis = ["redis>=7"]
+registry = ["bcrypt>=5"]
+selenium = ["selenium>=4"]
+scylla = ["cassandra-driver>=3; python_version < '3.14'"]
+sftp = ["cryptography"]
+valkey = []
+vault = []
+weaviate = ["weaviate-client>=4"]
+chroma = ["chromadb-client>=1"]
+trino = ["trino"]
+
+# ---------- Dependency groups (uv-friendly; avoids tool lock-in for dev/test sets) ----------
+# This structure is intentionally PEP-ish (dependency groups). uv supports it.
+[dependency-groups]
+test = [
+  "pytest>=9",
+  "pytest-asyncio>=1",
+  "pytest-cov>=7",
+  "pytest-mock>=3",
+  # TODO: Check what test requirements are really need and for which modules
+  #       Make a group for each module requiring extra deps in order to test
+  #       Each module with minimal extra depencies
+  "sqlalchemy",
+  "psycopg2-binary==2.9.11",
+  "pg8000==1.31.5",
+  "psycopg>=3",
+  "cassandra-driver>=3.30",
+  "kafka-python-ng>=2",
+  "hvac>=2; python_version < '4.0'",
+  "pymilvus>=2",
+  "paho-mqtt>=2",
+  "sqlalchemy-cockroachdb>=2",
+  "sqlalchemy-cratedb",
+  "paramiko>=4",
+  "twine>=6.2.0",
+  "anyio>=4",
+  "tomli>=2.0; python_version < '3.11'", # required for pyproject.toml tests, TODO: remove once we drop py3.10 support
+  "pytest-xdist>=3.8.0",
+]
+lint = [
+  "mypy>=1",
+  "types-paramiko>=4",
+  "ruff",
+  "pre-commit>=4",
+  "types-docker>=7.1.0.20260518",
+  "boto3-stubs-lite[boto3]",
+]
+docs = [
+  "sphinx>=8; python_version < '3.11'",
+  "sphinx>=9; python_version >= '3.11'",
+  # TODO: Remove upper bounds of mkdocs and trust the locking/updating instead
+  "mkdocs>=1.5.3,<2.0.0",
+  "mkdocs-material>=9.5.0,<10.0.0",
+  "mkdocs-markdownextradata-plugin>=0.2.6,<0.3.0",
+  "mkdocs-codeinclude-plugin>=0.2.1,<0.3.0",
+  "mkdocs-include-markdown-plugin>=7.1.8,<8.0.0",
+]
+dev = [
+    {include-group = "test"},
+    {include-group = "lint"},
+    {include-group = "docs"},
+]
+
+
+# ---------- Hatchling build configuration ----------
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+  "src/**",
+  "README.md",
+  "LICENSE*",
+  "pyproject.toml",
+]
+
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "src/testcontainers",
+]
+
+# ---------- Tool configs----------
+[tool.pytest.ini_options]
+addopts = [
+  "--tb=short",
+  "--strict-markers",
+  "--import-mode=importlib",  # https://docs.pytest.org/en/stable/explanation/goodpractices.html#choosing-a-test-layout
+]
+log_cli = true
+log_cli_level = "INFO"
+markers = [
+  "inside_docker_check: mark test to be used to validate DinD/DooD is working as expected",
+  "long_running: mark test as very long running",
+]
+filterwarnings = [
+  "ignore:The @wait_container_is_ready decorator is deprecated.*:DeprecationWarning",
+  "ignore:The wait_for function is deprecated and will be removed in a future version.*:DeprecationWarning",
+  "ignore:The wait_for_logs function with string or callable predicates is deprecated.*:DeprecationWarning",
+]
+
+[tool.coverage.run]
+relative_files = true
+source = ["testcontainers.core"]  # we only check coverage for core atm
+branch = true
+omit = ["oracle.py"]
+
+[tool.coverage.report]
+exclude_also = [
+  "pass",
+  "raise NotImplementedError",
+  "if TYPE_CHECKING:",
+  "@overload",
+]
+
+[tool.coverage.paths]
+# only consider non-community/core packages for the coverage.
+# Community packages are run conditionally anyway.
+core = [
+    "src/testcontainers/core",
+    "*/site-packages/testcontainers/core",
+    "*/dist-packages/testcontainers/core",
+]
+compose = [
+    "src/testcontainers/compose",
+    "*/site-packages/testcontainers/compose",
+    "*/dist-packages/testcontainers/compose",
+]
+concat = [
+    "src/testcontainers/cocat",
+    "*/site-packages/testcontainer/cocat",
+    "*/dist-packages/testcontainers/cocat",
+]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+  "YTT",
+  "B",
+  "A",
+  "C4",
+  "T10",
+  "T20",
+  "PT",
+  "SIM",
+  "TID",
+  "TC",
+  "I",
+  "C90",
+  "E",
+  "W",
+  "F",
+  "PGH",
+  "UP",
+  "RUF",
+]
+ignore = [
+  "E501",
+  "A004",
+  "PT011",# there are a lof broad exception catches, fix later
+  "PT012", # multiple statements in pytest.raises are okay
+  "PT030", # also broad Depecration Warnings are okay
+  "TC001","TC002","TC003" # performance effect of type-like imports is minimal
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/example_*.py" = ["T201"]
+"**/*_example.py" = ["T201"]
+"**/examples/*.py" = ["T201"]
+"tests/**" = [
+  "SIM", # we don't need simple code in tests
+  "T201", # prints are okay in tests
+  "T203",# pprint is okay in tests
+  "B017",# assert Exception is okay in tests
+  "RUF059",  # unused unpacked variables are okay in tests
+]
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
+[tool.ruff.lint.flake8-type-checking]
+strict = true
+
+[tool.ruff.lint.flake8-pytest-style]
+parametrize-names-type = "csv"
+
+[tool.mypy]
+python_version = "3.10"
+namespace_packages = true
+explicit_package_bases = true
+pretty = true
+show_error_codes = true
+warn_return_any = true
+strict = true
+mypy_path = ["src"]
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+check_untyped_defs = true
+disable_error_code = ["no-untyped-def"]
+
+[[tool.mypy.overrides]]
+module = ["pika.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["influxdb.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["cassandra.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["testcontainers.registry"]
+ignore_missing_imports = true

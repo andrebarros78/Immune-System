@@ -1,0 +1,20 @@
+{
+  "capture": "capsule",
+  "class": "service",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "temporal",
+  "license": "MIT",
+  "license_file": "LICENSE",
+  "license_sha256": "6aab9afd99ceb1dcaf6a0d91386b46baef9bce17ae4006044e0f231e31430b69",
+  "license_verified": true,
+  "purpose": "Durable workflow reference/runtime candidate",
+  "readme_file": "README.md",
+  "readme_sha256": "269838d3de5da90d4c2c0b45bf7fc745b384a5a05c0932582e923638e8994189",
+  "ref": "main",
+  "repo": "temporalio/temporal",
+  "resolved_commit": "b4fbfe00ddb2ebd48236e9b4ffbabb5f10e71b72",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
+  "source_archive": "https://github.com/temporalio/temporal/archive/b4fbfe00ddb2ebd48236e9b4ffbabb5f10e71b72.tar.gz",
+  "status": "collected"
+}

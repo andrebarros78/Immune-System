@@ -1,0 +1,21 @@
+{
+  "capture": "snapshot",
+  "class": "library",
+  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "id": "openhands-agent-sdk",
+  "license": "MIT",
+  "license_file": "LICENSE",
+  "license_sha256": "14a9b631c658eee682c6c2973525fbdf808c3457176bc47513052c559cc5ce86",
+  "license_verified": true,
+  "purpose": "Software repair agent executor",
+  "readme_file": "README.md",
+  "readme_sha256": "df4d1834b7a6f196fbf6fc6ad45e75bd778bed8a4846f453d4536fb420c2be79",
+  "ref": "main",
+  "repo": "OpenHands/software-agent-sdk",
+  "resolved_commit": "d66f10dc5a636e05f67fb4aebbcc47ddb178261e",
+  "snapshot": true,
+  "snapshot_bytes": 14954879,
+  "snapshot_tree_sha256": "ea39318c9644c5dff833a043351e7395644cac849feafd4719390a7e3859aab3",
+  "source_archive": "https://github.com/OpenHands/software-agent-sdk/archive/d66f10dc5a636e05f67fb4aebbcc47ddb178261e.tar.gz",
+  "status": "collected"
+}
