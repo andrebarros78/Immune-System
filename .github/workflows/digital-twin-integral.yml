@@ -1,0 +1,91 @@
+name: Digital Twin - Integral closed validation
+
+on:
+  push:
+    branches:
+      - test/digital-twin-integral
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prove-digital-twin:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout digital twin branch
+        uses: actions/checkout@v4
+        with:
+          ref: test/digital-twin-integral
+          fetch-depth: 0
+
+      - name: Verify product baselines
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3 4 5 6 7 8 9 10; do
+            grep -q "PHASE${n}_PROVEN" "PHASE${n}_STATUS.md"
+          done
+          grep -q "MISSION_PROVEN" MISSION_STATUS.md
+
+      - name: Compile digital twin
+        run: python -m compileall -q immune_core immune_twin scripts/validate_digital_twin.py tests/digital_twin
+
+      - name: Run Phase 2 regressions
+        run: python -m unittest discover -s tests/phase2 -p 'test_*.py' -v
+
+      - name: Run Phase 3 regressions
+        run: python -m unittest discover -s tests/phase3 -p 'test_*.py' -v
+
+      - name: Run Phase 4 regressions
+        run: python -m unittest discover -s tests/phase4 -p 'test_*.py' -v
+
+      - name: Run Phase 5 regressions
+        run: python -m unittest discover -s tests/phase5 -p 'test_*.py' -v
+
+      - name: Run Phase 6 regressions
+        run: python -m unittest discover -s tests/phase6 -p 'test_*.py' -v
+
+      - name: Run Phase 7 regressions
+        run: python -m unittest discover -s tests/phase7 -p 'test_*.py' -v
+
+      - name: Run Phase 8 regressions
+        run: python -m unittest discover -s tests/phase8 -p 'test_*.py' -v
+
+      - name: Run Phase 9 regressions
+        run: python -m unittest discover -s tests/phase9 -p 'test_*.py' -v
+
+      - name: Run Phase 10 regressions
+        run: python -m unittest discover -s tests/phase10 -p 'test_*.py' -v
+
+      - name: Run closed Digital Twin scenarios
+        run: python -m unittest discover -s tests/digital_twin -p 'test_*.py' -v
+
+      - name: Run deterministic Digital Twin proof
+        run: python scripts/validate_digital_twin.py
+
+      - name: Verify no nested upstream Git metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find . -mindepth 2 -type d -name .git -print -quit | grep -q .; then
+            echo "Nested .git metadata found"
+            find . -mindepth 2 -type d -name .git -print
+            exit 1
+          fi
+
+      - name: Commit Digital Twin proof evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add DIGITAL_TWIN_STATUS.md evidence/digital-twin-validation.json
+          if git diff --cached --quiet; then
+            echo "No evidence changes"
+            exit 0
+          fi
+          git commit -m "test(digital-twin): record closed integral validation [skip ci]"
+          git push origin HEAD:test/digital-twin-integral
