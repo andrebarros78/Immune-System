@@ -24,6 +24,7 @@ from immune_core.observability import ObservabilityStore, SignalProcessor
 from immune_core.operations import CommandGateway, OperationalEventRouter, OperationalStore, OperationsError, ReadModel, ReportBuilder
 from immune_core.panel import OperationalPanel
 from immune_core.policy import PolicyGuard
+from immune_core.remediation import RemediationPlanner
 from immune_core.runbooks import RunbookRunner
 from immune_core.storage import SQLiteStateStore
 
@@ -68,6 +69,7 @@ ops_text = (ROOT / "immune_core/operations.py").read_text(encoding="utf-8")
 runbooks_text = (ROOT / "immune_core/runbooks.py").read_text(encoding="utf-8")
 ok("panel_has_no_executor", "SafeExecutor" not in panel_text and "PrivilegedExecutor" not in panel_text and "WorkerRunner" not in panel_text)
 ok("panel_rejects_post", "def do_POST" in panel_text and "405" in panel_text)
+ok("panel_sqlite_read_only", "mode=ro" in panel_text and "PRAGMA query_only=ON" in panel_text)
 ok("read_model_truth_rule", "absence or staleness is never green" in ops_text)
 ok("commands_use_policyguard", "self.policy.evaluate_token" in ops_text)
 ok("commands_queue_durable_core", "self.engine.submit_task" in ops_text)
@@ -86,6 +88,7 @@ with tempfile.TemporaryDirectory() as td:
     read = ReadModel(store, freshness_seconds=60)
     obs = ObservabilityStore(store, audit)
     incidents = IncidentEngine(store, obs, audit)
+    RemediationPlanner(store, incidents, obs, audit)
     engine.create_mission("m", "sys")
     engine.transition_mission("m", "AUTHORIZED", "phase7")
     engine.transition_mission("m", "RUNNING", "phase7")
@@ -149,6 +152,8 @@ with tempfile.TemporaryDirectory() as td:
     panel = OperationalPanel(read)
     html = panel.render_html(now=NOW + 1)
     ok("panel_renders_truth", "Sistema Imunológico" in html and "Health:" in html and "read-only" in html)
+    threaded_snapshot = panel.snapshot_threadsafe(now=NOW + 1)
+    ok("panel_threadsafe_read", threaded_snapshot["health"]["state"] == "HEALTHY")
 
     output = io.StringIO()
     with contextlib.redirect_stdout(output):
