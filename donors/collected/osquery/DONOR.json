@@ -1,14 +1,20 @@
 {
   "capture": "capsule",
   "class": "tool",
-  "collected_at": "2026-08-11T12:33:16.843661+00:00",
-  "error": "RuntimeError: license text does not match declared SPDX Apache-2.0",
+  "collected_at": "2026-08-11T12:36:42.136106+00:00",
   "id": "osquery",
   "license": "Apache-2.0",
+  "license_file": "LICENSE",
+  "license_sha256": "8412c04ff027b7c95c9f9f44b4feb321a0416b1c0124f69637d31d0a0de8df3a",
+  "license_verified": true,
   "purpose": "Host state sensor",
+  "readme_file": "README.md",
+  "readme_sha256": "3ec209a28fbed220070320ab760371dcefee4f3e5ab02087e76ef083d0707ea3",
   "ref": "master",
   "repo": "osquery/osquery",
   "resolved_commit": "a5b14f63d98c0d4992ab8ae07d933e0d5ff008df",
+  "snapshot": false,
+  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
   "source_archive": "https://github.com/osquery/osquery/archive/a5b14f63d98c0d4992ab8ae07d933e0d5ff008df.tar.gz",
-  "status": "rejected_or_failed"
+  "status": "collected"
 }

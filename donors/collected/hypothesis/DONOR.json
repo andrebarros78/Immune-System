@@ -1,20 +1,14 @@
 {
   "capture": "capsule",
   "class": "library",
-  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "collected_at": "2026-08-11T12:36:42.136106+00:00",
+  "error": "RuntimeError: no root license text matching declared SPDX MPL-2.0",
   "id": "hypothesis",
   "license": "MPL-2.0",
-  "license_file": "LICENSE.txt",
-  "license_sha256": "df2ca456f6cda1226620ee99f16bafb6345241040996734d3a46e3afe414c056",
-  "license_verified": true,
   "purpose": "Property based testing",
-  "readme_file": "README.md",
-  "readme_sha256": "bdea363861e973606d7728f0b7b893e0eb3efa2b3d8afa21a139d3ec8e80c003",
   "ref": "master",
   "repo": "HypothesisWorks/hypothesis",
   "resolved_commit": "0b818d6db2f57a1ca7ff6af6618318490be5c427",
-  "snapshot": false,
-  "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
   "source_archive": "https://github.com/HypothesisWorks/hypothesis/archive/0b818d6db2f57a1ca7ff6af6618318490be5c427.tar.gz",
-  "status": "collected"
+  "status": "rejected_or_failed"
 }

@@ -1,14 +1,20 @@
 {
   "capture": "snapshot",
   "class": "tool",
-  "collected_at": "2026-08-11T12:33:16.843661+00:00",
-  "error": "RuntimeError: license text does not match declared SPDX MIT",
+  "collected_at": "2026-08-11T12:36:42.136106+00:00",
   "id": "promptfoo",
   "license": "MIT",
+  "license_file": "LICENSE",
+  "license_sha256": "bf813686553f451e1b833fbd827488aee49b60b189626915bf3108d10b754e44",
+  "license_verified": true,
   "purpose": "Agent and LLM red-team regression evaluation",
+  "readme_file": "README.md",
+  "readme_sha256": "426270e1b7c45d0bf456b1284cdc1af055218db73869864b9590b1e0bdaab5cb",
   "ref": "main",
   "repo": "promptfoo/promptfoo",
   "resolved_commit": "a1f22f56c686028e0ab9f8a1ae6cb99af831fdf1",
+  "snapshot": false,
+  "snapshot_reason": "working tree 236090269 bytes exceeds 30 MiB vault limit",
   "source_archive": "https://github.com/promptfoo/promptfoo/archive/a1f22f56c686028e0ab9f8a1ae6cb99af831fdf1.tar.gz",
-  "status": "rejected_or_failed"
+  "status": "collected"
 }

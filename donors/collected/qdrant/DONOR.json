@@ -1,7 +1,7 @@
 {
   "capture": "capsule",
   "class": "service",
-  "collected_at": "2026-08-11T12:33:16.843661+00:00",
+  "collected_at": "2026-08-11T12:36:42.136106+00:00",
   "id": "qdrant",
   "license": "Apache-2.0",
   "license_file": "LICENSE",
