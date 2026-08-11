@@ -1,0 +1,224 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "baseline_phase_1",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "baseline_phase_2",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "baseline_phase_3",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "baseline_phase_4",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "baseline_phase_5",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "baseline_phase_6",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "baseline_phase_7",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "baseline_phase_8",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "baseline_phase_9",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "baseline_phase_10",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "baseline_mission_proven",
+      "passed": true
+    },
+    {
+      "detail": "tests=6 failures=0 errors=0",
+      "name": "digital_twin_unittest_suite",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "guard_socket, \"create_connection\"",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "guard_socket.socket, \"connect\"",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "guard_urllib.request, \"urlopen\"",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "guard_subprocess, \"run\"",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "guard_subprocess, \"Popen\"",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "guard_os, \"system\"",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "guard_builtins, \"open\"",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "guard_io, \"open\"",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_closed_integral_lifecycle",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_snapshot_rollback",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_isolation_32_systems",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_restart_resume",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_external_effect_block",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_zero_external_normal",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_discovery",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_diagnosis",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_remediation",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_semantic_validation",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_controlled_learning",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_no_ai",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_continuous_supervisor",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_watchdog",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_backup_restore",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_safe_update",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_policy_guard",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario_audit_chain",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "workflow_retests_phases_2_10",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "workflow_runs_digital_twin",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no_nested_git_guard",
+      "passed": true
+    }
+  ],
+  "checks_failed": 0,
+  "checks_passed": 41,
+  "checks_total": 41,
+  "duration_seconds": 0.2663452625274658,
+  "external_effect_policy": "SEM_EFEITO_EXTERNO",
+  "external_effects_performed": 0,
+  "mode": "DIGITAL_TWIN_OPERACIONAL",
+  "note": "Blocked adversarial attempts are containment tests; underlying network/process/outside-root writes are not executed.",
+  "sandbox": "SANDBOX_VIRTUAL_FECHADO",
+  "schema": 1,
+  "scope": "IMMUNE_SYSTEM_V1_CLOSED_DIGITAL_TWIN_INTEGRAL_VALIDATION",
+  "simulation": "SIMULA\u00c7\u00c3O_PONTA_A_PONTA",
+  "status": "DIGITAL_TWIN_PROVEN",
+  "test_type": "TESTE_VIRTUAL_SIMULADO",
+  "unittest_tests": 6
+}
