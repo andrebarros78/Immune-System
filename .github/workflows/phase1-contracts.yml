@@ -1,0 +1,52 @@
+name: Phase 1 - Sovereign contracts
+
+on:
+  push:
+    branches:
+      - phase/1-spec-contracts
+    paths:
+      - scripts/bootstrap_phase1.py
+      - .github/workflows/phase1-contracts.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prove-phase1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout phase branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/1-spec-contracts
+          fetch-depth: 0
+
+      - name: Materialize specification and contracts
+        run: python scripts/bootstrap_phase1.py
+
+      - name: Validate Phase 1 invariants
+        run: python tests/phase1/validate_phase1.py
+
+      - name: Verify no upstream Git metadata entered Phase 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find specification constitution contracts state-machines policies acceptance adr tests/phase1 -mindepth 1 -name .git -print -quit | grep -q .; then
+            echo 'Nested upstream .git metadata detected'
+            exit 1
+          fi
+
+      - name: Commit proven Phase 1 artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add specification constitution contracts state-machines policies acceptance adr tests/phase1 evidence/phase1-validation.json PHASE1_STATUS.md
+          if git diff --cached --quiet; then
+            echo 'No Phase 1 changes to commit.'
+          else
+            git commit -m 'feat(phase1): materialize proven sovereign contracts'
+            git push origin HEAD:phase/1-spec-contracts
+          fi
