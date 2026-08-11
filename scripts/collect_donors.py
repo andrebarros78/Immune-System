@@ -113,7 +113,8 @@ def verify_license(expected: str, text: str) -> bool:
         return "redistribution and use in source and binary forms" in t
     if expected == "MPL-2.0":
         return (
-            "mozilla public license" in t and "version 2.0" in t
+            "mozilla public license" in t
+            and ("version 2.0" in t or "v 2.0" in t or "v2.0" in t)
         ) or "spdx-license-identifier: mpl-2.0" in t
     return False
 
