@@ -1,0 +1,332 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "phase1_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase2_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase3_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase4_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase5_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase6_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase7_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase8_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase9_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/continuous.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/watchdog.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/update_manager.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/autostart.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:scripts/immune_runtime.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:tests/phase10/test_continuous_operation.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:adr/ADR-0010-continuous-operation.md",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:.github/workflows/phase10-continuous.yml",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/continuous.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/watchdog.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/update_manager.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/autostart.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:scripts/immune_runtime.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:tests/phase10/test_continuous_operation.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "supervisor_no_authority:SafeExecutor",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "supervisor_no_authority:PrivilegedExecutor",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "supervisor_no_authority:WorkerRunner",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "supervisor_no_authority:ProviderManager",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "supervisor_no_authority:OpenAI",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "supervisor_no_subprocess",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_no_provider_dependency",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "update_requires_state_backup",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "update_atomic_pointer",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "update_sha256_manifest",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase9_minimum_scenarios_preserved",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "expired_lease_claimed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "boot_recovers_expired_lease",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "continuous_cycle_running",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "periodic_backup_created",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "periodic_backup_verified",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "restore_drill_verified",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "cycle_evidence_verified",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "watchdog_fresh",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "watchdog_stale",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "watchdog_read_only",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "single_instance_enforced",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "stale_lock_recovered",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "probe_failure_degrades_without_crash",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_recovers_after_probe",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "release_activation_verified",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "pre_update_backup_verified",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "failed_update_rolls_back",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "failed_release_removed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "tampered_release_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "systemd_boot_restart",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "windows_boot_restart",
+      "passed": true
+    },
+    {
+      "detail": "{'duration_seconds': 1.002039234999998, 'cycles': 132, 'degraded_cycles': 0, 'state': 'RUNNING'}",
+      "name": "endurance_cycles",
+      "passed": true
+    },
+    {
+      "detail": "{'duration_seconds': 1.002039234999998, 'cycles': 132, 'degraded_cycles': 0, 'state': 'RUNNING'}",
+      "name": "endurance_no_degraded_cycles",
+      "passed": true
+    },
+    {
+      "detail": "None",
+      "name": "audit_chain_valid",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scoped_mission_proven",
+      "passed": true
+    }
+  ],
+  "controlled_file_sha256": {
+    ".github/workflows/phase10-continuous.yml": "f26f368029bb06131eeef5a8f6bf34aa1b9d6da7230c7db12cfc3f85ab65e8e8",
+    "adr/ADR-0010-continuous-operation.md": "c64c5d984b0cd792956fdc880e2e8675619037841be5525e8cfb4857dbfe5d90",
+    "immune_core/autostart.py": "30d6e3650c68ca3b1e93b26c3a13e152828c76a8aa6997e46b1bb64426474343",
+    "immune_core/continuous.py": "c04925e4c9c3421c388065812e4c1902a9a84e0e63370557d0e488184f9c44f8",
+    "immune_core/update_manager.py": "c8747c61cd400d5bfe3530a5ed00888abb33dd2f7709c2a28ca129c233dc7a97",
+    "immune_core/watchdog.py": "9c18c1e7625201b30b28282481c28faf9d29e3d95d70e43fd6ce76b59087b681",
+    "scripts/immune_runtime.py": "d4db13635ce50d482905e2ff1cdf84f65f5f3313598fb8316dcc9861f9ef6fd3",
+    "tests/phase10/test_continuous_operation.py": "afa3545073fcd83563a7eedd2a4fd3111d4427dc507dc4b1103d6a02a55519c6"
+  },
+  "endurance": {
+    "cycles": 132,
+    "degraded_cycles": 0,
+    "duration_seconds": 1.002039234999998,
+    "state": "RUNNING"
+  },
+  "mission_proof": {
+    "gates_digest": "812d76e9b987c7287f39904c4a867f4e631623687bb7c4926335059ea981cc3a",
+    "missing_gates": [],
+    "proven": true,
+    "scope_id": "IMMUNE_SYSTEM_V1_IMPLEMENTATION_AND_CONTROLLED_OPERATION",
+    "signature": "158724bc34f1b8a15a8db7818470defad7af309562dabfb4c45ef96c083fd993"
+  },
+  "phase": "PHASE_10_CONTINUOUS_OPERATION",
+  "result": "PHASE10_PROVEN",
+  "schema": 1,
+  "scope_note": "PHASE10_PROVEN and the scoped MISSION_PROVEN cover repository implementation and controlled CI operation. They do not claim elapsed 24x7 operation on a specific external host that has not been deployed in this proof.",
+  "summary": {
+    "failed": 0,
+    "passed": 59,
+    "total": 59
+  },
+  "validated_at": "2026-08-11T18:08:45.611016+00:00"
+}
