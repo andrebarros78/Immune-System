@@ -6,6 +6,7 @@ on:
       - phase/1-spec-contracts
     paths:
       - scripts/bootstrap_phase1.py
+      - scripts/phase1_validator.py
       - .github/workflows/phase1-contracts.yml
   workflow_dispatch:
 
@@ -24,6 +25,13 @@ jobs:
 
       - name: Materialize specification and contracts
         run: python scripts/bootstrap_phase1.py
+
+      - name: Install canonical Phase 1 validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tests/phase1
+          cp scripts/phase1_validator.py tests/phase1/validate_phase1.py
 
       - name: Validate Phase 1 invariants
         run: python tests/phase1/validate_phase1.py
