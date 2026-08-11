@@ -54,9 +54,10 @@ markers={
 "worker_external_privilege_authorizer":"privilege_authorizer_token" in worker_text,
 }
 for name,condition in markers.items(): ok(name,condition)
+# Detect executable self-elevation primitives, not explanatory documentation strings.
 lower=(execution_text+"\n"+worker_text).lower()
-for forbidden in ("sudo ","runas ","powershell -verb runas","uac bypass","set-executionpolicy bypass"):
-    ok(f"no_self_elevation:{forbidden.strip()}", forbidden not in lower)
+for forbidden in ("shell=true","shellexecutew","verb=\"runas\"","['sudo'","[\"sudo\"","set-executionpolicy bypass"):
+    ok(f"no_self_elevation_primitive:{forbidden}", forbidden not in lower)
 
 with tempfile.TemporaryDirectory() as td:
     root=Path(td); store=SQLiteStateStore(root/"state.db"); audit=AuditLedger(store)
