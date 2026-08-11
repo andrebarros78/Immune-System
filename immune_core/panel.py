@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import json
+import sqlite3
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
@@ -10,6 +11,16 @@ from .operations import ReadModel
 
 class PanelError(RuntimeError):
     pass
+
+
+class _ReadOnlyStore:
+    def __init__(self, path: str):
+        if path == ":memory:":
+            raise PanelError("HTTP panel requires file-backed SQLite state")
+        self.path = path
+        self.conn = sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=5)
+        self.conn.row_factory = sqlite3.Row
+        self.conn.execute("PRAGMA query_only=ON")
 
 
 class OperationalPanel:
@@ -21,8 +32,15 @@ class OperationalPanel:
     def snapshot(self, *, now: float | None = None) -> dict[str, Any]:
         return self.read_model.dashboard(now=now)
 
-    def render_html(self, *, now: float | None = None) -> str:
-        data = self.snapshot(now=now)
+    def snapshot_threadsafe(self, *, now: float | None = None) -> dict[str, Any]:
+        ro = _ReadOnlyStore(str(self.read_model.store.path))
+        try:
+            return ReadModel(ro, freshness_seconds=self.read_model.freshness_seconds).dashboard(now=now)
+        finally:
+            ro.conn.close()
+
+    @staticmethod
+    def _render(data: dict[str, Any]) -> str:
         health = data["health"]["state"]
         rows = "".join(
             f"<tr><td>{html.escape(str(m['id']))}</td><td>{html.escape(str(m['state']))}</td><td>{html.escape(str(m['system_id']))}</td></tr>"
@@ -38,16 +56,22 @@ class OperationalPanel:
             "</body></html>"
         )
 
+    def render_html(self, *, now: float | None = None) -> str:
+        return self._render(self.snapshot(now=now))
+
+    def render_html_threadsafe(self, *, now: float | None = None) -> str:
+        return self._render(self.snapshot_threadsafe(now=now))
+
 
 def serve_read_only(panel: OperationalPanel, host: str = "127.0.0.1", port: int = 8787) -> ThreadingHTTPServer:
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:
             if self.path == "/api/status":
-                body = json.dumps(panel.snapshot(), ensure_ascii=False, sort_keys=True).encode("utf-8")
+                body = json.dumps(panel.snapshot_threadsafe(), ensure_ascii=False, sort_keys=True).encode("utf-8")
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json; charset=utf-8")
             elif self.path in {"/", "/index.html"}:
-                body = panel.render_html().encode("utf-8")
+                body = panel.render_html_threadsafe().encode("utf-8")
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
             else:
