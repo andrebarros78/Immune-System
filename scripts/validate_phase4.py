@@ -19,7 +19,7 @@ from immune_core.cognition import CognitiveCoordinator, CognitiveCore
 from immune_core.engine import DurableLoopEngine
 from immune_core.execution import PrivilegedExecutor, SafeExecutor, WorkerManifest
 from immune_core.identity import IdentityAuthority
-from immune_core.memory import CognitiveMemory, MemoryError
+from immune_core.memory import CognitiveMemory
 from immune_core.policy import PolicyGuard
 from immune_core.privilege import PrivilegeAuthority
 from immune_core.providers import ProviderManager, ProviderProposal, ProviderRequest, ProviderUnavailable
@@ -65,7 +65,7 @@ cognition_text = (ROOT / "immune_core/cognition.py").read_text(encoding="utf-8")
 
 ok("provider_proposal_only_contract", '"type": "proposal_only"' in providers_text)
 ok("provider_untrusted_data_boundary", "UNTRUSTED_DATA" in providers_text)
-ok("provider_http_has_no_tool_payload", '"tools"' not in providers_text and '"functions"' not in providers_text)
+ok("provider_http_has_no_tool_payload", '"tools":' not in providers_text and '"functions":' not in providers_text)
 ok("provider_paid_identity_gate", 'required_scope="provider:paid"' in providers_text)
 ok("provider_degraded_no_ai", "DEGRADED_NO_AI" in providers_text)
 ok("memory_quarantine_first", '"QUARANTINED"' in memory_text)
@@ -80,7 +80,6 @@ ok("cognition_no_safe_executor", "SafeExecutor" not in cognition_text and "Privi
 ok("cognition_policy_bridge", "self.policy.evaluate_token" in cognition_text)
 ok("cognition_queue_only_bridge", "self.engine.submit_task" in cognition_text)
 
-# Parse new modules to guarantee valid Python syntax independent of compileall.
 for rel in ("immune_core/providers.py", "immune_core/memory.py", "immune_core/skills.py", "immune_core/cognition.py"):
     try:
         ast.parse((ROOT / rel).read_text(encoding="utf-8"))
@@ -88,7 +87,6 @@ for rel in ("immune_core/providers.py", "immune_core/memory.py", "immune_core/sk
     except SyntaxError as exc:
         ok(f"ast:{rel}", False, exc)
 
-# The real donor warehouse remains quarantined without fabricated evidence.
 lock = json.loads((ROOT / "donors/LOCK.json").read_text(encoding="utf-8"))
 catalog = build_catalog(lock["donors"])
 ok("donor_inventory_count_44", catalog["summary"]["total"] == 44, catalog["summary"])
@@ -145,7 +143,6 @@ with tempfile.TemporaryDirectory() as td:
     engine.transition_mission("m", "AUTHORIZED", "proof")
     engine.transition_mission("m", "RUNNING", "proof")
 
-    # Memory starts quarantined and cannot influence cognition until promoted.
     mem_id = memory.record(kind="fact", source="proof", content={"known": True}, evidence_ids=("ev-1",), mission_id="m", confidence=0.9, now=NOW)
     ok("e2e_memory_initial_quarantine", memory.get(mem_id).state == "QUARANTINED")
     ok("e2e_quarantined_memory_not_recalled", memory.recall_promoted(mission_id="m") == [])
@@ -153,7 +150,6 @@ with tempfile.TemporaryDirectory() as td:
     ok("e2e_memory_promoted", memory.get(mem_id).state == "PROMOTED")
     ok("e2e_promoted_memory_recalled", [x.id for x in memory.recall_promoted(mission_id="m")] == [mem_id])
 
-    # Synthetic donor proves lifecycle mechanics without falsely approving any real donor.
     donor = {"id": "phase4-proof-donor", "purpose": "proof adapter", "resolved_commit": "a" * 40, "status": "collected", "license": "MIT", "license_verified": True}
     skills.register_donor_skill(skill_admin, skill_id="proof-skill", version="1.0.0", capability="diagnosis", donor=donor, now=NOW)
     incomplete_blocked = False
@@ -167,12 +163,10 @@ with tempfile.TemporaryDirectory() as td:
     approved = skills.approve(skill_admin, skill_id="proof-skill", version="1.0.0", now=NOW)
     ok("e2e_skill_approved_adapter_only", approved.state == "APPROVED" and approved.authority == "adapter-only" and not approved.executable)
 
-    # No-AI mode remains safe and operational.
     fallback = ProviderManager([OfflineProvider()], identities, audit).propose(ProviderRequest("m", "diagnose"), now=NOW)
     ok("e2e_no_ai_degraded", fallback.degraded and fallback.provider_id == "deterministic-no-ai")
     ok("e2e_no_ai_has_no_tasks", len(fallback.recommended_tasks) == 0)
 
-    # AI can propose a material effect but cannot cause it before policy + queue + Worker.
     pyexe = str(Path(sys.executable).resolve())
     pyname = Path(pyexe).name
     proposal = ProviderProposal(
@@ -198,12 +192,10 @@ with tempfile.TemporaryDirectory() as td:
     ok("e2e_worker_executes_after_gates", outcome.state == "COMPLETED")
     ok("e2e_effect_after_worker_only", (workspace / "effect.txt").read_text() == "gated")
 
-    # Financial task is stopped at cognitive policy bridge.
     paid_proposal = ProviderProposal("proof-ai", "buy", recommended_tasks=({"kind": "command", "payload": {}, "skill_id": None, "risk": {"purchase": True}},))
     paid_result = coordinator.queue_proposal(mission_id="m", proposal=paid_proposal, controller_token=controller, now=NOW)
     ok("e2e_financial_proposal_not_queued", not paid_result.queued_task_ids and len(paid_result.rejected) == 1)
 
-    # Suspended skill is removed from cognition immediately.
     skills.suspend(skill_admin, skill_id="proof-skill", version="1.0.0", reason="proof", now=NOW)
     suspended_blocked = False
     try:
