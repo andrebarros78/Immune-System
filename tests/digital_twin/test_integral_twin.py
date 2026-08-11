@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import socket
-import tempfile
+import subprocess
 import unittest
 import urllib.request
 from pathlib import Path
@@ -251,11 +251,12 @@ class IntegralDigitalTwinTests(unittest.TestCase):
                 urllib.request.urlopen("https://example.invalid/", timeout=0.01)
             with self.assertRaises(SandboxViolation):
                 twin.path("..", "escape.txt")
-            outside = Path(tempfile.gettempdir()).resolve() / "immune-twin-forbidden-write.txt"
-            if twin.root not in outside.parents:
-                with self.assertRaises(SandboxViolation):
-                    outside.write_text("forbidden", encoding="utf-8")
-            self.assertGreaterEqual(len(twin.guard.violations), 3)
+            with self.assertRaises(SandboxViolation):
+                subprocess.run(["echo", "forbidden"], check=False)
+            outside = twin.root.parent / "immune-twin-forbidden-write.txt"
+            with self.assertRaises(SandboxViolation):
+                outside.write_text("forbidden", encoding="utf-8")
+            self.assertGreaterEqual(len(twin.guard.violations), 4)
 
     def test_no_external_effects_in_normal_virtual_operation(self):
         with ClosedDigitalTwin() as twin:
