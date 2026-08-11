@@ -1,0 +1,250 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "phase1_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase2_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase3_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase4_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase5_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase6_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase7_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/learning.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:tests/phase8/test_controlled_learning.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:adr/ADR-0008-controlled-learning.md",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:.github/workflows/phase8-learning.yml",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:learning",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "state:QUARANTINED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "state:PROMOTED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "state:SUSPENDED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "state:RETIRED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "state:SUPERSEDED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no_provider_authority",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no_subprocess",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no_eval_exec",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "confidence_is_computed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "global_requires_distinct_systems",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "reviewer_promoter_separated",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "accepted_correction_required",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "resolved_incident_required",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "semantic_validation_required",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "skill_not_autoapproved",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_candidate_quarantined",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_candidate_confidence_derived",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_provenance_correction",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_provenance_evidence",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_promotion_without_review_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_system_promoted",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_system_recall",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_scope_isolation",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_global_early_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_global_promoted",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_global_confidence",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_global_visible_elsewhere",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_regression_suspends",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_regression_reduces_confidence",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_suspended_not_recalled",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_two_regressions_retire",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_outcomes_auditable",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "runtime_reviews_auditable",
+      "passed": true
+    },
+    {
+      "detail": "None",
+      "name": "runtime_audit_chain_valid",
+      "passed": true
+    }
+  ],
+  "controlled_file_sha256": {
+    ".github/workflows/phase8-learning.yml": "1139dc37104d71f013f883bb93150349667163c88b922c60e5c867d28044228b",
+    "adr/ADR-0008-controlled-learning.md": "54de9ca2520f251a9fdf706188ef2a07197e81323cb8172163f9cd38896cb0e0",
+    "immune_core/learning.py": "4a3c0d15703124a7537dcef23657a28f798cba0736ba473231debc4ad69d7e50",
+    "tests/phase8/test_controlled_learning.py": "d539a67cf9d3494b34bd99c34b716c8527c698ee313e7cf3e4027ba7d8b10079"
+  },
+  "phase": "PHASE_8_CONTROLLED_LEARNING",
+  "result": "PHASE8_PROVEN",
+  "schema": 1,
+  "scope_note": "PHASE8_PROVEN proves evidence-derived quarantine, confidence, independent review/promotion, scoped generalization, regression-driven suspension/retirement and versioned recall. It is not MISSION_PROVEN for the complete product.",
+  "summary": {
+    "failed": 0,
+    "passed": 46,
+    "total": 46
+  },
+  "validated_at": "2026-08-11T15:58:21.761058+00:00"
+}
