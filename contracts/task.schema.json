@@ -1,0 +1,88 @@
+{
+  "$id": "https://immune-system.local/contracts/task.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allowed_inputs": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "cancel_action": {
+      "type": "string"
+    },
+    "expected_output": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "failure_behavior": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "incident_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "mission_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "objective": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "permissions": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "required_evidence": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "resource_limits": {
+      "type": "object"
+    },
+    "target": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "timeout_seconds": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "tools": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "mission_id",
+    "objective",
+    "target",
+    "permissions",
+    "timeout_seconds",
+    "expected_output",
+    "required_evidence",
+    "failure_behavior"
+  ],
+  "title": "Worker Task Contract",
+  "type": "object"
+}

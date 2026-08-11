@@ -1,0 +1,22 @@
+
+schema: 1
+name: Mission
+initial: CREATED
+terminal: [COMPLETED, FAILED_SAFE, CANCELLED]
+states: [CREATED, AUTHORIZED, DISCOVERING, RUNNING, DEGRADED, BLOCKED, WAITING_HUMAN, CONTAINED, VALIDATING, COMPLETED, FAILED_SAFE, CANCELLED]
+transitions:
+  - {from: CREATED, to: AUTHORIZED, guard: mission_contract_valid}
+  - {from: AUTHORIZED, to: DISCOVERING, guard: system_authorized}
+  - {from: DISCOVERING, to: RUNNING, guard: baseline_established}
+  - {from: RUNNING, to: DEGRADED, guard: essential_function_preserved_with_degradation}
+  - {from: RUNNING, to: BLOCKED, guard: localized_blocker}
+  - {from: RUNNING, to: CONTAINED, guard: risk_isolated}
+  - {from: RUNNING, to: VALIDATING, guard: observable_result_candidate}
+  - {from: BLOCKED, to: WAITING_HUMAN, guard: human_exception_contract_valid}
+  - {from: WAITING_HUMAN, to: RUNNING, guard: human_blocker_removed}
+  - {from: CONTAINED, to: RUNNING, guard: containment_exit_safe}
+  - {from: VALIDATING, to: COMPLETED, guard: mission_proven}
+  - {from: VALIDATING, to: RUNNING, guard: validation_failed_and_recovery_safe}
+  - {from: RUNNING, to: FAILED_SAFE, guard: cannot_complete_but_environment_preserved}
+  - {from: RUNNING, to: CANCELLED, guard: competent_authority_cancelled}
+invariant: COMPLETED requires MISSION_PROVEN

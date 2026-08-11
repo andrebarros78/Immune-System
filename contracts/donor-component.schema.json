@@ -1,0 +1,71 @@
+{
+  "$id": "https://immune-system.local/contracts/donor-component.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "adapter_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "artifact_hash": {
+      "pattern": "^[a-fA-F0-9]{64}$",
+      "type": "string"
+    },
+    "authority": {
+      "enum": [
+        "none",
+        "adapter-only"
+      ],
+      "type": "string"
+    },
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "license_spdx": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "license_verified": {
+      "type": "boolean"
+    },
+    "open_source": {
+      "type": "boolean"
+    },
+    "origin": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "resolved_commit": {
+      "pattern": "^[a-fA-F0-9]{40}$",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "registered",
+        "metadata_verified",
+        "artifact_collected",
+        "security_scanned",
+        "laboratory_approved",
+        "integration_approved",
+        "rejected",
+        "retired"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "origin",
+    "resolved_commit",
+    "license_spdx",
+    "license_verified",
+    "artifact_hash",
+    "state",
+    "authority"
+  ],
+  "title": "OSS Donor Component Contract",
+  "type": "object"
+}

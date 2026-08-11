@@ -1,0 +1,94 @@
+{
+  "$id": "https://immune-system.local/contracts/mission.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authorized": {
+      "type": "boolean"
+    },
+    "authorized_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "authorized_by": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "budget_limit": {
+      "minimum": 0,
+      "type": "number"
+    },
+    "constraints": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "deadline": {
+      "format": "date-time",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "objective": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "risk_limit": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "type": "string"
+    },
+    "scope": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "CREATED",
+        "AUTHORIZED",
+        "DISCOVERING",
+        "RUNNING",
+        "DEGRADED",
+        "BLOCKED",
+        "WAITING_HUMAN",
+        "CONTAINED",
+        "VALIDATING",
+        "COMPLETED",
+        "FAILED_SAFE",
+        "CANCELLED"
+      ],
+      "type": "string"
+    },
+    "system_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "system_id",
+    "objective",
+    "authorized_by",
+    "authorized_at",
+    "scope",
+    "budget_limit",
+    "risk_limit",
+    "status"
+  ],
+  "title": "Mission Contract",
+  "type": "object"
+}

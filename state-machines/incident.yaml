@@ -1,0 +1,23 @@
+
+schema: 1
+name: Incident
+initial: DETECTED
+states: [DETECTED, CONFIRMED, TRIAGED, INVESTIGATING, CAUSE_IDENTIFIED, FIX_PLANNED, FIX_TESTING, FIX_APPROVED, APPLYING, VALIDATING, MONITORING_RECOVERY, RESOLVED, ROLLED_BACK, CONTAINED, ESCALATED, CLOSED_WITH_RISK]
+transitions:
+  - {from: DETECTED, to: CONFIRMED, guard: anomaly_confirmed}
+  - {from: CONFIRMED, to: TRIAGED, guard: impact_and_scope_known}
+  - {from: TRIAGED, to: INVESTIGATING, guard: evidence_plan_defined}
+  - {from: INVESTIGATING, to: CAUSE_IDENTIFIED, guard: causal_evidence_sufficient}
+  - {from: CAUSE_IDENTIFIED, to: FIX_PLANNED, guard: correction_and_rollback_defined}
+  - {from: FIX_PLANNED, to: FIX_TESTING, guard: checkpoint_valid}
+  - {from: FIX_TESTING, to: FIX_APPROVED, guard: isolated_tests_passed}
+  - {from: FIX_TESTING, to: INVESTIGATING, guard: candidate_rejected}
+  - {from: FIX_APPROVED, to: APPLYING, guard: policy_guard_permits}
+  - {from: APPLYING, to: VALIDATING, guard: action_completed}
+  - {from: VALIDATING, to: MONITORING_RECOVERY, guard: primary_result_passed}
+  - {from: VALIDATING, to: ROLLED_BACK, guard: regression_or_failure_detected}
+  - {from: ROLLED_BACK, to: INVESTIGATING, guard: rollback_verified}
+  - {from: MONITORING_RECOVERY, to: RESOLVED, guard: stability_window_passed}
+  - {from: INVESTIGATING, to: CONTAINED, guard: risk_requires_containment}
+  - {from: CONTAINED, to: ESCALATED, guard: human_exception_required}
+  - {from: MONITORING_RECOVERY, to: CLOSED_WITH_RISK, guard: accepted_residual_risk_explicit}

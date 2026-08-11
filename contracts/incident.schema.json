@@ -1,0 +1,133 @@
+{
+  "$id": "https://immune-system.local/contracts/incident.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "action_refs": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "attempt_refs": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "checkpoint_refs": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "component": {
+      "type": "string"
+    },
+    "evidence_refs": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "human_owner": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hypotheses": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "impact": {
+      "type": "string"
+    },
+    "priority": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "residual_risk": {
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "DETECTED",
+        "CONFIRMED",
+        "TRIAGED",
+        "INVESTIGATING",
+        "CAUSE_IDENTIFIED",
+        "FIX_PLANNED",
+        "FIX_TESTING",
+        "FIX_APPROVED",
+        "APPLYING",
+        "VALIDATING",
+        "MONITORING_RECOVERY",
+        "RESOLVED",
+        "ROLLED_BACK",
+        "CONTAINED",
+        "ESCALATED",
+        "CLOSED_WITH_RISK"
+      ],
+      "type": "string"
+    },
+    "symptoms": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "system_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "test_results": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "system_id",
+    "severity",
+    "symptoms",
+    "evidence_refs",
+    "hypotheses",
+    "attempt_refs",
+    "status"
+  ],
+  "title": "Incident Contract",
+  "type": "object"
+}

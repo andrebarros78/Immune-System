@@ -1,0 +1,60 @@
+{
+  "$id": "https://immune-system.local/contracts/worker.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority": {
+      "enum": [
+        "none",
+        "task-scoped",
+        "privileged-ephemeral"
+      ],
+      "type": "string"
+    },
+    "cancelable": {
+      "type": "boolean"
+    },
+    "capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "credential_retention": {
+      "enum": [
+        "none",
+        "task-only"
+      ],
+      "type": "string"
+    },
+    "evidence_required": {
+      "type": "boolean"
+    },
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "kind": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "minimum_privilege": {
+      "type": "boolean"
+    },
+    "timeout_supported": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "kind",
+    "capabilities",
+    "authority",
+    "minimum_privilege",
+    "cancelable",
+    "evidence_required"
+  ],
+  "title": "Worker Manifest",
+  "type": "object"
+}

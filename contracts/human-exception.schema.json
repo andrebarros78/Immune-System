@@ -1,0 +1,63 @@
+{
+  "$id": "https://immune-system.local/contracts/human-exception.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "consequence": {
+      "type": "string"
+    },
+    "continuation_after_action": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "mission_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "reason": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "reason_type": {
+      "enum": [
+        "cost",
+        "new_account",
+        "personal_credential",
+        "mfa_captcha_physical",
+        "legal_commitment",
+        "external_communication",
+        "business_rule",
+        "irreversible_without_recovery",
+        "persistent_external_blocker"
+      ],
+      "type": "string"
+    },
+    "required_action": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "OPEN",
+        "SATISFIED",
+        "CANCELLED"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "mission_id",
+    "reason_type",
+    "required_action",
+    "reason",
+    "continuation_after_action",
+    "status"
+  ],
+  "title": "Human Exception Contract",
+  "type": "object"
+}

@@ -1,0 +1,68 @@
+{
+  "$id": "https://immune-system.local/contracts/evidence.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "artifact_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "environment": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "expected": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "integrity_sha256": {
+      "pattern": "^[a-fA-F0-9]{64}$",
+      "type": "string"
+    },
+    "method": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "observed": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "origin": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "requirement_refs": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "sensitive_data_redacted": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "origin",
+    "observed_at",
+    "method",
+    "environment",
+    "expected",
+    "observed",
+    "integrity_sha256",
+    "requirement_refs"
+  ],
+  "title": "Evidence Contract",
+  "type": "object"
+}

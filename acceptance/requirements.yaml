@@ -1,0 +1,37 @@
+
+schema: 1
+source: "SISTEMA_IMUNOLOGICO_ESPECIFICACAO_DETALHADA v1.0 — sections 18 and 19"
+requirements:
+  - {id: AC-01, text: "Todos os requisitos funcionais aprovados implementados", critical: true}
+  - {id: AC-02, text: "Nenhuma função crítica simulada ou marcada como futura", critical: true}
+  - {id: AC-03, text: "Fluxo completo funcionando em sistemas reais autorizados", critical: true}
+  - {id: AC-04, text: "Segurança e separação de autoridade comprovadas", critical: true}
+  - {id: AC-05, text: "Falha induzida detectada, diagnosticada, corrigida e validada", critical: true}
+  - {id: AC-06, text: "Correção defeituosa rejeitada ou revertida", critical: true}
+  - {id: AC-07, text: "Reinício e retomada comprovados", critical: true}
+  - {id: AC-08, text: "Operação degradada sem IA externa comprovada", critical: true}
+  - {id: AC-09, text: "Isolamento entre sistemas e incidentes demonstrado", critical: true}
+  - {id: AC-10, text: "Backup e recuperação testados", critical: true}
+  - {id: AC-11, text: "Desempenho e endurance atendem metas oficiais", critical: true}
+  - {id: AC-12, text: "Skills e Workers respeitam contratos e permissões", critical: true}
+  - {id: AC-13, text: "Laboratório OSS bloqueia integração sem evidência", critical: true}
+  - {id: AC-14, text: "Painel reflete fielmente estado interno", critical: true}
+  - {id: AC-15, text: "Documentação corresponde ao sistema instalado", critical: true}
+  - {id: AC-16, text: "Nenhuma falha crítica conhecida relacionada ao escopo", critical: true}
+  - {id: AC-17, text: "Evidências rastreáveis e reproduzíveis", critical: true}
+minimum_proof_scenarios:
+  - service_stopped_runbook_recovery
+  - configuration_root_cause_fix_with_rollback
+  - reject_regression_breaking_fix
+  - automatic_invalid_deployment_rollback
+  - resume_after_restart_without_duplicate_action
+  - isolate_blocked_incident_from_other_systems
+  - degraded_operation_without_external_ai
+  - create_and_lab_approve_skill_for_unknown_technology
+  - block_worker_scope_expansion
+  - prove_oss_donor_has_no_direct_authority
+  - restore_state_from_tested_backup
+  - concurrency_without_task_loss
+  - detect_no_progress_and_change_strategy
+  - human_intervention_only_for_real_exception
+  - requirement_action_test_evidence_report

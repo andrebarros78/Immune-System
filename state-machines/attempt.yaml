@@ -1,0 +1,16 @@
+
+schema: 1
+name: Attempt
+source_note: "Implementation decision operationalizing specification section 9.3; states were not enumerated in the source document."
+initial: CREATED
+terminal: [SUCCEEDED, FAILED, ABORTED]
+states: [CREATED, RUNNING, SUCCEEDED, FAILED, ABORTED]
+transitions:
+  - {from: CREATED, to: RUNNING, guard: hypothesis_and_discriminating_test_recorded}
+  - {from: RUNNING, to: SUCCEEDED, guard: evidence_supports_expected_result}
+  - {from: RUNNING, to: FAILED, guard: evidence_rejects_or_fails_attempt}
+  - {from: RUNNING, to: ABORTED, guard: risk_or_timeout_requires_stop}
+invariants:
+  - equivalent_retry_requires_new_evidence
+  - each_retry_requires_technical_delta
+  - failure_must_record_learning

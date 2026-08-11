@@ -1,0 +1,52 @@
+{
+  "$id": "https://immune-system.local/contracts/checkpoint.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "artifact_refs": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "baseline_ref": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "mission_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "recovery_procedure": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "recovery_verified": {
+      "type": "boolean"
+    },
+    "state_hash": {
+      "pattern": "^[a-fA-F0-9]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "mission_id",
+    "created_at",
+    "baseline_ref",
+    "state_hash",
+    "recovery_procedure",
+    "recovery_verified"
+  ],
+  "title": "Checkpoint Contract",
+  "type": "object"
+}

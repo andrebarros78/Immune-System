@@ -1,0 +1,58 @@
+{
+  "$id": "https://immune-system.local/contracts/policy-decision.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "decided_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "PERMITIR",
+        "PERMITIR_COM_RESTRIÇÕES",
+        "EXIGIR_CHECKPOINT",
+        "EXIGIR_APROVAÇÃO_HUMANA",
+        "BLOQUEAR",
+        "CONTER_E_ESCALAR"
+      ],
+      "type": "string"
+    },
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "mission_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "policy_version": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "reasons": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "restrictions": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0,
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "mission_id",
+    "decision",
+    "policy_version",
+    "reasons",
+    "decided_at"
+  ],
+  "title": "Policy Decision Contract",
+  "type": "object"
+}

@@ -1,0 +1,15 @@
+
+schema: 1
+name: MISSION_PROVEN
+default: false
+mandatory_gates:
+  - scope_explicit
+  - observable_result_achieved
+  - relevant_tests_passed
+  - regression_validated
+  - recovery_validated
+  - security_validated
+  - evidence_preserved
+  - no_critical_blocker
+  - independent_audit_passed
+rule: "MISSION_PROVEN is computed by the acceptance engine; no agent, Skill, Worker or donor may claim it."

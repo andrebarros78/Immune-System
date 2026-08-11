@@ -1,0 +1,643 @@
+{
+  "checks": [
+    {
+      "detail": "found=['checkpoint.schema.json', 'donor-component.schema.json', 'evidence.schema.json', 'human-exception.schema.json', 'incident.schema.json', 'mission.schema.json', 'policy-decision.schema.json', 'system.schema.json', 'task.schema.json', 'worker.schema.json']",
+      "name": "contract_set_complete",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "json_parse:checkpoint.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "draft2020:checkpoint.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict_object:checkpoint.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "required_nonempty:checkpoint.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "properties_present:checkpoint.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "json_parse:donor-component.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "draft2020:donor-component.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict_object:donor-component.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "required_nonempty:donor-component.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "properties_present:donor-component.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "json_parse:evidence.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "draft2020:evidence.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict_object:evidence.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "required_nonempty:evidence.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "properties_present:evidence.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "json_parse:human-exception.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "draft2020:human-exception.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict_object:human-exception.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "required_nonempty:human-exception.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "properties_present:human-exception.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "json_parse:incident.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "draft2020:incident.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict_object:incident.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "required_nonempty:incident.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "properties_present:incident.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "json_parse:mission.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "draft2020:mission.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict_object:mission.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "required_nonempty:mission.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "properties_present:mission.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "json_parse:policy-decision.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "draft2020:policy-decision.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict_object:policy-decision.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "required_nonempty:policy-decision.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "properties_present:policy-decision.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "json_parse:system.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "draft2020:system.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict_object:system.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "required_nonempty:system.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "properties_present:system.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "json_parse:task.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "draft2020:task.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict_object:task.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "required_nonempty:task.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "properties_present:task.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "json_parse:worker.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "draft2020:worker.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict_object:worker.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "required_nonempty:worker.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "properties_present:worker.schema.json",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "policy_decisions_exact",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:CREATED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:AUTHORIZED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:DISCOVERING",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:RUNNING",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:DEGRADED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:BLOCKED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:WAITING_HUMAN",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:CONTAINED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:VALIDATING",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:COMPLETED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:FAILED_SAFE",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_state:CANCELLED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:DETECTED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:CONFIRMED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:TRIAGED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:INVESTIGATING",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:CAUSE_IDENTIFIED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:FIX_PLANNED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:FIX_TESTING",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:FIX_APPROVED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:APPLYING",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:VALIDATING",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:MONITORING_RECOVERY",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:RESOLVED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:ROLLED_BACK",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:CONTAINED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:ESCALATED",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "incident_state:CLOSED_WITH_RISK",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "completed_requires_mission_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "attempt_no_blind_retry",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "dna:Fail-closed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "dna:Open Source Only",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "dna:Separação de funções",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "dna:checkpoint",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "dna:MISSION_PROVEN",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "dna:Loop Engineering",
+      "passed": true
+    },
+    {
+      "detail": "count=7",
+      "name": "rego_policy_count",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_package:authority.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_has_default:authority.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_package:checkpoint.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_has_default:checkpoint.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_package:destructive-actions.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_has_default:destructive-actions.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_package:donor-oss.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_has_default:donor-oss.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_package:financial.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_has_default:financial.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_package:mission-proven.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_has_default:mission-proven.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_package:secrets.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "rego_has_default:secrets.rego",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "authority_fail_closed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "donor_fail_closed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mission_proven_default_false",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario:invalid_mission_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario:worker_scope_expansion_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario:paid_action_requires_human",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario:material_change_without_checkpoint_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario:irreversible_without_recovery_requires_human",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario:disable_security_control_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario:non_oss_donor_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario:oss_donor_without_lab_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario:mission_proven_missing_gate_false",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "scenario:mission_proven_all_gates_true",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "donor_inventory_policy_oss_only",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "donor_inventory_no_failed_collection",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "source_manifest_sha256_shape",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "source_manifest_version",
+      "passed": true
+    }
+  ],
+  "controlled_file_sha256": {
+    "acceptance/mission-proven.yaml": "fb23485680e42825191fac4e40722b283af0a4a4b5459100d6dcf1564fbcf87b",
+    "acceptance/requirements.yaml": "c1af591194bb5a163540b0edb641d44fc734726057aa24d816d9c4da3be34517",
+    "adr/ADR-0001-sovereign-architecture.md": "966269b54b71534e4479ae50c0717c03688bd092aad2543f72975071e84bd2bb",
+    "constitution/IMUNE-DNA-001.md": "812892a90ca764eeea2f5e032b2bf06aa393e3a0ac0469009739c1bd2822b875",
+    "contracts/checkpoint.schema.json": "6eaa80f9ffa8a85d8f5eb76b170c2954551f55f96b5d0feb6acb9a6d10c30df9",
+    "contracts/donor-component.schema.json": "0d24b1641b423bf6f40259d3358ed9a6a5355ee15c6c00e04511d842ba58920b",
+    "contracts/evidence.schema.json": "13b4183fe9f4be3c51b9943871dfcd5a2f0bfbab2f9e2f21cf426e98d08fc287",
+    "contracts/human-exception.schema.json": "a2f2ec1b809ac1a221f3c2daa5b40321de7efc7a8a1af396469b862912f9a1e0",
+    "contracts/incident.schema.json": "fd32f5d29ed9f25e0788136080d717c9ad978742787074d61d4eb9f57e3e5455",
+    "contracts/mission.schema.json": "9e5ef1e95757d501a6ae8f2e50c1482c82b9873961006a7f5ad63227819e7925",
+    "contracts/policy-decision.schema.json": "c418ccab103f538eeeaf798d7a15f9cc46585b1081084b771042099d7157d025",
+    "contracts/system.schema.json": "8e8994f5ded4559d46c6f8d9af5c7a1366ad108ec03d220a1b50541ed70acd92",
+    "contracts/task.schema.json": "fa026720198a8c7abbb02730b4a4173e38e11e8a295ad0dbdeb6e866f7274be8",
+    "contracts/worker.schema.json": "cbd4c5286f010542b8032081437ae7270ae907c3ad7926fc459d61ac8f13f4a7",
+    "policies/authority.rego": "a9db63096e4f49134f764aa30336bd8e6ef315c5922f24999cdb8dea443b160f",
+    "policies/checkpoint.rego": "066744aa01fb2918622e209eb91581877d8e8fd9f043667464caf098cf6bcd81",
+    "policies/destructive-actions.rego": "75b24be4ff4003e9c91c8e7a80b60fc9ff916878fda115a127d502e50d26d01c",
+    "policies/donor-oss.rego": "1e1557d7febc840b0cf689ce7f4e31fd6bb57243801d2df35f93171b5d9c31f6",
+    "policies/financial.rego": "cfb02203cc1726e1a352a3c1e35ed74ab1587b80dd82be790ccd59e7d6b76ac5",
+    "policies/mission-proven.rego": "209085c717395b19dc2295d41d072a03bc895d9eb6c165203970a290d51d966e",
+    "policies/secrets.rego": "5bd44bfd352b01c62187d575d4b64dcc6dc99e98e0720b6d1a82119c8a1a17fa",
+    "specification/SISTEMA_IMUNOLOGICO_SPEC_V1.md": "afdc73d6ba5231b905b526460ddb16c4feefc6ac3fd4dafdd31a2b1eebbb1e80",
+    "specification/SOURCE_MANIFEST.json": "8406c3a808ba6a1170a96b6abf24fc074fa46e88ad6051cfaef351c176736ef1",
+    "state-machines/attempt.yaml": "c75b8ada69bd5a42a4c866c3e5bfefb8e3b951896a0d5cce4d20a142226e0d60",
+    "state-machines/incident.yaml": "5e1b5cf60f2111dff7d275971e8cfc6c65b07f8278ad210d419c42ad4e650ac3",
+    "state-machines/mission.yaml": "9104073b3e09c192cdd633172c6031cb2bc5d74c280f6a5dc205db3c768a24d9"
+  },
+  "phase": "PHASE_1_SPECIFICATION_AND_CONTRACTS",
+  "result": "PHASE1_PROVEN",
+  "schema": 1,
+  "scope_note": "PHASE1_PROVEN prova somente consistência de especificação e contratos; não é MISSION_PROVEN do produto completo.",
+  "source_sha256": "d912a3b7410be88579b33be4fb266c72ca7dc15fc5550206747b7b7eef3327f5",
+  "summary": {
+    "failed": 0,
+    "passed": 120,
+    "total": 120
+  },
+  "validated_at": "2026-08-11T13:32:08.956743+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "attestation": "Hash calculado sobre o arquivo fornecido pelo responsável do produto no momento da execução da Fase 1.",
+  "bytes": 40412,
+  "date": "2026-08-11",
+  "precedence": [
+    "decisões explícitas mais recentes do responsável do produto",
+    "ADRs aprovadas posteriores",
+    "contratos versionados",
+    "evidência operacional",
+    "documentação"
+  ],
+  "schema": 1,
+  "sha256": "d912a3b7410be88579b33be4fb266c72ca7dc15fc5550206747b7b7eef3327f5",
+  "source_name": "SISTEMA_IMUNOLOGICO_ESPECIFICACAO_DETALHADA(2).md",
+  "title": "SISTEMA IMUNOLÓGICO — Especificação conceitual e funcional detalhada",
+  "version": "1.0"
+}
