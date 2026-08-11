@@ -1,0 +1,202 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "phase1_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase2_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase3_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase4_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/observability.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/discovery.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:tests/phase5/test_discovery.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:scripts/validate_phase5.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:adr/ADR-0005-discovery-observability.md",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:.github/workflows/phase5-observability.yml",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/observability.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/discovery.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "vendor_neutral_models",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "signal_deduplication",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "signal_correlation",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "robust_baseline_anomaly",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "evidence_sha256",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured_metrics",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured_logs",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured_traces",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "sensor_health_isolated",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "dependency_graph",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "configured_health_check",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "donor_adapter_gate",
+      "passed": true
+    },
+    {
+      "detail": "{'total': 44, 'approved': 0, 'quarantined': 44, 'rejected': 0}",
+      "name": "donor_inventory_44",
+      "passed": true
+    },
+    {
+      "detail": "{'total': 44, 'approved': 0, 'quarantined': 44, 'rejected': 0}",
+      "name": "real_donors_still_unapproved",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "real_donors_no_authority",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_sensor_failure_isolated",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_anomaly_detected",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_evidence_persisted",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_inventory_reproducible",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_dependency_mapped",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_health_states",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_trace_available",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_logs_available",
+      "passed": true
+    },
+    {
+      "detail": "None",
+      "name": "e2e_audit_chain_valid",
+      "passed": true
+    }
+  ],
+  "controlled_file_sha256": {
+    ".github/workflows/phase5-observability.yml": "293adaf0fcccd19ae209b929b2c1e3b092589db2fc20e206db14483c4fbf9783",
+    "adr/ADR-0005-discovery-observability.md": "fb64bccf32ff2e27d0ccbde4c6d9e0b9d5cdac6960d50dbe7c8132be247d2362",
+    "immune_core/discovery.py": "e73aa78132bd569afeccc67bbf46fd0e2f134258640f6efbca1a70d8c8e1461b",
+    "immune_core/observability.py": "628cdbdab6d8e377873a1ed48a2af2f23248003a66bcb2c6c179e078d953c1ed",
+    "scripts/validate_phase5.py": "f14e190813ab87e1ad19195b294e56a1bb89bf4d1290b479718a8178b5127fba",
+    "tests/phase5/test_discovery.py": "2ce04fff1c7038ffb8e6f74a3d025058b382e21ca67158419f9a1af43ec973e8"
+  },
+  "phase": "PHASE_5_DISCOVERY_AND_OBSERVABILITY",
+  "result": "PHASE5_PROVEN",
+  "schema": 1,
+  "scope_note": "PHASE5_PROVEN proves vendor-neutral discovery, observability, signal processing, evidence persistence and failure-isolated sensors. Real donor sensors remain unapproved until laboratory evidence exists. It is not MISSION_PROVEN for the complete product.",
+  "summary": {
+    "failed": 0,
+    "passed": 36,
+    "total": 36
+  },
+  "validated_at": "2026-08-11T15:02:58.807040+00:00"
+}
