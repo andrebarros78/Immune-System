@@ -1,0 +1,284 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "phase1_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase2_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase3_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/providers.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/memory.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/skills.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/cognition.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:tests/phase4/test_cognition.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:scripts/validate_phase4.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:adr/ADR-0004-cognition-skills.md",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:.github/workflows/phase4-cognition.yml",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "provider_proposal_only_contract",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "provider_untrusted_data_boundary",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "provider_http_has_no_tool_payload",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "provider_paid_identity_gate",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "provider_degraded_no_ai",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "memory_quarantine_first",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "memory_promote_scope",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "memory_integrity_sha256",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "skills_reuse_donor_lab",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "skills_adapter_only",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "skills_non_executable",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "cognition_no_subprocess",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "cognition_no_worker_runner",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "cognition_no_safe_executor",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "cognition_policy_bridge",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "cognition_queue_only_bridge",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/providers.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/memory.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/skills.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/cognition.py",
+      "passed": true
+    },
+    {
+      "detail": "{'total': 44, 'approved': 0, 'quarantined': 44, 'rejected': 0}",
+      "name": "donor_inventory_count_44",
+      "passed": true
+    },
+    {
+      "detail": "{'total': 44, 'approved': 0, 'quarantined': 44, 'rejected': 0}",
+      "name": "real_donors_not_autoapproved",
+      "passed": true
+    },
+    {
+      "detail": "{'total': 44, 'approved': 0, 'quarantined': 44, 'rejected': 0}",
+      "name": "real_donors_quarantined",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "real_donors_have_no_execution",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_memory_initial_quarantine",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_quarantined_memory_not_recalled",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_memory_promoted",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_promoted_memory_recalled",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_skill_incomplete_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_skill_approved_adapter_only",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_no_ai_degraded",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_no_ai_has_no_tasks",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_untrusted_observation_tagged",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_skill_context_non_executable",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_ai_proposal_queued",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_ai_has_no_direct_effect",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_worker_executes_after_gates",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_effect_after_worker_only",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_financial_proposal_not_queued",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_suspended_skill_blocked",
+      "passed": true
+    },
+    {
+      "detail": "None",
+      "name": "e2e_audit_chain_valid",
+      "passed": true
+    }
+  ],
+  "controlled_file_sha256": {
+    ".github/workflows/phase4-cognition.yml": "cab6e056d74585c9b558705c616d2d5c2d02d93344ec8d6d65a957c7ca3c3fab",
+    "adr/ADR-0004-cognition-skills.md": "3bae61011b9178f7d84ac432cbaad3465a56edff5c171cb652d339e86ededf14",
+    "immune_core/cognition.py": "600095065ab09a6e4ce0966c6277bc73fc83fc980ad98dd2df6683c393f47ae1",
+    "immune_core/memory.py": "d5d4da7143da4012e2f8ed682aade1e7b4b1334cd7df8c5f22e2274249cacac1",
+    "immune_core/providers.py": "64597f404cd0dcd946b017d5e0d7cd23f16866301e3ced91c4b60904b23a7fa2",
+    "immune_core/skills.py": "b8db0b995a2d86fddb9105668397bcd8e34645a501412e52bcf78e0c2cf929ba",
+    "scripts/validate_phase4.py": "17e22c65c5995963ac2f6c0ed240f3f1c1e58c733579929c2d695ffcbc46003c",
+    "tests/phase4/test_cognition.py": "68105801cb174bcd3c1462b089458f77a773d70622d436dcb4e6ca4bb90175b6"
+  },
+  "phase": "PHASE_4_COGNITION_AND_SKILLS",
+  "result": "PHASE4_PROVEN",
+  "schema": 1,
+  "scope_note": "PHASE4_PROVEN proves provider abstraction, AI/no-AI fallback, quarantine-first memory, governed skills and policy-gated cognition-to-worker flow. Real donor agents remain unapproved until their laboratory evidence exists. This is not MISSION_PROVEN for the complete product.",
+  "summary": {
+    "failed": 0,
+    "passed": 52,
+    "total": 52
+  },
+  "validated_at": "2026-08-11T14:49:13.736557+00:00"
+}
