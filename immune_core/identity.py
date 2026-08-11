@@ -65,6 +65,8 @@ class IdentityAuthority:
             body, provided_sig = token.split(".", 1)
             expected = hmac.new(self._secret, body.encode("ascii"), hashlib.sha256).digest()
             actual = _b64u_decode(provided_sig)
+            if not hmac.compare_digest(_b64u_encode(actual), provided_sig):
+                raise IdentityError("non-canonical signature encoding")
             if not hmac.compare_digest(expected, actual):
                 raise IdentityError("invalid signature")
             payload = json.loads(_b64u_decode(body).decode("utf-8"))
