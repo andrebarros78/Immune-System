@@ -1,0 +1,57 @@
+name: Release V1 - Verified Tag
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - RELEASE_V1_STATUS.md
+
+permissions:
+  contents: write
+
+jobs:
+  tag-v1:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout consolidated main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify V1 proof chain
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3 4 5 6 7 8 9 10; do
+            grep -q "PHASE${n}_PROVEN" "PHASE${n}_STATUS.md"
+          done
+          grep -q "MISSION_PROVEN" MISSION_STATUS.md
+          grep -q "DIGITAL_TWIN_PROVEN" DIGITAL_TWIN_STATUS.md
+          grep -q "V1_CONSOLIDATED_PROVEN" RELEASE_V1_STATUS.md
+
+      - name: Create immutable annotated tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="v1.0.0"
+          TARGET="$(git rev-parse HEAD)"
+          git config user.name "immune-system-release-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            EXISTING="$(git rev-list -n 1 "$TAG")"
+            test "$EXISTING" = "$TARGET"
+            echo "Tag $TAG already points to $TARGET"
+          else
+            git tag -a "$TAG" "$TARGET" -m "Sistema Imunologico V1.0.0 - MISSION_PROVEN + DIGITAL_TWIN_PROVEN"
+            git push origin "$TAG"
+          fi
+
+      - name: Verify remote tag target
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --tags --force
+          test "$(git rev-list -n 1 v1.0.0)" = "$(git rev-parse HEAD)"
+          echo "TAG_PROVEN=v1.0.0"
+          echo "TARGET=$(git rev-parse HEAD)"
