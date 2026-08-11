@@ -1,0 +1,309 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "phase1_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase2_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase3_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase4_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase5_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase6_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase7_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase8_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/operator_dispatch.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/state_backup.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:tests/phase9/test_end_to_end_proof.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:scripts/validate_phase9.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:adr/ADR-0009-end-to-end-proof.md",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:.github/workflows/phase9-end-to-end.yml",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/operator_dispatch.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/state_backup.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:tests/phase9/test_end_to_end_proof.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "dispatcher_does_not_execute_host",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "dispatcher_argv_is_registry_owned",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "backup_uses_sqlite_consistent_backup",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "backup_checks_integrity",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "backup_verifies_sha256",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "load_levels_declared",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "endurance_gate_declared",
+      "passed": true
+    },
+    {
+      "detail": ".................\n----------------------------------------------------------------------\nRan 17 tests in 9.187s\n\nOK\n",
+      "name": "phase9_suite_passed_in_validator",
+      "passed": true
+    },
+    {
+      "detail": "17",
+      "name": "phase9_test_count_at_least_17",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_01",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_02",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_03",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_04",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_05",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_06",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_07",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_08",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_09",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_10",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_11",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_12",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_13",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_14",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "minimum_scenario_15",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "security_scenario_present",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "endurance_scenario_present",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "load_metrics_present",
+      "passed": true
+    },
+    {
+      "detail": "{'levels': [1, 4, 8, 16, 32], 'tasks': 61, 'p50_seconds': 0.10871172700001352, 'p95_seconds': 1.2477856749999887, 'p99_seconds': 1.6693262119999872}",
+      "name": "load_levels_proven",
+      "passed": true
+    },
+    {
+      "detail": "{'levels': [1, 4, 8, 16, 32], 'tasks': 61, 'p50_seconds': 0.10871172700001352, 'p95_seconds': 1.2477856749999887, 'p99_seconds': 1.6693262119999872}",
+      "name": "load_task_count_proven",
+      "passed": true
+    },
+    {
+      "detail": "{'levels': [1, 4, 8, 16, 32], 'tasks': 61, 'p50_seconds': 0.10871172700001352, 'p95_seconds': 1.2477856749999887, 'p99_seconds': 1.6693262119999872}",
+      "name": "load_p50_recorded",
+      "passed": true
+    },
+    {
+      "detail": "{'levels': [1, 4, 8, 16, 32], 'tasks': 61, 'p50_seconds': 0.10871172700001352, 'p95_seconds': 1.2477856749999887, 'p99_seconds': 1.6693262119999872}",
+      "name": "load_p95_recorded",
+      "passed": true
+    },
+    {
+      "detail": "{'levels': [1, 4, 8, 16, 32], 'tasks': 61, 'p50_seconds': 0.10871172700001352, 'p95_seconds': 1.2477856749999887, 'p99_seconds': 1.6693262119999872}",
+      "name": "load_p99_under_ci_gate",
+      "passed": true
+    },
+    {
+      "detail": "{'duration_seconds': 2.011706180999994, 'cycles': 234, 'failures': 0}",
+      "name": "endurance_duration_proven",
+      "passed": true
+    },
+    {
+      "detail": "{'duration_seconds': 2.011706180999994, 'cycles': 234, 'failures': 0}",
+      "name": "endurance_cycles_proven",
+      "passed": true
+    },
+    {
+      "detail": "{'duration_seconds': 2.011706180999994, 'cycles': 234, 'failures': 0}",
+      "name": "endurance_zero_failures",
+      "passed": true
+    }
+  ],
+  "controlled_file_sha256": {
+    ".github/workflows/phase9-end-to-end.yml": "33ac34a8f679da8292852749206b9d6f12f90fcae64e224a46cc76196925b2df",
+    "adr/ADR-0009-end-to-end-proof.md": "f2aebe55520f4b5953c5cb7e950854cf11bae7cdd6aae3e240ce9ebf993023e1",
+    "immune_core/operator_dispatch.py": "9125ea4d548a21fc5b8562c393095bf21163212da333a8e39266721e7e62a544",
+    "immune_core/state_backup.py": "e108a7c8a3d153116fa74e515d720e2456a0d8cc40ad6dd045aab9e0b2687804",
+    "scripts/validate_phase9.py": "a7251edd666b36f0d9cb267a13d108ec04afb8c6a3338dbe7a443a36c7d86680",
+    "tests/phase9/test_end_to_end_proof.py": "2e54c655c631c926e70b6312682a6fd97ce95a2cf4ed2e8dc0c123ccbd48a8f6"
+  },
+  "environment": {
+    "controlled_failure_scope": "temporary files, SQLite databases and loopback processes only",
+    "external_effects": false,
+    "runner_contract": "GitHub Actions ubuntu-24.04"
+  },
+  "executed_tests": 17,
+  "metrics": {
+    "endurance": {
+      "cycles": 234,
+      "duration_seconds": 2.011706180999994,
+      "failures": 0
+    },
+    "load": {
+      "levels": [
+        1,
+        4,
+        8,
+        16,
+        32
+      ],
+      "p50_seconds": 0.10871172700001352,
+      "p95_seconds": 1.2477856749999887,
+      "p99_seconds": 1.6693262119999872,
+      "tasks": 61
+    }
+  },
+  "minimum_scenarios": 15,
+  "phase": "PHASE_9_END_TO_END_PROOF",
+  "result": "PHASE9_PROVEN",
+  "schema": 1,
+  "scope_note": "PHASE9_PROVEN proves the specification's controlled end-to-end scenarios on a real GitHub-hosted Linux runner, including real loopback process failure/recovery, regression, rollback, restart/resume, no-AI mode, backup/restore, 1/4/8/16/32 queue concurrency, bounded CI endurance and security gates. It does not claim 24x7 installed operation, multi-OS production deployment, or complete-product MISSION_PROVEN; Phase 10 remains required.",
+  "summary": {
+    "failed": 0,
+    "passed": 52,
+    "total": 52
+  },
+  "validated_at": "2026-08-11T16:15:07.738683+00:00"
+}
