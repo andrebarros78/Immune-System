@@ -1,0 +1,87 @@
+name: Phase 10 - Continuous operation
+
+on:
+  push:
+    branches:
+      - phase/10-continuous-operation
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prove-phase10:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout phase branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/10-continuous-operation
+          fetch-depth: 0
+
+      - name: Verify sovereign baselines
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3 4 5 6 7 8 9; do
+            grep -q "PHASE${n}_PROVEN" "PHASE${n}_STATUS.md"
+          done
+
+      - name: Compile continuous operation
+        run: python -m compileall -q immune_core scripts/immune_runtime.py scripts/validate_phase10.py tests/phase10
+
+      - name: Run Phase 2 regression tests
+        run: python -m unittest discover -s tests/phase2 -p 'test_*.py' -v
+
+      - name: Run Phase 3 regression tests
+        run: python -m unittest discover -s tests/phase3 -p 'test_*.py' -v
+
+      - name: Run Phase 4 regression tests
+        run: python -m unittest discover -s tests/phase4 -p 'test_*.py' -v
+
+      - name: Run Phase 5 regression tests
+        run: python -m unittest discover -s tests/phase5 -p 'test_*.py' -v
+
+      - name: Run Phase 6 regression tests
+        run: python -m unittest discover -s tests/phase6 -p 'test_*.py' -v
+
+      - name: Run Phase 7 regression tests
+        run: python -m unittest discover -s tests/phase7 -p 'test_*.py' -v
+
+      - name: Run Phase 8 regression tests
+        run: python -m unittest discover -s tests/phase8 -p 'test_*.py' -v
+
+      - name: Run Phase 9 regression tests
+        run: python -m unittest discover -s tests/phase9 -p 'test_*.py' -v
+
+      - name: Run Phase 10 continuous operation tests
+        run: python -m unittest discover -s tests/phase10 -p 'test_*.py' -v
+
+      - name: Run deterministic Phase 10 proof
+        run: python scripts/validate_phase10.py
+
+      - name: Verify no nested upstream Git metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find . -mindepth 2 -type d -name .git -print -quit | grep -q .; then
+            echo "Nested .git metadata found"
+            find . -mindepth 2 -type d -name .git -print
+            exit 1
+          fi
+
+      - name: Commit Phase 10 proof evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add PHASE10_STATUS.md MISSION_STATUS.md evidence/phase10-validation.json
+          if git diff --cached --quiet; then
+            echo "No evidence changes"
+            exit 0
+          fi
+          git commit -m "feat(phase10): record continuous operation proof [skip ci]"
+          git push origin HEAD:phase/10-continuous-operation
