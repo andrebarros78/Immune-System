@@ -1,0 +1,68 @@
+name: Phase 5 - Discovery and observability
+
+on:
+  push:
+    branches:
+      - phase/5-discovery-observability
+    paths:
+      - immune_core/observability.py
+      - immune_core/discovery.py
+      - tests/phase5/**
+      - scripts/validate_phase5.py
+      - adr/ADR-0005-discovery-observability.md
+      - .github/workflows/phase5-observability.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prove-phase5:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout phase branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/5-discovery-observability
+          fetch-depth: 0
+      - name: Verify sovereign baselines
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'PHASE1_PROVEN' PHASE1_STATUS.md
+          grep -q 'PHASE2_PROVEN' PHASE2_STATUS.md
+          grep -q 'PHASE3_PROVEN' PHASE3_STATUS.md
+          grep -q 'PHASE4_PROVEN' PHASE4_STATUS.md
+      - name: Compile observability foundation
+        run: python -m compileall -q immune_core scripts/validate_phase5.py tests/phase5
+      - name: Run Phase 2 regression tests
+        run: python -m unittest discover -s tests/phase2 -p 'test_*.py' -v
+      - name: Run Phase 3 regression tests
+        run: python -m unittest discover -s tests/phase3 -p 'test_*.py' -v
+      - name: Run Phase 4 regression tests
+        run: python -m unittest discover -s tests/phase4 -p 'test_*.py' -v
+      - name: Run Phase 5 discovery and observability tests
+        run: python -m unittest discover -s tests/phase5 -p 'test_*.py' -v
+      - name: Run deterministic Phase 5 proof
+        run: python scripts/validate_phase5.py
+      - name: Verify no nested upstream Git metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find immune_core tests/phase5 scripts adr -mindepth 1 -name .git -print -quit | grep -q .; then
+            echo 'Nested upstream .git metadata detected'
+            exit 1
+          fi
+      - name: Commit Phase 5 proof evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add evidence/phase5-validation.json PHASE5_STATUS.md
+          if git diff --cached --quiet; then
+            echo 'No Phase 5 evidence changes.'
+          else
+            git commit -m 'feat(phase5): record proven discovery and observability'
+            git push origin HEAD:phase/5-discovery-observability
+          fi
