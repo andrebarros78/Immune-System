@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "authority": "none",
+  "execution": "core-command-queue-only",
+  "runbooks": [
+    {"id": "service-recovery", "action": "diagnose", "required_parameters": ["service"]},
+    {"id": "sensor-failure", "action": "diagnose", "required_parameters": ["sensor_id"]},
+    {"id": "no-ai", "action": "diagnose", "required_parameters": []},
+    {"id": "rollback", "action": "rollback", "required_parameters": ["checkpoint_id"]},
+    {"id": "mission-blocked", "action": "diagnose", "required_parameters": []},
+    {"id": "restore", "action": "restore", "required_parameters": ["checkpoint_id"]},
+    {"id": "degraded-operation", "action": "diagnose", "required_parameters": []}
+  ]
+}
