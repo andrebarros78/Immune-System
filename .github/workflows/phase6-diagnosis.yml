@@ -1,0 +1,79 @@
+name: Phase 6 - Diagnosis and remediation
+
+on:
+  push:
+    branches:
+      - phase/6-diagnosis-remediation
+    paths:
+      - immune_core/diagnosis.py
+      - immune_core/remediation.py
+      - tests/phase6/**
+      - scripts/validate_phase6.py
+      - adr/ADR-0006-diagnosis-remediation.md
+      - .github/workflows/phase6-diagnosis.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prove-phase6:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout phase branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase/6-diagnosis-remediation
+          fetch-depth: 0
+
+      - name: Verify sovereign baselines
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 1 2 3 4 5; do
+            grep -q "PHASE${n}_PROVEN" "PHASE${n}_STATUS.md"
+          done
+
+      - name: Compile diagnosis foundation
+        run: python -m compileall -q immune_core scripts/validate_phase6.py tests/phase6
+
+      - name: Run Phase 2 regression tests
+        run: python -m unittest discover -s tests/phase2 -p 'test_*.py' -v
+
+      - name: Run Phase 3 regression tests
+        run: python -m unittest discover -s tests/phase3 -p 'test_*.py' -v
+
+      - name: Run Phase 4 regression tests
+        run: python -m unittest discover -s tests/phase4 -p 'test_*.py' -v
+
+      - name: Run Phase 5 regression tests
+        run: python -m unittest discover -s tests/phase5 -p 'test_*.py' -v
+
+      - name: Run Phase 6 diagnosis and remediation tests
+        run: python -m unittest discover -s tests/phase6 -p 'test_*.py' -v
+
+      - name: Run deterministic Phase 6 proof
+        run: python scripts/validate_phase6.py
+
+      - name: Verify no nested upstream Git metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find immune_core tests/phase6 scripts adr -mindepth 1 -name .git -print -quit | grep -q .; then
+            echo 'Nested upstream .git metadata detected'
+            exit 1
+          fi
+
+      - name: Commit Phase 6 proof evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add evidence/phase6-validation.json PHASE6_STATUS.md
+          if git diff --cached --quiet; then
+            echo 'No Phase 6 evidence changes.'
+          else
+            git commit -m 'feat(phase6): record proven diagnosis and remediation'
+            git push origin HEAD:phase/6-diagnosis-remediation
+          fi
