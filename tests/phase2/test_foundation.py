@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from immune_core.acceptance import REQUIRED_GATES, MissionProofEngine
+from immune_core.acceptance import REQUIRED_GATES, MissionProof, MissionProofEngine
 from immune_core.audit import AuditLedger
 from immune_core.engine import DurableLoopEngine
 from immune_core.identity import IdentityAuthority, IdentityError
@@ -30,7 +30,9 @@ class FoundationTest(unittest.TestCase):
             constitution_path=self.constitution,
             expected_constitution_sha256=self.constitution_hash,
         )
-        self.engine = DurableLoopEngine(self.store, self.audit)
+        self.proof_secret = b"p" * 32
+        self.proof_engine = MissionProofEngine(self.audit, self.proof_secret)
+        self.engine = DurableLoopEngine(self.store, self.audit, self.proof_engine)
         self.engine.create_mission("m1", "s1")
 
     def tearDown(self):
@@ -146,7 +148,8 @@ class FoundationTest(unittest.TestCase):
 
         self.store = SQLiteStateStore(self.db)
         self.audit = AuditLedger(self.store)
-        self.engine = DurableLoopEngine(self.store, self.audit)
+        self.proof_engine = MissionProofEngine(self.audit, self.proof_secret)
+        self.engine = DurableLoopEngine(self.store, self.audit, self.proof_engine)
         summary = self.engine.resume(now=1006)
         self.assertEqual(summary["recovered_leases"], 1)
         lease2 = self.engine.claim_next("w2", now=1006)
@@ -161,7 +164,11 @@ class FoundationTest(unittest.TestCase):
         self.engine.transition_mission("m1", "VALIDATING", "validate")
         with self.assertRaises(StateError):
             self.engine.transition_mission("m1", "COMPLETED", "not proven")
-        self.engine.transition_mission("m1", "COMPLETED", "proven", mission_proven=True)
+        forged = MissionProof("m1", True, (), "0" * 64, "0" * 64)
+        with self.assertRaises(StateError):
+            self.engine.transition_mission("m1", "COMPLETED", "forged", proof=forged)
+        full = self.proof_engine.evaluate("m1", {k: True for k in REQUIRED_GATES})
+        self.engine.transition_mission("m1", "COMPLETED", "proven", proof=full)
         self.assertEqual(self.store.get_mission("m1")["state"], "COMPLETED")
 
     def test_audit_chain_and_tamper_detection(self):
@@ -174,7 +181,7 @@ class FoundationTest(unittest.TestCase):
         self.assertEqual(bad_seq, 2)
 
     def test_mission_proof_engine(self):
-        proof_engine = MissionProofEngine(self.audit)
+        proof_engine = MissionProofEngine(self.audit, self.proof_secret)
         partial = proof_engine.evaluate("m1", {"scope_explicit": True})
         self.assertFalse(partial.proven)
         full = proof_engine.evaluate("m1", {k: True for k in REQUIRED_GATES})

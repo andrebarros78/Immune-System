@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from immune_core.acceptance import REQUIRED_GATES, MissionProofEngine
+from immune_core.acceptance import REQUIRED_GATES, MissionProof, MissionProofEngine
 from immune_core.audit import AuditLedger
 from immune_core.engine import DurableLoopEngine
 from immune_core.identity import IdentityAuthority
@@ -52,8 +52,9 @@ with tempfile.TemporaryDirectory() as tmp:
     audit = AuditLedger(store)
     identity = IdentityAuthority(b"phase2-validation-secret-material!"[:32])
     guard = PolicyGuard.from_repository(ROOT, identity, audit)
-    engine = DurableLoopEngine(store, audit)
-    proof_engine = MissionProofEngine(audit)
+    proof_secret = b"phase2-proof-secret-material-0001"[:32]
+    proof_engine = MissionProofEngine(audit, proof_secret)
+    engine = DurableLoopEngine(store, audit, proof_engine)
 
     engine.create_mission("validation-mission", "validation-system")
     check("mission_persisted", store.get_mission("validation-mission")["state"] == "CREATED")
@@ -134,8 +135,8 @@ with tempfile.TemporaryDirectory() as tmp:
 
     store = SQLiteStateStore(db)
     audit = AuditLedger(store)
-    engine = DurableLoopEngine(store, audit)
-    proof_engine = MissionProofEngine(audit)
+    proof_engine = MissionProofEngine(audit, proof_secret)
+    engine = DurableLoopEngine(store, audit, proof_engine)
     resumed = engine.resume(now=4006)
     check("restart_recovers_expired_lease", resumed.get("recovered_leases") == 1)
     resumed_lease = engine.claim_next("worker-new", now=4006)
@@ -153,11 +154,19 @@ with tempfile.TemporaryDirectory() as tmp:
         blocked_completion = True
     check("mission_completion_requires_proof", blocked_completion)
 
+    forged_blocked = False
+    forged = MissionProof("validation-mission", True, (), "0" * 64, "0" * 64)
+    try:
+        engine.transition_mission("validation-mission", "COMPLETED", "forged proof", proof=forged)
+    except StateError:
+        forged_blocked = True
+    check("mission_forged_proof_blocked", forged_blocked)
+
     partial = proof_engine.evaluate("validation-mission", {"scope_explicit": True})
     check("mission_proof_missing_gate_false", partial.proven is False)
     full = proof_engine.evaluate("validation-mission", {k: True for k in REQUIRED_GATES})
     check("mission_proof_all_gates_true", full.proven is True)
-    engine.transition_mission("validation-mission", "COMPLETED", "proof accepted", mission_proven=full.proven)
+    engine.transition_mission("validation-mission", "COMPLETED", "proof accepted", proof=full)
     check("mission_completed_only_after_proof", store.get_mission("validation-mission")["state"] == "COMPLETED")
 
     chain_ok, bad = audit.verify_chain()
@@ -188,7 +197,7 @@ for item in controlled_roots:
         hashes[path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
     elif path.is_dir():
         for child in sorted(path.rglob("*")):
-            if child.is_file():
+            if child.is_file() and "__pycache__" not in child.parts and child.suffix != ".pyc":
                 hashes[child.relative_to(ROOT).as_posix()] = hashlib.sha256(child.read_bytes()).hexdigest()
 
 evidence = {

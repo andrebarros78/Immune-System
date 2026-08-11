@@ -23,9 +23,12 @@ sem conceder autoridade aos 44 doadores OSS ainda em laboratório.
    scopes explícitos e verificação de expiração/assinatura.
 6. Auditoria material é append-only por interface e encadeada por SHA-256. A cadeia pode
    detectar adulteração persistida.
-7. `MISSION_PROVEN` continua sendo calculado apenas pelo Motor de Aceite e não pode ser
-   declarado por agente, Skill, Worker ou doador.
-8. Nenhuma peça OSS recebe execução direta ou autoridade nesta fase.
+7. `MISSION_PROVEN` é calculado e assinado por HMAC-SHA256 pelo Motor de Aceite; o motor
+   durável só aceita conclusão com prova válida para a mesma missão. Booleanos fornecidos
+   por agentes/Workers não têm autoridade.
+8. O PolicyGuard só aceita entrada operacional pela rota autenticada `evaluate_token`; a
+   avaliação de um Principal já verificado é interna.
+9. Nenhuma peça OSS recebe execução direta ou autoridade nesta fase.
 
 ## Consequências
 

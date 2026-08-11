@@ -72,9 +72,9 @@ class PolicyGuard:
                 request,
                 PolicyDecision("BLOQUEAR", f"identidade inválida: {exc}", policy_version=self.POLICY_VERSION),
             )
-        return self.evaluate(principal, request)
+        return self._evaluate_verified(principal, request)
 
-    def evaluate(self, principal: Principal, request: dict[str, Any]) -> PolicyDecision:
+    def _evaluate_verified(self, principal: Principal, request: dict[str, Any]) -> PolicyDecision:
         if not self._constitution_ok():
             return self._record(
                 principal,

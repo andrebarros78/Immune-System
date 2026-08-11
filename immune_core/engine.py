@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from .acceptance import MissionProof, MissionProofEngine
 from .audit import AuditLedger
 from .models import TaskLease
 from .storage import SQLiteStateStore, StateError
@@ -26,9 +27,10 @@ MISSION_TRANSITIONS: dict[str, set[str]] = {
 class DurableLoopEngine:
     """Motor durável mínimo da missão: estado, fila, lease, retry e retomada."""
 
-    def __init__(self, store: SQLiteStateStore, audit: AuditLedger):
+    def __init__(self, store: SQLiteStateStore, audit: AuditLedger, proof_engine: MissionProofEngine | None = None):
         self.store = store
         self.audit = audit
+        self.proof_engine = proof_engine
 
     def create_mission(self, mission_id: str, system_id: str) -> None:
         self.store.create_mission(mission_id, system_id)
@@ -40,7 +42,7 @@ class DurableLoopEngine:
         to_state: str,
         reason: str,
         *,
-        mission_proven: bool = False,
+        proof: MissionProof | None = None,
     ) -> None:
         current = self.store.get_mission(mission_id)
         if not current:
@@ -48,14 +50,15 @@ class DurableLoopEngine:
         from_state = str(current["state"])
         if to_state not in MISSION_TRANSITIONS.get(from_state, set()):
             raise StateError(f"invalid mission transition {from_state}->{to_state}")
-        if to_state == "COMPLETED" and not mission_proven:
-            raise StateError("COMPLETED requires MISSION_PROVEN")
+        if to_state == "COMPLETED":
+            if self.proof_engine is None or proof is None or not self.proof_engine.verify(proof, mission_id):
+                raise StateError("COMPLETED requires verified MISSION_PROVEN")
         self.store.set_mission_state(mission_id, to_state, reason)
         self.audit.append(
             actor="sovereign-engine",
             action="mission_transition",
             mission_id=mission_id,
-            payload={"from": from_state, "to": to_state, "reason": reason, "mission_proven": mission_proven},
+            payload={"from": from_state, "to": to_state, "reason": reason, "mission_proven": bool(proof and proof.proven)},
         )
 
     def submit_task(
