@@ -16,6 +16,7 @@ from immune_core.observability import ObservabilityStore, SignalProcessor
 from immune_core.operations import CommandGateway, OperationalStore, OperationsError, ReadModel, ReportBuilder
 from immune_core.panel import OperationalPanel, serve_read_only
 from immune_core.policy import PolicyGuard
+from immune_core.remediation import RemediationPlanner
 from immune_core.runbooks import RunbookRunner
 from immune_core.storage import SQLiteStateStore
 
@@ -36,6 +37,7 @@ class Phase7Test(unittest.TestCase):
         self.read = ReadModel(self.store, freshness_seconds=60)
         self.obs = ObservabilityStore(self.store, self.audit)
         self.incidents = IncidentEngine(self.store, self.obs, self.audit)
+        self.remediation = RemediationPlanner(self.store, self.incidents, self.obs, self.audit)
         self.engine.create_mission("m", "sys")
         self.engine.transition_mission("m", "AUTHORIZED", "phase7")
         self.engine.transition_mission("m", "RUNNING", "phase7")
