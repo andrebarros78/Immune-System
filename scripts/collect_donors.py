@@ -12,7 +12,6 @@ from __future__ import annotations
 import datetime as dt
 import hashlib
 import json
-import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -26,17 +25,22 @@ OUT = ROOT / "donors" / "collected"
 LOCK = ROOT / "donors" / "LOCK.json"
 
 ALLOWED_LICENSES = {
-    "MIT": ("MIT License",),
-    "Apache-2.0": ("Apache License", "Version 2.0"),
-    "BSD-2-Clause": ("Redistribution and use in source and binary forms",),
-    "BSD-3-Clause": ("Redistribution and use in source and binary forms",),
-    "MPL-2.0": ("Mozilla Public License", "2.0"),
+    "MIT",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "MPL-2.0",
 }
 
 LICENSE_NAMES = (
     "LICENSE",
     "LICENSE.txt",
     "LICENSE.md",
+    "LICENSE-Apache-2.0",
+    "LICENSE-APACHE",
+    "apache-2.0.LICENSE",
+    "LICENSE-MIT",
+    "MIT-LICENSE",
     "COPYING",
     "COPYING.txt",
     "COPYRIGHT",
@@ -60,16 +64,22 @@ def raw_url(repo: str, sha: str, path: str) -> str:
     return f"https://raw.githubusercontent.com/{repo}/{sha}/{path}"
 
 
+def fetch_text(repo: str, sha: str, name: str) -> str | None:
+    headers = {"User-Agent": "Immune-System-Donor-Collector/1.1"}
+    try:
+        req = urllib.request.Request(raw_url(repo, sha, name), headers=headers)
+        with urllib.request.urlopen(req, timeout=30) as r:
+            data = r.read()
+        return data.decode("utf-8", errors="replace")
+    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
+        return None
+
+
 def fetch_first(repo: str, sha: str, names: tuple[str, ...]) -> tuple[str, str] | None:
-    headers = {"User-Agent": "Immune-System-Donor-Collector/1.0"}
     for name in names:
-        try:
-            req = urllib.request.Request(raw_url(repo, sha, name), headers=headers)
-            with urllib.request.urlopen(req, timeout=30) as r:
-                data = r.read()
-            return name, data.decode("utf-8", errors="replace")
-        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
-            continue
+        text = fetch_text(repo, sha, name)
+        if text is not None:
+            return name, text
     return None
 
 
@@ -87,11 +97,33 @@ def resolve_sha(repo: str, ref: str) -> str:
 
 
 def verify_license(expected: str, text: str) -> bool:
-    markers = ALLOWED_LICENSES.get(expected)
-    if not markers:
+    if expected not in ALLOWED_LICENSES:
         return False
-    lowered = text.lower()
-    return all(marker.lower() in lowered for marker in markers)
+    t = text.lower()
+    if expected == "MIT":
+        return (
+            "permission is hereby granted, free of charge" in t
+            and "the software is provided \"as is\"" in t
+        ) or "spdx-license-identifier: mit" in t
+    if expected == "Apache-2.0":
+        return (
+            "apache license" in t and "version 2.0" in t
+        ) or "spdx-license-identifier: apache-2.0" in t
+    if expected in {"BSD-2-Clause", "BSD-3-Clause"}:
+        return "redistribution and use in source and binary forms" in t
+    if expected == "MPL-2.0":
+        return (
+            "mozilla public license" in t and "version 2.0" in t
+        ) or "spdx-license-identifier: mpl-2.0" in t
+    return False
+
+
+def fetch_matching_license(repo: str, sha: str, expected: str) -> tuple[str, str] | None:
+    for name in LICENSE_NAMES:
+        text = fetch_text(repo, sha, name)
+        if text is not None and verify_license(expected, text):
+            return name, text
+    return None
 
 
 def tree_hash(path: Path) -> str:
@@ -117,7 +149,6 @@ def clean_snapshot(repo: str, ref: str, sha: str, destination: Path, max_mb: int
         run(["git", "clone", "--depth", "1", "--branch", ref, "--single-branch", remote, str(checkout)])
         actual = run(["git", "rev-parse", "HEAD"], cwd=checkout)
         if actual != sha:
-            # Upstream moved during collection. Resolve once more and require exact agreement.
             current = resolve_sha(repo, ref)
             if actual != current:
                 raise RuntimeError(f"upstream moved inconsistently: expected={sha} clone={actual} now={current}")
@@ -184,12 +215,10 @@ def main() -> int:
             entry["resolved_commit"] = sha
             entry["source_archive"] = f"https://github.com/{repo}/archive/{sha}.tar.gz"
 
-            license_result = fetch_first(repo, sha, LICENSE_NAMES)
+            license_result = fetch_matching_license(repo, sha, expected_license)
             if not license_result:
-                raise RuntimeError("no root license file found")
+                raise RuntimeError(f"no root license text matching declared SPDX {expected_license}")
             license_name, license_text = license_result
-            if not verify_license(expected_license, license_text):
-                raise RuntimeError(f"license text does not match declared SPDX {expected_license}")
 
             (capsule / "UPSTREAM_LICENSE.txt").write_text(license_text, encoding="utf-8")
             entry["license_file"] = license_name
@@ -211,7 +240,7 @@ def main() -> int:
                 entry["snapshot_reason"] = "capsule mode: upstream runtime is kept external and replaceable"
 
             entry["status"] = "collected"
-        except Exception as exc:  # isolate donor failures by design
+        except Exception as exc:
             entry["status"] = "rejected_or_failed"
             entry["error"] = f"{type(exc).__name__}: {exc}"
             shutil.rmtree(capsule / "src", ignore_errors=True)
