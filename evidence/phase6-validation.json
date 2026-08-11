@@ -1,0 +1,222 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "phase1_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase2_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase3_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase4_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "phase5_baseline_proven",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/diagnosis.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:immune_core/remediation.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:tests/phase6/test_diagnosis_remediation.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:scripts/validate_phase6.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:adr/ADR-0006-diagnosis-remediation.md",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "artifact:.github/workflows/phase6-diagnosis.yml",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/diagnosis.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "ast:immune_core/remediation.py",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "diagnosis_no_direct_execution",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "remediation_no_direct_execution",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "root_cause_requires_support",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "root_cause_requires_discriminating_test",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "competing_hypothesis_gate",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "symptom_disappearance_not_positive_gate",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "progress_stall_detection",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "progress_forces_change",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "remediation_policy_guard_bridge",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "remediation_durable_queue",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "pre_execution_checkpoint",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "post_validation_rollback",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "resolution_requires_recovery_regression",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_incident_created",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_root_cause_confirmed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_stalled_loop_detected",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_same_strategy_blocked",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_checkpoint_before_effect",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_no_effect_before_worker",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_worker_completed_correction",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_validation_passed",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_incident_resolved_after_full_validation",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_bad_process_exits_zero",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_semantic_failure_detected",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_semantic_failure_rolled_back",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "e2e_failed_correction_not_resolved",
+      "passed": true
+    },
+    {
+      "detail": "None",
+      "name": "e2e_audit_chain_valid",
+      "passed": true
+    }
+  ],
+  "controlled_file_sha256": {
+    ".github/workflows/phase6-diagnosis.yml": "e4cdeba0338b4075f3be4f670b2982cc1f5f4eed344312e25b7c52d300c24f5d",
+    "adr/ADR-0006-diagnosis-remediation.md": "166e779b8ebc8615e1f1c98e0d1776e7c2cd7e628e2c4f80e4688e35df8ce884",
+    "immune_core/diagnosis.py": "12e4540abd9b4534589c598383ec09be51683ca38df5b3aaa16a4efb0efb3adb",
+    "immune_core/remediation.py": "fb33dd50a22451ef27b6b1e4bc4ec447d9f0b0c0efe10e96f50aced584c920f6",
+    "scripts/validate_phase6.py": "68b99861ef4e409380cae110117a2821d7899cb5c3c4b12d65fa9adcf0180af7",
+    "tests/phase6/test_diagnosis_remediation.py": "c8259b99d89fb294d6ca73def4fe33e871be75317680ffd443a5603d6d098aeb"
+  },
+  "phase": "PHASE_6_DIAGNOSIS_AND_REMEDIATION",
+  "result": "PHASE6_PROVEN",
+  "schema": 1,
+  "scope_note": "PHASE6_PROVEN proves evidence-backed incident diagnosis, competing hypotheses, no-progress strategy change, policy-gated correction lab, validation and rollback. It is not MISSION_PROVEN for the complete product.",
+  "summary": {
+    "failed": 0,
+    "passed": 40,
+    "total": 40
+  },
+  "validated_at": "2026-08-11T15:15:15.653230+00:00"
+}
