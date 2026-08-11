@@ -1,11 +1,11 @@
 {
-  "collected": 43,
+  "collected": 44,
   "donor_count": 44,
   "donors": [
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "opa",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -25,7 +25,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "conftest",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -45,7 +45,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "temporal",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -65,7 +65,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "nats-server",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -85,7 +85,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "agentgateway",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -105,7 +105,7 @@
     {
       "capture": "snapshot",
       "class": "library",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "fastmcp",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -125,7 +125,7 @@
     {
       "capture": "snapshot",
       "class": "library",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "swe-rex",
       "license": "MIT",
       "license_file": "LICENSE.txt",
@@ -146,7 +146,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "podman",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -166,7 +166,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "osquery",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -186,7 +186,7 @@
     {
       "capture": "snapshot",
       "class": "library",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "psutil",
       "license": "BSD-3-Clause",
       "license_file": "LICENSE",
@@ -207,7 +207,7 @@
     {
       "capture": "snapshot",
       "class": "library",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "watchdog",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -228,7 +228,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "otel-collector",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -248,7 +248,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "jaeger",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -268,7 +268,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "alertmanager",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -288,7 +288,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "uptime-kuma",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -308,7 +308,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "restic",
       "license": "BSD-2-Clause",
       "license_file": "LICENSE",
@@ -328,7 +328,7 @@
     {
       "capture": "snapshot",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "litestream",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -349,7 +349,7 @@
     {
       "capture": "snapshot",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "schemathesis",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -369,21 +369,27 @@
     {
       "capture": "capsule",
       "class": "library",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
-      "error": "RuntimeError: no root license text matching declared SPDX MPL-2.0",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "hypothesis",
       "license": "MPL-2.0",
+      "license_file": "LICENSE.txt",
+      "license_sha256": "df2ca456f6cda1226620ee99f16bafb6345241040996734d3a46e3afe414c056",
+      "license_verified": true,
       "purpose": "Property based testing",
+      "readme_file": "README.md",
+      "readme_sha256": "bdea363861e973606d7728f0b7b893e0eb3efa2b3d8afa21a139d3ec8e80c003",
       "ref": "master",
       "repo": "HypothesisWorks/hypothesis",
       "resolved_commit": "0b818d6db2f57a1ca7ff6af6618318490be5c427",
+      "snapshot": false,
+      "snapshot_reason": "capsule mode: upstream runtime is kept external and replaceable",
       "source_archive": "https://github.com/HypothesisWorks/hypothesis/archive/0b818d6db2f57a1ca7ff6af6618318490be5c427.tar.gz",
-      "status": "rejected_or_failed"
+      "status": "collected"
     },
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "playwright",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -403,7 +409,7 @@
     {
       "capture": "snapshot",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "locust",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -424,7 +430,7 @@
     {
       "capture": "snapshot",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "toxiproxy",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -445,7 +451,7 @@
     {
       "capture": "snapshot",
       "class": "library",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "testcontainers-python",
       "license": "Apache-2.0",
       "license_file": "LICENSE.txt",
@@ -466,7 +472,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "trivy",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -486,7 +492,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "syft",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -506,7 +512,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "osv-scanner",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -526,7 +532,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "ort",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -546,7 +552,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "scancode-toolkit",
       "license": "Apache-2.0",
       "license_file": "apache-2.0.LICENSE",
@@ -566,7 +572,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "scorecard",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -586,7 +592,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "sops",
       "license": "MPL-2.0",
       "license_file": "LICENSE",
@@ -606,7 +612,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "age",
       "license": "BSD-3-Clause",
       "license_file": "LICENSE",
@@ -626,7 +632,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "cosign",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -646,7 +652,7 @@
     {
       "capture": "capsule",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "gitleaks",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -666,7 +672,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "ollama",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -686,7 +692,7 @@
     {
       "capture": "capsule",
       "class": "library",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "llama-cpp",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -706,7 +712,7 @@
     {
       "capture": "snapshot",
       "class": "library",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "openhands-agent-sdk",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -727,7 +733,7 @@
     {
       "capture": "snapshot",
       "class": "agent",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "holmesgpt",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -747,7 +753,7 @@
     {
       "capture": "snapshot",
       "class": "agent",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "mini-swe-agent",
       "license": "MIT",
       "license_file": "LICENSE.md",
@@ -768,7 +774,7 @@
     {
       "capture": "capsule",
       "class": "library",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "agent-framework",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -788,7 +794,7 @@
     {
       "capture": "snapshot",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "promptfoo",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -808,7 +814,7 @@
     {
       "capture": "snapshot",
       "class": "tool",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "inspect-ai",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -828,7 +834,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "qdrant",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -848,7 +854,7 @@
     {
       "capture": "capsule",
       "class": "service",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "hatchet",
       "license": "MIT",
       "license_file": "LICENSE",
@@ -868,7 +874,7 @@
     {
       "capture": "capsule",
       "class": "architecture",
-      "collected_at": "2026-08-11T12:36:42.136106+00:00",
+      "collected_at": "2026-08-11T12:39:18.166052+00:00",
       "id": "stackstorm",
       "license": "Apache-2.0",
       "license_file": "LICENSE",
@@ -886,8 +892,8 @@
       "status": "collected"
     }
   ],
-  "generated_at": "2026-08-11T12:36:42.136106+00:00",
+  "generated_at": "2026-08-11T12:39:18.166052+00:00",
   "policy": "open-source-only",
-  "rejected_or_failed": 1,
+  "rejected_or_failed": 0,
   "schema": 1
 }
