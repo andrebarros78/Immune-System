@@ -218,8 +218,13 @@ class ClosedDigitalTwin(AbstractContextManager["ClosedDigitalTwin"]):
         self.root = Path(self._tmp.name).resolve()
         self.world = TwinWorld()
         self.guard = ExternalEffectGuard(self.root)
+        self._previous_tempdir: str | None = None
 
     def __enter__(self) -> "ClosedDigitalTwin":
+        local_tmp = self.root / "tmp"
+        local_tmp.mkdir(parents=True, exist_ok=True)
+        self._previous_tempdir = tempfile.tempdir
+        tempfile.tempdir = str(local_tmp)
         self.guard.__enter__()
         return self
 
@@ -227,6 +232,7 @@ class ClosedDigitalTwin(AbstractContextManager["ClosedDigitalTwin"]):
         try:
             return self.guard.__exit__(exc_type, exc, tb)
         finally:
+            tempfile.tempdir = self._previous_tempdir
             self._tmp.cleanup()
 
     def path(self, *parts: str) -> Path:
