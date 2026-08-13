@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import json
-import socket
 import tempfile
-import threading
 import unittest
 from pathlib import Path
 
@@ -13,12 +11,16 @@ from immune_core.observability import AnomalyDetector, DependencyGraph, Observab
 from immune_core.storage import SQLiteStateStore
 from immune_lab.admission import Decision, LabResult, build_catalog
 
+
 class StaticSensor:
     def __init__(self,sensor_id,observations): self.sensor_id=sensor_id; self.observations=observations
     def collect(self): return list(self.observations)
+
+
 class FailingSensor:
     sensor_id="failing"
     def collect(self): raise RuntimeError("synthetic sensor failure")
+
 
 class Phase5Tests(unittest.TestCase):
     def setUp(self):
@@ -47,12 +49,8 @@ class Phase5Tests(unittest.TestCase):
         observations=list(HostSensor().collect()); self.assertTrue(any(o["type"]=="resource" and o["kind"]=="host" for o in observations)); self.assertTrue(any(o["type"]=="metric" for o in observations))
     def test_path_sensor_health(self):
         path=self.root/"present.txt"; path.write_text("ok"); signals=[o for o in PathSensor("paths",[path,self.root/"missing"]).collect() if o["type"]=="signal"]; self.assertEqual([s["severity"] for s in signals],["info","error"])
-    def test_tcp_health_check_configured_endpoint(self):
-        listener=socket.socket(); listener.bind(("127.0.0.1",0)); listener.listen(1); port=listener.getsockname()[1]; done=threading.Event()
-        def accept_once():
-            try: conn,_=listener.accept(); conn.close()
-            finally: listener.close(); done.set()
-        threading.Thread(target=accept_once,daemon=True).start(); observations=list(TCPHealthSensor("tcp-test","127.0.0.1",port,timeout_seconds=1).collect()); done.wait(2); health=[o for o in observations if o["type"]=="signal"][0]; self.assertTrue(health["attributes"]["reachable"])
+    def test_direct_tcp_health_sensor_is_disabled(self):
+        with self.assertRaises(RuntimeError): TCPHealthSensor("legacy-direct","localhost",9,timeout_seconds=1)
     def test_real_donors_are_not_autoapproved(self):
         lock=json.loads((Path(__file__).resolve().parents[2]/"donors"/"LOCK.json").read_text(encoding="utf-8")); catalog=build_catalog(lock["donors"]); self.assertEqual(catalog["summary"]["total"],44); self.assertEqual(catalog["summary"]["approved"],0); self.assertTrue(all(not item["executable"] for item in catalog["donors"]))
     def test_donor_adapter_rejects_quarantined(self):
@@ -65,5 +63,6 @@ class Phase5Tests(unittest.TestCase):
         cycle=DiscoveryEngine([StaticSensor("spike",[{"type":"metric","name":"latency","subject":"svc","value":100}])],self.obs,self.processor,self.anomaly).run_cycle(now=10); self.assertEqual(cycle.anomalies,1)
     def test_audit_chain_valid_after_cycles(self):
         engine=DiscoveryEngine([HostSensor()],self.obs,self.processor,self.anomaly,audit=self.audit); engine.run_cycle(mission_id="m",now=1); engine.run_cycle(mission_id="m",now=2); valid,bad_seq=self.audit.verify_chain(); self.assertTrue(valid,bad_seq)
+
 
 if __name__=="__main__": unittest.main()

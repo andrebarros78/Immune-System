@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "owner_scope": "immune-gateway",
+  "bind": {
+    "host": "127.0.0.1",
+    "port": 4020
+  },
+  "limits": {
+    "max_body_bytes": 65536,
+    "max_clock_skew_seconds": 60,
+    "nonce_ttl_seconds": 300
+  },
+  "systems": [
+    {
+      "id": "wmcp2",
+      "adapter": "wmcp2-local",
+      "enabled": true,
+      "ingress": "pull",
+      "config": {}
+    }
+  ]
+}

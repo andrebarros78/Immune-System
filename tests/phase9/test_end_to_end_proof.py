@@ -15,7 +15,7 @@ from types import SimpleNamespace
 from immune_core.audit import AuditLedger
 from immune_core.checkpoints import CheckpointManager, WorkspaceManager
 from immune_core.diagnosis import DiagnosisError, IncidentEngine, ProgressDetector
-from immune_core.discovery import DiscoveryEngine, DonorSensorAdapter, PathSensor, TCPHealthSensor
+from immune_core.discovery import DiscoveryEngine, DonorSensorAdapter, PathSensor
 from immune_core.engine import DurableLoopEngine
 from immune_core.execution import PrivilegedExecutor, SafeExecutor, WorkerManifest
 from immune_core.identity import IdentityAuthority
@@ -32,6 +32,9 @@ from immune_core.state_backup import StateBackupManager
 from immune_core.storage import SQLiteStateStore
 from immune_core.workers import WorkerRunner
 from immune_lab.admission import REQUIRED_EVIDENCE, evaluate_donor
+from immune_gateway.adapters import TCPHealthGatewayAdapter
+from immune_gateway.ingress import GatewayIngress
+from immune_gateway.runtime_config import GatewayRuntimeConfig
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -129,10 +132,13 @@ class Phase9ProofTests(unittest.TestCase):
         pidfile = self.root / "service.pid"
         recovery = self.root / "recover_service.py"
         recovery.write_text("import subprocess,sys,pathlib\np=subprocess.Popen([sys.executable,'-m','http.server',sys.argv[1],'--bind','127.0.0.1'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)\npathlib.Path(sys.argv[2]).write_text(str(p.pid))\n", encoding="utf-8")
-        sensor = TCPHealthSensor("service-demo", "127.0.0.1", port, timeout_seconds=0.1)
-        discovery = DiscoveryEngine((sensor,), self.obs, self.signals, AnomalyDetector(self.obs), audit=self.audit)
-        discovery.run_cycle(mission_id="m", now=NOW + 20)
-        before = self.store.conn.execute("SELECT attributes_json FROM obs_signals WHERE sensor_id='service-demo' ORDER BY ts DESC LIMIT 1").fetchone()
+        gateway_cfg_path = self.root / "gateway-health.json"
+        gateway_cfg_path.write_text(json.dumps({"schema":1,"owner_scope":"immune-gateway","bind":{"host":"127.0.0.1","port":4020},"limits":{},"systems":[{"id":"system","adapter":"tcp-health","enabled":True,"ingress":"pull","config":{}}]}), encoding="utf-8")
+        gateway_cfg = GatewayRuntimeConfig.load(gateway_cfg_path)
+        sensor = TCPHealthGatewayAdapter("system", "127.0.0.1", port, adapter_id="tcp-health")
+        ingress = GatewayIngress(self.store, self.audit, gateway_cfg, {"system": sensor})
+        before_receipt = ingress.collect_once("system", timeout_seconds=0.1, now=NOW + 20)
+        before = self.store.conn.execute("SELECT attributes_json FROM obs_signals WHERE id=?", (before_receipt.signal_id,)).fetchone()
         self.assertIsNotNone(before)
         self.assertFalse(json.loads(before[0])["reachable"])
 
@@ -150,8 +156,8 @@ class Phase9ProofTests(unittest.TestCase):
             time.sleep(0.05)
         try:
             self.assertTrue(tcp_reachable(port))
-            discovery.run_cycle(mission_id="m", now=NOW + 24)
-            after = self.store.conn.execute("SELECT attributes_json FROM obs_signals WHERE sensor_id='service-demo' ORDER BY ts DESC LIMIT 1").fetchone()
+            after_receipt = ingress.collect_once("system", timeout_seconds=0.1, now=NOW + 24)
+            after = self.store.conn.execute("SELECT attributes_json FROM obs_signals WHERE id=?", (after_receipt.signal_id,)).fetchone()
             self.assertTrue(json.loads(after[0])["reachable"])
         finally:
             if pidfile.exists():

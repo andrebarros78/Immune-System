@@ -616,6 +616,7 @@
     "adr/ADR-0010-continuous-operation.md": "c64c5d984b0cd792956fdc880e2e8675619037841be5525e8cfb4857dbfe5d90",
     "adr/ADR-0011-digital-twin-closed-validation.md": "7604363a386731354dbe3b645b5036709074cd03e80fa545783b6897e95223bd",
     "adr/ADR-0012-exclusive-provider-autonomous-maintenance.md": "4531fafd43ae8f79500b8089cd0f16d9df45768fd0670323beca9f49495d76d6",
+    "adr/ADR-0013-sovereign-immune-gateway.md": "110779d097479198b87ddd2ab74d5b325faf23dde7f58b6fe0f2e1c68c6f3897",
     "constitution/IMUNE-DNA-001.md": "812892a90ca764eeea2f5e032b2bf06aa393e3a0ac0469009739c1bd2822b875",
     "contracts/checkpoint.schema.json": "6eaa80f9ffa8a85d8f5eb76b170c2954551f55f96b5d0feb6acb9a6d10c30df9",
     "contracts/donor-component.schema.json": "0d24b1641b423bf6f40259d3358ed9a6a5355ee15c6c00e04511d842ba58920b",
@@ -650,5 +651,5 @@
     "passed": 120,
     "total": 120
   },
-  "validated_at": "2026-08-13T11:40:34.135310+00:00"
+  "validated_at": "2026-08-13T13:00:57.911062+00:00"
 }

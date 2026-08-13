@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 import platform
 import shutil
-import socket
 import sys
 import time
 from dataclasses import dataclass
@@ -41,7 +40,7 @@ class HostSensor:
 
     def collect(self) -> Iterable[dict[str, Any]]:
         now = time.time()
-        hostname = socket.gethostname()
+        hostname = platform.node() or "localhost"
         root = Path.home().anchor or "/"
         usage = shutil.disk_usage(root)
         yield {"type":"resource","resource_id":f"host:{hostname}","kind":"host","name":hostname,"attributes":{"platform":platform.system(),"release":platform.release(),"machine":platform.machine(),"python":platform.python_version()}}
@@ -69,21 +68,9 @@ class PathSensor:
 
 
 class TCPHealthSensor:
-    """Configured health check only; it does not scan arbitrary ports."""
-    def __init__(self, sensor_id: str, host: str, port: int, *, timeout_seconds: float = 0.5):
-        if not 1 <= int(port) <= 65535: raise ValueError("invalid TCP port")
-        self.sensor_id=str(sensor_id); self.host=str(host); self.port=int(port); self.timeout_seconds=float(timeout_seconds)
-
-    def collect(self) -> Iterable[dict[str, Any]]:
-        started=time.monotonic(); ok=False; error=""
-        try:
-            with socket.create_connection((self.host,self.port),timeout=self.timeout_seconds): ok=True
-        except OSError as exc: error=type(exc).__name__
-        duration_ms=(time.monotonic()-started)*1000.0; endpoint=f"tcp:{self.host}:{self.port}"
-        yield {"type":"resource","resource_id":endpoint,"kind":"endpoint","name":endpoint,"attributes":{"host":self.host,"port":self.port}}
-        yield {"type":"metric","name":"health.latency_ms","subject":endpoint,"value":duration_ms,"labels":{"sensor":self.sensor_id}}
-        yield {"type":"signal","kind":"health_check","subject":endpoint,"severity":"info" if ok else "error","attributes":{"reachable":ok,"error":error,"correlation_key":endpoint}}
-
+    """Compatibility guard: protected-system network checks belong to Immune Gateway."""
+    def __init__(self, *args, **kwargs):
+        raise RuntimeError("direct network health sensor disabled; use immune_gateway adapter")
 
 class DonorSensorAdapter:
     """Adapter boundary: donor presence never grants execution or authority."""
