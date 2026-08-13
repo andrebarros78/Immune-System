@@ -42,10 +42,17 @@ class PolicyGuard:
 
     def _constitution_ok(self) -> bool:
         try:
-            actual = hashlib.sha256(self.constitution_path.read_bytes()).hexdigest()
+            raw = self.constitution_path.read_bytes()
         except OSError:
             return False
-        return actual == self.expected_constitution_sha256
+        actual = hashlib.sha256(raw).hexdigest()
+        if actual == self.expected_constitution_sha256:
+            return True
+        # Git may materialize tracked text as CRLF on Windows while evidence was
+        # produced from canonical LF bytes. Normalize only line endings; any content
+        # change still changes the digest and remains fail-closed.
+        canonical = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+        return hashlib.sha256(canonical).hexdigest() == self.expected_constitution_sha256
 
     def _record(self, principal: Principal | None, request: dict[str, Any], decision: PolicyDecision) -> PolicyDecision:
         self.audit.append(

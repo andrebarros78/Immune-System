@@ -324,11 +324,16 @@ class ContinuousSupervisor:
         cycles = 0
         degraded = 0
         while time.monotonic() - started < duration_seconds and cycles < max_cycles:
+            cycle_started = time.monotonic()
             result = self.tick()
             cycles += 1
             degraded += int(result.state != "RUNNING")
             if interval_seconds:
-                time.sleep(interval_seconds)
+                # interval_seconds is a target start-to-start cadence, not extra delay.
+                # Never sleep again for work time already consumed by the cycle itself.
+                remaining = interval_seconds - (time.monotonic() - cycle_started)
+                if remaining > 0:
+                    time.sleep(remaining)
         return {"duration_seconds": time.monotonic() - started, "cycles": cycles, "degraded_cycles": degraded, "state": self.status()["state"]}
 
     def stop(self, *, now: float | None = None) -> None:

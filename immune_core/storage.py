@@ -210,22 +210,37 @@ class SQLiteStateStore:
             self.conn.execute("ROLLBACK")
             raise
 
-    def claim_next(self, worker_id: str, *, lease_seconds: float = 30, now: float | None = None) -> TaskLease | None:
+    def claim_next(
+        self,
+        worker_id: str,
+        *,
+        lease_seconds: float = 30,
+        now: float | None = None,
+        mission_id: str | None = None,
+    ) -> TaskLease | None:
         ts = time.time() if now is None else float(now)
         if lease_seconds <= 0:
             raise ValueError("lease_seconds must be positive")
         self.recover_expired_leases(now=ts)
         self.conn.execute("BEGIN IMMEDIATE")
         try:
-            row = self.conn.execute(
+            if mission_id is None:
+                sql = """
+                    SELECT * FROM tasks
+                    WHERE state='QUEUED' AND next_run_at<=?
+                    ORDER BY priority DESC, created_at ASC
+                    LIMIT 1
                 """
-                SELECT * FROM tasks
-                WHERE state='QUEUED' AND next_run_at<=?
-                ORDER BY priority DESC, created_at ASC
-                LIMIT 1
-                """,
-                (ts,),
-            ).fetchone()
+                params = (ts,)
+            else:
+                sql = """
+                    SELECT * FROM tasks
+                    WHERE state='QUEUED' AND next_run_at<=? AND mission_id=?
+                    ORDER BY priority DESC, created_at ASC
+                    LIMIT 1
+                """
+                params = (ts, mission_id)
+            row = self.conn.execute(sql, params).fetchone()
             if not row:
                 self.conn.execute("COMMIT")
                 return None

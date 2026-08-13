@@ -605,6 +605,17 @@
     "acceptance/mission-proven.yaml": "fb23485680e42825191fac4e40722b283af0a4a4b5459100d6dcf1564fbcf87b",
     "acceptance/requirements.yaml": "c1af591194bb5a163540b0edb641d44fc734726057aa24d816d9c4da3be34517",
     "adr/ADR-0001-sovereign-architecture.md": "966269b54b71534e4479ae50c0717c03688bd092aad2543f72975071e84bd2bb",
+    "adr/ADR-0002-sovereign-foundation.md": "408ad3613784601f6d0374b6caef85414890d5a2238e9c669718258956d73d8c",
+    "adr/ADR-0003-isolated-execution.md": "52f507c9c87273bedd88807d20a61dbd3af3b7c74559292c8ac7679f3d737d9a",
+    "adr/ADR-0004-cognition-skills.md": "3bae61011b9178f7d84ac432cbaad3465a56edff5c171cb652d339e86ededf14",
+    "adr/ADR-0005-discovery-observability.md": "fb64bccf32ff2e27d0ccbde4c6d9e0b9d5cdac6960d50dbe7c8132be247d2362",
+    "adr/ADR-0006-diagnosis-remediation.md": "166e779b8ebc8615e1f1c98e0d1776e7c2cd7e628e2c4f80e4688e35df8ce884",
+    "adr/ADR-0007-operational-experience.md": "72cbc1f45308fe3f8f6faad73d8228dea1896ddcdd702f65ac94b098d7a6657f",
+    "adr/ADR-0008-controlled-learning.md": "54de9ca2520f251a9fdf706188ef2a07197e81323cb8172163f9cd38896cb0e0",
+    "adr/ADR-0009-end-to-end-proof.md": "f2aebe55520f4b5953c5cb7e950854cf11bae7cdd6aae3e240ce9ebf993023e1",
+    "adr/ADR-0010-continuous-operation.md": "c64c5d984b0cd792956fdc880e2e8675619037841be5525e8cfb4857dbfe5d90",
+    "adr/ADR-0011-digital-twin-closed-validation.md": "7604363a386731354dbe3b645b5036709074cd03e80fa545783b6897e95223bd",
+    "adr/ADR-0012-exclusive-provider-autonomous-maintenance.md": "4531fafd43ae8f79500b8089cd0f16d9df45768fd0670323beca9f49495d76d6",
     "constitution/IMUNE-DNA-001.md": "812892a90ca764eeea2f5e032b2bf06aa393e3a0ac0469009739c1bd2822b875",
     "contracts/checkpoint.schema.json": "6eaa80f9ffa8a85d8f5eb76b170c2954551f55f96b5d0feb6acb9a6d10c30df9",
     "contracts/donor-component.schema.json": "0d24b1641b423bf6f40259d3358ed9a6a5355ee15c6c00e04511d842ba58920b",
@@ -639,5 +650,5 @@
     "passed": 120,
     "total": 120
   },
-  "validated_at": "2026-08-11T13:32:08.956743+00:00"
+  "validated_at": "2026-08-13T11:40:34.135310+00:00"
 }

@@ -89,8 +89,17 @@ class DurableLoopEngine:
         )
         return task_id
 
-    def claim_next(self, worker_id: str, *, lease_seconds: float = 30, now: float | None = None) -> TaskLease | None:
-        lease = self.store.claim_next(worker_id, lease_seconds=lease_seconds, now=now)
+    def claim_next(
+        self,
+        worker_id: str,
+        *,
+        lease_seconds: float = 30,
+        now: float | None = None,
+        mission_id: str | None = None,
+    ) -> TaskLease | None:
+        lease = self.store.claim_next(
+            worker_id, lease_seconds=lease_seconds, now=now, mission_id=mission_id
+        )
         if lease:
             self.audit.append(
                 actor=worker_id,

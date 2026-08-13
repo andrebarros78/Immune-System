@@ -28,8 +28,20 @@ class WorkerRunner:
         self.checkpoints = checkpoints
         self.privilege_authority = privilege_authority
 
-    def run_once(self, manifest: WorkerManifest, worker_token: str, *, privilege_authorizer_token: str | None = None, now: int | None = None) -> WorkerOutcome:
-        lease = self.engine.claim_next(manifest.id, now=float(now) if now is not None else None)
+    def run_once(
+        self,
+        manifest: WorkerManifest,
+        worker_token: str,
+        *,
+        privilege_authorizer_token: str | None = None,
+        now: int | None = None,
+        mission_id: str | None = None,
+    ) -> WorkerOutcome:
+        lease = self.engine.claim_next(
+            manifest.id,
+            now=float(now) if now is not None else None,
+            mission_id=mission_id,
+        )
         if lease is None:
             return WorkerOutcome(None, "IDLE")
         payload = lease.payload

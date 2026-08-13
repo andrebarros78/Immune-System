@@ -146,6 +146,8 @@ class OpenAICompatibleHTTPProvider:
         locality: str = "local",
         cost_per_call: float = 0.0,
         api_key_env: str | None = None,
+        request_options: dict[str, Any] | None = None,
+        owner_scope: str = "immune-core",
     ):
         if locality not in {"local", "external"}:
             raise ValueError("locality must be local or external")
@@ -159,19 +161,31 @@ class OpenAICompatibleHTTPProvider:
         self.locality = locality
         self.cost_per_call = float(cost_per_call)
         self.api_key_env = api_key_env
+        if owner_scope != "immune-core":
+            raise ValueError("cognitive provider must be owned by immune-core")
+        options = dict(request_options or {})
+        reserved = {"model", "messages", "max_tokens", "tools", "tool_choice", "authorization", "api_key"}
+        conflict = reserved.intersection(str(key).strip().lower() for key in options)
+        if conflict:
+            raise ValueError(f"provider request_options cannot override reserved fields: {sorted(conflict)}")
+        self.request_options = options
+        self.owner_scope = owner_scope
 
     def propose(self, request: ProviderRequest, *, timeout_seconds: float) -> ProviderProposal:
         if timeout_seconds <= 0:
             raise ProviderUnavailable("provider timeout must be positive")
-        body = {
-            "model": self.model,
-            "temperature": 0,
-            "max_tokens": request.max_tokens,
-            "messages": [
-                {"role": "system", "content": self.SYSTEM_BOUNDARY},
-                {"role": "user", "content": json.dumps(request.to_wire(), ensure_ascii=False, sort_keys=True)},
-            ],
-        }
+        body = dict(self.request_options)
+        body.setdefault("temperature", 0)
+        body.update(
+            {
+                "model": self.model,
+                "max_tokens": request.max_tokens,
+                "messages": [
+                    {"role": "system", "content": self.SYSTEM_BOUNDARY},
+                    {"role": "user", "content": json.dumps(request.to_wire(), ensure_ascii=False, sort_keys=True)},
+                ],
+            }
+        )
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
         if self.api_key_env:
             secret = os.environ.get(self.api_key_env)
@@ -199,7 +213,7 @@ class OpenAICompatibleHTTPProvider:
         return proposal_from_mapping(
             self.provider_id,
             parsed,
-            metadata={"locality": self.locality, "model": self.model},
+            metadata={"locality": self.locality, "model": self.model, "owner_scope": self.owner_scope},
         )
 
 
@@ -230,7 +244,11 @@ class ProviderManager:
         audit: AuditLedger,
         *,
         fallback: CognitiveProvider | None = None,
+        owner_scope: str = "immune-core",
     ):
+        if owner_scope != "immune-core":
+            raise ValueError("provider manager must be owned by immune-core")
+        self.owner_scope = owner_scope
         self.providers = list(providers)
         self.identity = identity
         self.audit = audit

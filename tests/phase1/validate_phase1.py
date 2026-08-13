@@ -275,7 +275,9 @@ hashes: dict[str, str] = {}
 for folder in controlled_roots:
     for path in sorted((ROOT / folder).rglob("*")):
         if path.is_file():
-            hashes[path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+            raw = path.read_bytes()
+            canonical = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+            hashes[path.relative_to(ROOT).as_posix()] = hashlib.sha256(canonical).hexdigest()
 
 evidence = {
     "schema": 1,
