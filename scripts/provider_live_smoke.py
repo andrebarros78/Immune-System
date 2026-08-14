@@ -84,12 +84,12 @@ def main() -> int:
         untrusted_observations=(
             {"kind": "synthetic.provider-smoke", "state": "synthetic", "safe": True},
         ),
-        max_tokens=256,
+        max_tokens=128,
     )
 
     started = time.monotonic()
     try:
-        proposal = provider.propose(request, timeout_seconds=30.0)
+        proposal = provider.propose(request, timeout_seconds=60.0)
     except ProviderError as exc:
         diagnostic = {
             **public_base,
@@ -99,6 +99,8 @@ def main() -> int:
             "duration_seconds": round(time.monotonic() - started, 3),
         }
         cause = exc.__cause__
+        if cause is not None:
+            diagnostic["cause_class"] = type(cause).__name__
         if isinstance(cause, urllib.error.HTTPError):
             diagnostic["http_status"] = int(cause.code)
             diagnostic["http_reason"] = str(cause.reason)[:80]
@@ -110,13 +112,16 @@ def main() -> int:
             diagnostic["provider_unavailable"] = True
         emit(diagnostic)
         annotation = "Provider live smoke failed: " + json.dumps(
-            {k: diagnostic[k] for k in ("error_class", "http_status", "http_reason", "network_error_class", "protocol_error", "provider_unavailable") if k in diagnostic},
+            {k: diagnostic[k] for k in ("error_class", "cause_class", "http_status", "http_reason", "network_error_class", "protocol_error", "provider_unavailable") if k in diagnostic},
             sort_keys=True,
         )
         escaped = annotation.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
         if diagnostic.get("http_status") == 429:
             print("::warning title=Immune provider rate limit::" + escaped)
             return 75
+        if isinstance(exc, ProviderUnavailable) and "http_status" not in diagnostic:
+            print("::warning title=Immune provider transient unavailable::" + escaped)
+            return 76
         print("::error title=Immune provider smoke::" + escaped)
         return 1
 

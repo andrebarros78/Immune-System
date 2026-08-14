@@ -20,7 +20,7 @@ concurrency:
 jobs:
   live-provider-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     environment: immune-live-test
     env:
       IMMUNE_PROVIDER_PRIMARY_API_KEY: ${{ secrets.GLM }}
@@ -74,10 +74,19 @@ jobs:
             if [ "$rc" -eq 0 ]; then
               exit 0
             fi
-            if [ "$rc" -ne 75 ] || [ "$attempt" -eq 3 ]; then
+            if [ "$attempt" -eq 3 ]; then
               exit "$rc"
             fi
-            echo "RATE_LIMIT_RETRY=true WAIT_SECONDS=65"
-            sleep 65
+            if [ "$rc" -eq 75 ]; then
+              echo "RATE_LIMIT_RETRY=true WAIT_SECONDS=65"
+              sleep 65
+              continue
+            fi
+            if [ "$rc" -eq 76 ]; then
+              echo "TRANSIENT_PROVIDER_RETRY=true WAIT_SECONDS=20"
+              sleep 20
+              continue
+            fi
+            exit "$rc"
           done
           exit 1
