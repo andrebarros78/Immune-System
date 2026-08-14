@@ -1,0 +1,40 @@
+name: Immune Provider Live Smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: immune-provider-live-smoke
+  cancel-in-progress: false
+
+jobs:
+  live-provider-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: immune-live-test
+    env:
+      IMMUNE_PROVIDER_PRIMARY_API_KEY: ${{ secrets.IMMUNE_PROVIDER_PRIMARY_API_KEY }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Verify secret presence without revealing it
+        shell: bash
+        run: |
+          if [ -z "${IMMUNE_PROVIDER_PRIMARY_API_KEY:-}" ]; then
+            echo "IMMUNE_PROVIDER_SECRET_PRESENT=false"
+            exit 2
+          fi
+          echo "IMMUNE_PROVIDER_SECRET_PRESENT=true"
+
+      - name: Run live provider contract smoke
+        run: python scripts/provider_live_smoke.py
