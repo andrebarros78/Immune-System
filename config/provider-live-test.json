@@ -15,7 +15,10 @@
       "cost_per_call": 0.0,
       "request_options": {
         "thinking": {
-          "type": "enabled"
+          "type": "disabled"
+        },
+        "response_format": {
+          "type": "json_object"
         }
       }
     }
