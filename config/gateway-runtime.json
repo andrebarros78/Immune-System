@@ -10,13 +10,5 @@
     "max_clock_skew_seconds": 60,
     "nonce_ttl_seconds": 300
   },
-  "systems": [
-    {
-      "id": "wmcp2",
-      "adapter": "wmcp2-local",
-      "enabled": true,
-      "ingress": "pull",
-      "config": {}
-    }
-  ]
+  "systems": []
 }

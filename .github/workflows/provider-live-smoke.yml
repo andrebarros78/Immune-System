@@ -1,4 +1,4 @@
-name: Immune Provider Live Smoke
+name: Immune Provider Live Smoke - Isolated
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: immune-provider-live-smoke
+  group: immune-provider-live-smoke-isolated
   cancel-in-progress: false
 
 jobs:
@@ -17,15 +17,35 @@ jobs:
     environment: immune-live-test
     env:
       IMMUNE_PROVIDER_PRIMARY_API_KEY: ${{ secrets.IMMUNE_PROVIDER_PRIMARY_API_KEY }}
+      IMMUNE_PROVIDER_CONFIG: config/provider-live-test.json
+      IMMUNE_TEST_MODE: GITHUB_ISOLATED
       PYTHONUNBUFFERED: "1"
     steps:
-      - name: Checkout
+      - name: Checkout only this repository
         uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+
+      - name: Prove isolated target contract
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path('config/provider-live-test.json').read_text(encoding='utf-8'))
+          providers = p.get('providers', [])
+          assert p.get('owner_scope') == 'immune-core'
+          assert len(providers) == 1
+          endpoint = providers[0].get('endpoint', '')
+          assert endpoint.startswith('https://api.z.ai/')
+          text = json.dumps(p).lower()
+          for forbidden in ('127.0.0.1', 'localhost', 'windows-mcp', 'wmcp', 'tunel-core', 'tunnel-core'):
+              assert forbidden not in text, forbidden
+          print('ISOLATED_TARGET_CONTRACT=true')
+          PY
 
       - name: Verify secret presence without revealing it
         shell: bash

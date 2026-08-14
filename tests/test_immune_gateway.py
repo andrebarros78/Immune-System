@@ -122,3 +122,19 @@ def test_http_gateway_has_no_core_or_egress_dependency():
     assert "PolicyGuard" not in source
     assert "IdentityAuthority" not in source
     assert "/v1/telemetry/" in source
+
+
+def test_default_gateway_config_has_no_protected_system_targets():
+    config = GatewayRuntimeConfig.load(ROOT / "config" / "gateway-runtime.json")
+    assert config.systems == ()
+
+
+def test_live_provider_test_config_isolated_to_zai():
+    raw = json.loads((ROOT / "config" / "provider-live-test.json").read_text(encoding="utf-8"))
+    providers = raw.get("providers", [])
+    assert len(providers) == 1
+    endpoint = str(providers[0].get("endpoint", ""))
+    assert endpoint.startswith("https://api.z.ai/")
+    encoded = json.dumps(raw).lower()
+    for forbidden in ("127.0.0.1", "localhost", "windows-mcp", "wmcp", "tunel-core", "tunnel-core"):
+        assert forbidden not in encoded
