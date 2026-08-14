@@ -112,7 +112,11 @@ def main() -> int:
             {k: diagnostic[k] for k in ("error_class", "http_status", "http_reason", "network_error_class", "protocol_error", "provider_unavailable") if k in diagnostic},
             sort_keys=True,
         )
-        print("::error title=Immune provider smoke::" + annotation.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))
+        escaped = annotation.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+        if diagnostic.get("http_status") == 429:
+            print("::warning title=Immune provider rate limit::" + escaped)
+            return 75
+        print("::error title=Immune provider smoke::" + escaped)
         return 1
 
     result = {
