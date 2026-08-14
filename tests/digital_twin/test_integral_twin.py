@@ -23,6 +23,10 @@ from immune_core.state_backup import StateBackupManager
 from immune_core.storage import SQLiteStateStore
 from immune_core.update_manager import ReleaseManager
 from immune_core.watchdog import HeartbeatWatchdog
+from immune_gateway.contracts import EgressRequest, GatewayAuthorizationError
+from immune_gateway.egress import GatewayEgress
+from immune_gateway.runtime_config import GatewayRuntimeConfig
+from immune_twin.gateway_adapter import DigitalTwinGatewayAdapter
 from immune_twin.sandbox import ClosedDigitalTwin, SandboxViolation, TwinActuator, TwinSensor
 
 
@@ -184,6 +188,130 @@ class IntegralDigitalTwinTests(unittest.TestCase):
             finally:
                 store.close()
 
+    def test_gateway_egress_requires_checkpoint_repairs_and_rolls_back_virtual_system(self):
+        with ClosedDigitalTwin() as twin:
+            twin.world.add_service("api", running=True, config={"mode": "good"})
+            twin.world.fail_service("api", "synthetic incident")
+            twin.world.set_config("api", "mode", "bad")
+
+            store = SQLiteStateStore(twin.path("gateway", "state.sqlite3"))
+            audit = AuditLedger(store)
+            identities = IdentityAuthority(b"G" * 32)
+            policy = PolicyGuard.from_repository(ROOT, identities, audit)
+            engine = DurableLoopEngine(store, audit)
+            engine.create_mission("gateway-proof", "twin-system")
+            engine.transition_mission("gateway-proof", "AUTHORIZED", "closed gateway proof")
+            engine.transition_mission("gateway-proof", "RUNNING", "closed gateway proof")
+
+            config_path = twin.path("gateway", "runtime.json")
+            config_path.write_text(
+                '{"schema":1,"owner_scope":"immune-gateway","bind":{"host":"127.0.0.1","port":4020},'
+                '"limits":{"max_body_bytes":65536,"max_clock_skew_seconds":60,"nonce_ttl_seconds":300},'
+                '"systems":[{"id":"twin-system","adapter":"digital-twin","enabled":true,"ingress":"pull","config":{}}]}',
+                encoding="utf-8",
+            )
+            config = GatewayRuntimeConfig.load(config_path)
+            adapter = DigitalTwinGatewayAdapter(twin, system_id="twin-system")
+            egress = GatewayEgress(store, identities, policy, audit, config, {"twin-system": adapter})
+            token = identities.issue("immune-core", "controller", ("gateway:egress",), ttl_seconds=600, now=NOW)
+
+            failed_checkpoint = twin.snapshot_to("gateway-failed-checkpoint.json")
+            self.assertTrue(failed_checkpoint.is_file())
+            with self.assertRaises(GatewayAuthorizationError):
+                egress.execute(
+                    EgressRequest(
+                        "gateway-proof",
+                        "twin-system",
+                        "set_config",
+                        {"service": "api", "key": "mode", "value": "good"},
+                        material_change=True,
+                        checkpoint_valid=False,
+                        irreversible=False,
+                        recovery_verified=True,
+                    ),
+                    internal_token=token,
+                    now=NOW + 1,
+                )
+
+            repair_config = egress.execute(
+                EgressRequest(
+                    "gateway-proof",
+                    "twin-system",
+                    "set_config",
+                    {"service": "api", "key": "mode", "value": "good"},
+                    material_change=True,
+                    checkpoint_valid=True,
+                    irreversible=False,
+                    recovery_verified=True,
+                ),
+                internal_token=token,
+                now=NOW + 2,
+            )
+            repair_restart = egress.execute(
+                EgressRequest(
+                    "gateway-proof",
+                    "twin-system",
+                    "restart_service",
+                    {"service": "api"},
+                    material_change=True,
+                    checkpoint_valid=True,
+                    irreversible=False,
+                    recovery_verified=True,
+                ),
+                internal_token=token,
+                now=NOW + 3,
+            )
+            self.assertTrue(repair_config.ok)
+            self.assertTrue(repair_restart.ok)
+            self.assertTrue(twin.world.services["api"].running)
+            self.assertEqual("good", twin.world.services["api"].config["mode"])
+            self.assertTrue(egress.observability.verify_evidence(repair_config.evidence_id))
+            self.assertTrue(egress.observability.verify_evidence(repair_restart.evidence_id))
+
+            stable = twin.snapshot_to("gateway-stable.json")
+            stable_digest = twin.world.digest()
+            invalid_change = egress.execute(
+                EgressRequest(
+                    "gateway-proof",
+                    "twin-system",
+                    "set_config",
+                    {"service": "api", "key": "mode", "value": "broken"},
+                    material_change=True,
+                    checkpoint_valid=True,
+                    irreversible=False,
+                    recovery_verified=True,
+                ),
+                internal_token=token,
+                now=NOW + 4,
+            )
+            self.assertTrue(invalid_change.ok)
+            self.assertNotEqual(stable_digest, twin.world.digest())
+            self.assertEqual("broken", twin.world.services["api"].config["mode"])
+
+            rollback = egress.execute(
+                EgressRequest(
+                    "gateway-proof",
+                    "twin-system",
+                    "restore_snapshot",
+                    {"snapshot_name": stable.name},
+                    material_change=True,
+                    checkpoint_valid=True,
+                    irreversible=False,
+                    recovery_verified=True,
+                ),
+                internal_token=token,
+                now=NOW + 5,
+            )
+            self.assertTrue(rollback.ok)
+            self.assertEqual(stable_digest, twin.world.digest())
+            self.assertEqual("good", twin.world.services["api"].config["mode"])
+            self.assertTrue(twin.world.services["api"].running)
+            self.assertTrue(egress.observability.verify_evidence(rollback.evidence_id))
+            self.assertTrue(twin.guard.clean)
+            valid, bad_seq = audit.verify_chain()
+            self.assertTrue(valid)
+            self.assertIsNone(bad_seq)
+            store.close()
     def test_snapshot_rollback_is_virtual_only(self):
         with ClosedDigitalTwin() as twin:
             twin.world.add_service("api", running=True, config={"mode": "good"})

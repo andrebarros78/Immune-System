@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import json
 import sys
 import time
@@ -36,6 +37,22 @@ def main() -> int:
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     checks.append(check("digital_twin_unittest_suite", result.wasSuccessful(), f"tests={result.testsRun} failures={len(result.failures)} errors={len(result.errors)}"))
 
+    gateway_adapter_path = ROOT / "immune_twin" / "gateway_adapter.py"
+    checks.append(check("gateway_adapter_artifact", gateway_adapter_path.is_file()))
+    gateway_adapter_source = gateway_adapter_path.read_text(encoding="utf-8") if gateway_adapter_path.is_file() else ""
+    try:
+        gateway_tree = ast.parse(gateway_adapter_source)
+        forbidden_imports: set[str] = set()
+        for node in ast.walk(gateway_tree):
+            if isinstance(node, ast.Import):
+                forbidden_imports.update(alias.name.split(".", 1)[0] for alias in node.names if alias.name.split(".", 1)[0] in {"socket", "subprocess", "urllib"})
+            elif isinstance(node, ast.ImportFrom) and (node.module or "").split(".", 1)[0] in {"socket", "subprocess", "urllib"}:
+                forbidden_imports.add((node.module or "").split(".", 1)[0])
+        checks.append(check("gateway_adapter_no_network_or_subprocess_imports", not forbidden_imports, sorted(forbidden_imports)))
+    except SyntaxError as exc:
+        checks.append(check("gateway_adapter_no_network_or_subprocess_imports", False, str(exc)))
+    checks.append(check("gateway_adapter_bounded_actions", "set_config" in gateway_adapter_source and "restart_service" in gateway_adapter_source and "restore_snapshot" in gateway_adapter_source))
+
     sandbox_source = (ROOT / "immune_twin" / "sandbox.py").read_text(encoding="utf-8")
     required_guards = [
         'socket, "create_connection"',
@@ -70,6 +87,10 @@ def main() -> int:
         "safe_update": "ReleaseManager",
         "policy_guard": "PolicyGuard",
         "audit_chain": "verify_chain",
+        "gateway_egress": "GatewayEgress",
+        "gateway_checkpoint_gate": "checkpoint_valid=False",
+        "gateway_twin_adapter": "DigitalTwinGatewayAdapter",
+        "gateway_rollback": "restore_snapshot",
     }
     for name, token in required_scenarios.items():
         checks.append(check(f"scenario_{name}", token in test_source))

@@ -6,6 +6,11 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/mission-proven-integral.yml'
+      - 'immune_gateway/**'
+      - 'immune_twin/**'
+      - 'tests/digital_twin/**'
+      - 'scripts/validate_digital_twin.py'
+      - 'scripts/final_mission_gate.py'
 
 permissions:
   contents: read
@@ -78,6 +83,13 @@ jobs:
       - name: Evaluate sovereign final gate
         run: python scripts/final_mission_gate.py
 
+      - name: Record regenerated evidence digests
+        shell: bash
+        run: |
+          {
+            echo '### Regenerated evidence SHA-256'
+            sha256sum evidence/phase{1..10}-validation.json evidence/digital-twin-validation.json
+          } | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Core proof summary
         shell: bash
         run: |
@@ -85,6 +97,7 @@ jobs:
             echo '## Core integral proof'
             echo '- Phase 1-10: PROVEN on this runner'
             echo '- Digital Twin: PROVEN'
+            echo '- GatewayEgress + checkpoint + synthetic mutation + rollback: PROVEN'
             echo '- Protected systems attached: 0'
             echo '- External effects: 0'
             echo "- Commit: ${GITHUB_SHA}"
@@ -189,6 +202,7 @@ jobs:
             echo 'Scope: IMMUNE_SYSTEM_V1_ISOLATED_INTEGRAL_PROOF'
             echo 'Phases 1-10: PROVEN'
             echo 'Digital Twin: PROVEN'
+            echo 'GatewayEgress + checkpoint + synthetic mutation + rollback: PROVEN'
             echo 'GLM live provider: PROVEN'
             echo 'Protected systems attached during proof: 0'
             echo 'External effects on existing systems: 0'

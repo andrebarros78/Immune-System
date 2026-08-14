@@ -61,6 +61,17 @@ def main() -> int:
     require(int(twin.get("checks_failed", 1)) == 0, "digital_twin_zero_failures")
     require(int(twin.get("external_effects_performed", 1)) == 0, "digital_twin_zero_external_effects")
     require(twin.get("external_effect_policy") == "SEM_EFEITO_EXTERNO", "digital_twin_external_policy")
+    twin_checks = {str(item.get("name")): bool(item.get("passed")) for item in (twin.get("checks") or [])}
+    for required_gateway_gate in (
+        "gateway_adapter_artifact",
+        "gateway_adapter_no_network_or_subprocess_imports",
+        "gateway_adapter_bounded_actions",
+        "scenario_gateway_egress",
+        "scenario_gateway_checkpoint_gate",
+        "scenario_gateway_twin_adapter",
+        "scenario_gateway_rollback",
+    ):
+        require(twin_checks.get(required_gateway_gate) is True, f"digital_twin:{required_gateway_gate}")
 
     gateway = load_json("config/gateway-runtime.json")
     require(gateway.get("owner_scope") == "immune-gateway", "gateway_owner")
