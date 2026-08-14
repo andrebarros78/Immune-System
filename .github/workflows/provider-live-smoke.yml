@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 5
     environment: immune-live-test
     env:
-      IMMUNE_PROVIDER_PRIMARY_API_KEY: ${{ secrets.IMMUNE_PROVIDER_PRIMARY_API_KEY }}
+      IMMUNE_PROVIDER_PRIMARY_API_KEY: ${{ secrets.GLM }}
       IMMUNE_PROVIDER_CONFIG: config/provider-live-test.json
       IMMUNE_TEST_MODE: GITHUB_ISOLATED
       PYTHONUNBUFFERED: "1"
