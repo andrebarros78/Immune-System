@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import time
+import urllib.error
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -12,7 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from immune_core.provider_runtime import ProviderRuntimeConfig
-from immune_core.providers import OpenAICompatibleHTTPProvider, ProviderError, ProviderRequest
+from immune_core.providers import OpenAICompatibleHTTPProvider, ProviderError, ProviderProtocolError, ProviderRequest, ProviderUnavailable
 
 EXPECTED_TEST_MODE = "GITHUB_ISOLATED"
 EXPECTED_HOST = "api.z.ai"
@@ -89,15 +90,29 @@ def main() -> int:
     try:
         proposal = provider.propose(request, timeout_seconds=30.0)
     except ProviderError as exc:
-        emit(
-            {
-                **public_base,
-                "ok": False,
-                "status": "PROVIDER_CONTRACT_FAILED",
-                "error_class": type(exc).__name__,
-                "duration_seconds": round(time.monotonic() - started, 3),
-            }
+        diagnostic = {
+            **public_base,
+            "ok": False,
+            "status": "PROVIDER_CONTRACT_FAILED",
+            "error_class": type(exc).__name__,
+            "duration_seconds": round(time.monotonic() - started, 3),
+        }
+        cause = exc.__cause__
+        if isinstance(cause, urllib.error.HTTPError):
+            diagnostic["http_status"] = int(cause.code)
+            diagnostic["http_reason"] = str(cause.reason)[:80]
+        elif isinstance(cause, urllib.error.URLError):
+            diagnostic["network_error_class"] = type(cause.reason).__name__
+        elif isinstance(exc, ProviderProtocolError):
+            diagnostic["protocol_error"] = str(exc)[:160]
+        elif isinstance(exc, ProviderUnavailable):
+            diagnostic["provider_unavailable"] = True
+        emit(diagnostic)
+        annotation = "Provider live smoke failed: " + json.dumps(
+            {k: diagnostic[k] for k in ("error_class", "http_status", "http_reason", "network_error_class", "protocol_error", "provider_unavailable") if k in diagnostic},
+            sort_keys=True,
         )
+        print("::error title=Immune provider smoke::" + annotation.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))
         return 1
 
     result = {
