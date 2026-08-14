@@ -77,8 +77,9 @@ def main() -> int:
         mission_id="github-isolated-provider-live-smoke",
         objective=(
             "Validate only the cognitive provider contract inside an isolated GitHub test runner. "
-            "Return strict proposal JSON. Do not recommend execution, tools, privileges, writes, "
-            "network targets, protected systems, or external actions."
+            "Return strict proposal JSON. For this smoke set hypotheses to [] and recommended_tasks to []; "
+            "summary must be a non-empty string and confidence must be a number from 0 to 1. "
+            "Do not recommend execution, tools, privileges, writes, network targets, protected systems, or external actions."
         ),
         untrusted_observations=(
             {"kind": "synthetic.provider-smoke", "state": "synthetic", "safe": True},
