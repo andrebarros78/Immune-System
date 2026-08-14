@@ -2,6 +2,12 @@ name: Immune Provider Live Smoke - Isolated
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/provider-live-smoke.yml'
+      - 'scripts/provider_live_smoke.py'
+      - 'config/provider-live-test.json'
 
 permissions:
   contents: read
