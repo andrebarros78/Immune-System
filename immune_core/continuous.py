@@ -317,6 +317,31 @@ class ContinuousSupervisor:
         )
         return RuntimeCycle(cycle_id, started, completed, state, recovered, probes_ok, probes_failed, backup.id if backup else None, restore_ok, evidence.id)
 
+    def run_cycles(self, cycle_count: int, *, interval_seconds: float = 0.0) -> dict[str, object]:
+        """Run an exact bounded number of supervisor cycles.
+
+        This is the deterministic endurance primitive. It proves repeated healthy
+        operation without making correctness depend on host CPU speed or scheduler
+        contention. ``run_for`` remains the wall-clock window primitive.
+        """
+        if cycle_count < 1 or interval_seconds < 0:
+            raise ValueError("invalid continuous runtime cycle bounds")
+        started = time.monotonic()
+        degraded = 0
+        for _ in range(cycle_count):
+            cycle_started = time.monotonic()
+            result = self.tick()
+            degraded += int(result.state != "RUNNING")
+            if interval_seconds:
+                remaining = interval_seconds - (time.monotonic() - cycle_started)
+                if remaining > 0:
+                    time.sleep(remaining)
+        return {
+            "duration_seconds": time.monotonic() - started,
+            "cycles": cycle_count,
+            "degraded_cycles": degraded,
+            "state": self.status()["state"],
+        }
     def run_for(self, duration_seconds: float, *, interval_seconds: float = 0.05, max_cycles: int = 10000) -> dict[str, object]:
         if duration_seconds <= 0 or interval_seconds < 0 or max_cycles < 1:
             raise ValueError("invalid continuous runtime bounds")

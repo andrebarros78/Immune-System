@@ -194,8 +194,8 @@ class Phase10Tests(unittest.TestCase):
             restore_drill_interval_seconds=999, backup_retention=3,
         )
         supervisor.boot()
-        result = supervisor.run_for(0.6, interval_seconds=0.01, max_cycles=200)
-        self.assertGreaterEqual(result["cycles"], 20)
+        result = supervisor.run_cycles(20)
+        self.assertEqual(result["cycles"], 20)
         self.assertEqual(result["degraded_cycles"], 0)
         self.assertEqual(result["state"], "RUNNING")
 

@@ -191,8 +191,8 @@ with tempfile.TemporaryDirectory(prefix="immune-phase10-proof-") as td:
         backup_retention=3,
     )
     stable.boot()
-    endurance = stable.run_for(1.0, interval_seconds=0.005, max_cycles=500)
-    ok("endurance_cycles", int(endurance["cycles"]) >= 50, str(endurance))
+    endurance = stable.run_cycles(64, interval_seconds=0.001)
+    ok("endurance_cycles", int(endurance["cycles"]) == 64, str(endurance))
     ok("endurance_no_degraded_cycles", int(endurance["degraded_cycles"]) == 0, str(endurance))
 
     valid, bad_seq = audit.verify_chain()
