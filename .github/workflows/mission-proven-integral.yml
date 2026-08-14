@@ -11,6 +11,8 @@ on:
       - 'tests/digital_twin/**'
       - 'scripts/validate_digital_twin.py'
       - 'scripts/final_mission_gate.py'
+      - 'scripts/bootstrap_phase1.py'
+      - 'tests/phase1/validate_phase1.py'
 
 permissions:
   contents: read
