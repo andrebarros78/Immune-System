@@ -16,6 +16,10 @@ on:
       - 'tests/phase1/validate_phase1.py'
       - 'scripts/validate_phase*.py'
       - 'tests/phase*/**'
+      - 'MISSION_STATUS.md'
+      - 'RELEASE_V1_STATUS.md'
+      - 'PHASE5_STATUS.md'
+      - 'DIGITAL_TWIN_STATUS.md'
 
 permissions:
   contents: read

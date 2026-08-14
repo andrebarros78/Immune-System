@@ -1,44 +1,42 @@
-# Sistema Imunológico V1.0.0 — Release Consolidada
+# Sistema ImunolÃ³gico V1.0.1 â€” Release Consolidada
 
 **Estado: V1_CONSOLIDATED_PROVEN**
 
-Data de consolidação: 2026-08-11.
+Data de consolidaÃ§Ã£o: 2026-08-14.
 
-Tag planejada: `v1.0.0`.
+Tag oficial desta consolidaÃ§Ã£o: `v1.0.1`.
 
-Escopo consolidado: `IMMUNE_SYSTEM_V1_IMPLEMENTATION_AND_CONTROLLED_OPERATION` + `IMMUNE_SYSTEM_V1_CLOSED_DIGITAL_TWIN_INTEGRAL_VALIDATION`.
+A tag histÃ³rica `v1.0.0` permanece imutÃ¡vel e nÃ£o Ã© movida.
 
-## Cadeia de prova
+Escopo consolidado: `IMMUNE_SYSTEM_V1_ISOLATED_INTEGRAL_PROOF`.
 
-- PHASE1_PROVEN
-- PHASE2_PROVEN
-- PHASE3_PROVEN
-- PHASE4_PROVEN
-- PHASE5_PROVEN
-- PHASE6_PROVEN
-- PHASE7_PROVEN
-- PHASE8_PROVEN
-- PHASE9_PROVEN
-- PHASE10_PROVEN
-- MISSION_PROVEN
-- DIGITAL_TWIN_PROVEN
+## Cadeia obrigatÃ³ria de prova
 
-## Digital Twin
+- PHASE1_PROVEN â€” 120/120
+- PHASE2_PROVEN â€” 46/46
+- PHASE3_PROVEN â€” 40/40
+- PHASE4_PROVEN â€” 52/52
+- PHASE5_PROVEN â€” 41/41
+- PHASE6_PROVEN â€” 40/40
+- PHASE7_PROVEN â€” 49/49
+- PHASE8_PROVEN â€” 46/46
+- PHASE9_PROVEN â€” 52/52; carga 1/4/8/16/32; endurance mÃ­nimo 128 ciclos; zero falhas
+- PHASE10_PROVEN â€” 59/59; 64 ciclos determinÃ­sticos; zero ciclos degradados
+- DIGITAL_TWIN_PROVEN â€” 48/48; 7 cenÃ¡rios
+- GatewayEgress + PolicyGuard + checkpoint + mutaÃ§Ã£o sintÃ©tica + rollback â€” PROVEN
+- GLM ao vivo em `immune-live-test`, restrito a `api.z.ai` â€” PROVEN
+- MISSION_PROVEN integral â€” somente quando os jobs de nÃºcleo e provider estiverem verdes no mesmo commit
 
-- TESTE_VIRTUAL_SIMULADO: PROVEN
-- DIGITAL_TWIN_OPERACIONAL: PROVEN
-- SANDBOX_VIRTUAL_FECHADO: PROVEN
-- SIMULAÇÃO_PONTA_A_PONTA: PROVEN
-- SEM_EFEITO_EXTERNO: PROVEN no escopo do cenário fechado validado
-- 41/41 checks aprovados
-- 6/6 cenários aprovados
+## Fronteira de seguranÃ§a da prova
 
-## Regra de release
+- sistemas protegidos reais conectados: 0;
+- efeitos externos sobre sistemas existentes: 0;
+- configuraÃ§Ã£o padrÃ£o do Immune Gateway: zero sistemas;
+- o Digital Twin adapter Ã© exclusivo de laboratÃ³rio e nÃ£o possui autoridade de rede/subprocesso/host;
+- a IA fornece cogniÃ§Ã£o e nÃ£o recebe autoridade de execuÃ§Ã£o.
 
-A tag `v1.0.0` somente pode ser criada se os estados PHASE1_PROVEN a PHASE10_PROVEN, MISSION_PROVEN, DIGITAL_TWIN_PROVEN e V1_CONSOLIDATED_PROVEN estiverem presentes no commit alvo.
+## Regra da tag
 
-A tag é anotada e não deve ser movida. Qualquer evolução posterior deve usar uma nova versão/tag.
+`v1.0.1` Ã© criada somente depois de `MISSION_PROVEN - Integral Isolated Validation` concluir com sucesso no commit alvo. A tag Ã© anotada e nÃ£o deve ser movida.
 
-## Fronteira de evidência
-
-Esta release prova a implementação, operação controlada e validação integral em Digital Twin fechado. Ela não declara homologação de uma instalação física específica sem evidência adicional desse host.
+Uma implantaÃ§Ã£o fÃ­sica especÃ­fica permanece um escopo separado e deve produzir evidÃªncia prÃ³pria de host.
