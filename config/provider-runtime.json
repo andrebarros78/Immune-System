@@ -9,7 +9,7 @@
       "enabled": true,
       "priority": 100,
       "locality": "external",
-      "endpoint": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+      "endpoint": "https://api.z.ai/api/paas/v4/chat/completions",
       "model": "glm-4.7-flash",
       "api_key_env": "IMMUNE_PROVIDER_PRIMARY_API_KEY",
       "cost_per_call": 0.0,
