@@ -8,6 +8,7 @@ on:
       - '.github/workflows/provider-live-smoke.yml'
       - 'scripts/provider_live_smoke.py'
       - 'config/provider-live-test.json'
+      - 'immune_core/providers.py'
 
 permissions:
   contents: read
