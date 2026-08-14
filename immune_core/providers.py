@@ -54,6 +54,13 @@ class ProviderRequest:
                 "required_fields": ["summary", "hypotheses", "recommended_tasks", "confidence"],
                 "exact_top_level_keys": ["summary", "hypotheses", "recommended_tasks", "confidence"],
                 "forbidden_wrappers": ["answer", "result", "data", "response", "output"],
+                "recommended_task_schema": {
+                    "kind": "non-empty string",
+                    "payload": "JSON object",
+                    "skill_id": "string or null",
+                    "risk": "JSON object",
+                    "additional_fields": False,
+                },
             },
         }
 
@@ -140,7 +147,9 @@ class OpenAICompatibleHTTPProvider:
         "summary, hypotheses, recommended_tasks, confidence. "
         "Example shape: {\"summary\":\"text\",\"hypotheses\":[],\"recommended_tasks\":[],\"confidence\":0.0}. "
         "Never wrap the object in answer, result, data, response, output, or any other key. "
-        "recommended_tasks may contain only objects with kind, payload, skill_id, risk."
+        "recommended_tasks may contain only objects with kind, payload, skill_id, risk. "
+        "For every recommended_tasks item: kind must be a non-empty string; payload must be a JSON object; "
+        "skill_id must be a string or null; risk must be a JSON object; no additional task fields are allowed."
     )
 
     def __init__(
