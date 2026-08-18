@@ -185,3 +185,35 @@ class BrainFortressTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class BoundaryEscapeRegressionTests(unittest.TestCase):
+    def _violations_for(self, source: str):
+        with tempfile.TemporaryDirectory(prefix="immune-boundary-") as td:
+            root = Path(td)
+            core = root / "immune_core"
+            core.mkdir()
+            (core / "escape.py").write_text(source, encoding="utf-8")
+            return core_boundary_violations(root)
+
+    def test_boundary_detects_indirect_process_and_transport_escape_routes(self):
+        samples = (
+            "import os\nos.system('whoami')\n",
+            "import os as operating\noperating.popen('whoami')\n",
+            "from os import spawnv as launch\nlaunch(0, 'x', ['x'])\n",
+            "import multiprocessing\n",
+            "import ctypes\n",
+            "import webbrowser\n",
+            "import http.client\n",
+            "import asyncio\nasyncio.create_subprocess_exec('x')\n",
+            "from asyncio import create_subprocess_shell as launch\nlaunch('x')\n",
+        )
+        for source in samples:
+            with self.subTest(source=source):
+                self.assertTrue(self._violations_for(source), source)
+
+    def test_boundary_detects_alias_environment_secret_access(self):
+        violations = self._violations_for("import os as operating\nsecret = operating.environ['SECRET']\n")
+        self.assertTrue(any(":environment:environ" in item for item in violations), violations)
+
+    def test_boundary_allows_non_process_os_metadata_use(self):
+        self.assertEqual(self._violations_for("import os\nvalue = os.name\n"), [])
