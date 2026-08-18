@@ -30,6 +30,8 @@ on:
       - 'tests/phase*/**'
       - 'adr/ADR-0015-sovereign-brain-fortress.md'
       - 'runbooks/BRAIN-FORTRESS-DEPLOYMENT.md'
+      - 'BRAIN_FORTRESS_STATUS.md'
+      - 'RELEASE_V1_1_STATUS.md'
 
 permissions:
   contents: read
