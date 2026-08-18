@@ -314,6 +314,7 @@ jobs:
   brain-fortress-proven:
     name: BRAIN_FORTRESS_PROVEN
     needs: [fortress-core, provider-proof]
+    if: ${{ always() && needs.fortress-core.result == 'success' && needs.provider-proof.result == 'success' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Emit sovereign fortress proof

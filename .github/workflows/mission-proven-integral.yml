@@ -267,6 +267,7 @@ jobs:
   mission-proven:
     name: MISSION_PROVEN
     needs: [core-integral-proof, provider-proof]
+    if: ${{ always() && needs.core-integral-proof.result == 'success' && needs.provider-proof.result == 'success' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Emit final proof

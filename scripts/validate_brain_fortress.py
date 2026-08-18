@@ -130,6 +130,16 @@ def main() -> int:
     ok("provider_attestation_external_repository_exact", provider_attestation.get("repository") == "andrebarros78/Immune-System")
     ok("provider_attestation_requires_surface_identity", len(provider_attestation.get("surface_paths", [])) >= 6)
     ok("provider_attestation_has_external_run", int(provider_attestation.get("github_run_id", 0)) > 0)
+    brain_workflow = (ROOT / ".github" / "workflows" / "brain-fortress.yml").read_text(encoding="utf-8")
+    mission_workflow = (ROOT / ".github" / "workflows" / "mission-proven-integral.yml").read_text(encoding="utf-8")
+    ok(
+        "brain_final_job_requires_successful_core_and_provider_proof",
+        "always() && needs.fortress-core.result == 'success' && needs.provider-proof.result == 'success'" in brain_workflow,
+    )
+    ok(
+        "mission_final_job_requires_successful_core_and_provider_proof",
+        "always() && needs.core-integral-proof.result == 'success' && needs.provider-proof.result == 'success'" in mission_workflow,
+    )
 
     for phase in range(1, 11):
         text = (ROOT / f"PHASE{phase}_STATUS.md").read_text(encoding="utf-8")
