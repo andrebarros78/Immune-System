@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "repository": "andrebarros78/Immune-System",
+  "baseline_commit": "f5d15f5f4bf01654bdfc7040ed22bbb98cee8afa",
+  "github_run_id": 32136856684,
+  "workflow_name": "BRAIN_FORTRESS_PROVEN - Seven Ring Isolated Validation",
+  "required_job_name": "GLM Live via Provider Proxy",
+  "surface_paths": [
+    "immune_provider_proxy",
+    "immune_core/providers.py",
+    "immune_core/provider_runtime.py",
+    "config/provider-live-test.json",
+    "config/provider-runtime.json",
+    "scripts/provider_live_smoke.py"
+  ]
+}

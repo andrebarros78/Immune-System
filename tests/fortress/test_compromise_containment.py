@@ -206,5 +206,29 @@ class CompromiseContainmentTests(unittest.TestCase):
         with self.assertRaises(AuthorizationError):
             executor.run(lease, manifest, worker_token, ["forbidden-shell", "--escape"], now=NOW + 4)
 
+    def test_stolen_tokens_expire_and_wrong_scope_cannot_authorize_or_replay(self):
+        engine = DurableLoopEngine(self.store, self.audit)
+        engine.create_mission("m-token", "sys-token")
+        engine.transition_mission("m-token", "AUTHORIZED", "token containment")
+        engine.transition_mission("m-token", "RUNNING", "token containment")
+        caps = ActionCapabilityAuthority(b"C" * 32, self.identities, self.store)
+        authority = SovereignPolicyAuthority(
+            self.store, self.identities, self.policy, caps,
+            {"sys-token": {"repair": ActionRule("repair:execute", True, False, True)}},
+            checkpoint_verifier=lambda checkpoint_id, intent: checkpoint_id == "cp",
+            recovery_verifier=lambda checkpoint_id, intent: True,
+        )
+        wrong_scope = self.identities.issue("stolen", "worker", ("observe:read",), ttl_seconds=30, now=NOW)
+        with self.assertRaises(SovereignAuthorizationError):
+            authority.authorize(wrong_scope, ActionIntent("m-token", "sys-token", "repair", {"x": 1}, "cp"), now=NOW + 1)
+        expired = self.identities.issue("stolen", "worker", ("repair:execute",), ttl_seconds=1, now=NOW)
+        with self.assertRaises(SovereignAuthorizationError):
+            authority.authorize(expired, ActionIntent("m-token", "sys-token", "repair", {"x": 1}, "cp"), now=NOW + 2)
+
+        issuer = self.identities.issue("policy", "policy", ("capability:issue",), ttl_seconds=30, now=NOW)
+        cap = caps.issue(issuer, mission_id="m-token", system_id="sys-token", action="repair", parameters={"x": 1}, checkpoint_id="cp", ttl_seconds=1, now=NOW)
+        with self.assertRaises(CapabilityError):
+            caps.consume(cap.token, mission_id="m-token", system_id="sys-token", action="repair", parameters={"x": 1}, checkpoint_id="cp", now=NOW + 2)
+
 if __name__ == "__main__":
     unittest.main()

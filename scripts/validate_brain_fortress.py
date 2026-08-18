@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import json
+import os
 import sys
 import time
 import unittest
@@ -38,6 +39,16 @@ def main() -> int:
     ok("ring1_zero_external_credentials", rings[0].get("external_credentials") is False)
     ok("production_hardware_root_required", cfg.get("foundation", {}).get("production_hardware_backed_required") is True)
     ok("acceptance_state_exact", cfg.get("acceptance_state") == "BRAIN_FORTRESS_PROVEN")
+    ring4 = rings[3]
+    ring6 = rings[5]
+    ok("worker_network_deny_default", ring4.get("worker_network_default") == "deny")
+    ok("worker_child_process_deny_default", ring4.get("worker_child_process_default") == "deny")
+    ok("worker_resource_limits_required", ring4.get("resource_limits_required") is True)
+    ok("worker_disposable_teardown_required", ring4.get("disposable_teardown_required") is True)
+    ok("adapter_signed_manifest_required", ring6.get("signed_manifest_required") is True)
+    ok("adapter_process_isolation_required", ring6.get("process_isolation_required") is True)
+    ok("adapter_network_deny_default", ring6.get("network_default") == "deny")
+    ok("adapter_disposable_runtime_required", ring6.get("disposable_runtime_required") is True)
 
     violations = core_boundary_violations(ROOT)
     ok("core_static_boundary_clean", not violations, violations)
@@ -50,6 +61,9 @@ def main() -> int:
     ok("core_no_provider_secret_reference", "api_key_env" not in core_provider_runtime)
     ok("core_no_http_panel", "http.server" not in core_panel and "ThreadingHTTPServer" not in core_panel)
     ok("execution_broker_external", (ROOT / "immune_execution_broker" / "execution.py").is_file())
+    ok("disposable_container_sandbox_present", (ROOT / "immune_execution_broker" / "isolation.py").is_file())
+    ok("signed_adapter_manifest_present", (ROOT / "immune_fortress" / "adapter_manifest.py").is_file())
+    ok("adapter_sandbox_host_present", (ROOT / "immune_gateway" / "adapter_sandbox.py").is_file())
     ok("provider_proxy_external", (ROOT / "immune_provider_proxy" / "http_provider.py").is_file())
     ok("presentation_external", (ROOT / "immune_presentation" / "panel.py").is_file())
     ok("control_plane_external", (ROOT / "immune_control_plane" / "cli.py").is_file())
@@ -91,6 +105,15 @@ def main() -> int:
     ok("root_manifest_covers_provider_proxy", "immune_provider_proxy/http_provider.py" in critical_paths)
     ok("root_manifest_covers_runtime", "scripts/immune_runtime.py" in critical_paths)
     ok("root_manifest_covers_fortress_config", "config/brain-fortress.json" in critical_paths)
+    for required_root_file in (
+        "immune_execution_broker/isolation.py",
+        "immune_fortress/adapter_manifest.py",
+        "immune_gateway/adapter_sandbox.py",
+        "scripts/validate_container_sandbox.py",
+        "config/provider-live-attestation.json",
+        "scripts/verify_provider_live_attestation.py",
+    ):
+        ok(f"root_manifest_covers:{required_root_file}", required_root_file in critical_paths)
     ok("root_manifest_covers_all_rego", all(f"policies/{name}" in critical_paths for name in ("authority.rego","checkpoint.rego","destructive-actions.rego","donor-oss.rego","financial.rego","mission-proven.rego","secrets.rego")))
     runtime_source = (ROOT / "scripts" / "immune_runtime.py").read_text(encoding="utf-8")
     ok("official_runtime_has_fortress_attestation", "attest_fortress(args)" in runtime_source and "CONTAINED_EXIT" in runtime_source)
@@ -103,6 +126,10 @@ def main() -> int:
 
     gateway_cfg = json.loads((ROOT / "config" / "gateway-runtime.json").read_text(encoding="utf-8"))
     ok("default_has_zero_protected_targets", gateway_cfg.get("systems") == [])
+    provider_attestation = json.loads((ROOT / "config" / "provider-live-attestation.json").read_text(encoding="utf-8"))
+    ok("provider_attestation_external_repository_exact", provider_attestation.get("repository") == "andrebarros78/Immune-System")
+    ok("provider_attestation_requires_surface_identity", len(provider_attestation.get("surface_paths", [])) >= 6)
+    ok("provider_attestation_has_external_run", int(provider_attestation.get("github_run_id", 0)) > 0)
 
     for phase in range(1, 11):
         text = (ROOT / f"PHASE{phase}_STATUS.md").read_text(encoding="utf-8")
@@ -114,6 +141,32 @@ def main() -> int:
     ok("double_compromise_provider_gateway_required", "test_double_compromise_provider_plus_gateway_cannot_create_material_authority" in compromise_source)
     ok("double_compromise_adapter_worker_required", "test_double_compromise_adapter_plus_worker_cannot_expand_action_or_executable" in compromise_source)
     fortress_suite = unittest.defaultTestLoader.discover(str(ROOT / "tests" / "fortress"), pattern="test_*.py")
+
+    def _test_ids(suite):
+        ids = set()
+        for item in suite:
+            if isinstance(item, unittest.TestSuite):
+                ids.update(_test_ids(item))
+            else:
+                ids.add(item.id().rsplit(".", 1)[-1])
+        return ids
+
+    fortress_test_ids = _test_ids(fortress_suite)
+    mandatory_attack_tests = {
+        "test_double_compromise_provider_plus_gateway_cannot_create_material_authority",
+        "test_double_compromise_adapter_plus_worker_cannot_expand_action_or_executable",
+        "test_joint_constitution_policy_and_manifest_tamper_fails_external_root",
+        "test_container_policy_is_deny_by_default_and_resource_bounded",
+        "test_signed_adapter_manifest_detects_tamper_and_action_expansion",
+        "test_official_runtime_fails_closed_when_root_key_is_unavailable",
+        "test_stolen_tokens_expire_and_wrong_scope_cannot_authorize_or_replay",
+        "test_attestation_reuse_requires_unchanged_surface_and_external_success",
+        "test_provider_surface_change_forces_fresh_live_proof_without_reusing_attestation",
+        "test_failed_or_mismatched_external_run_cannot_be_reused",
+    }
+    ok("mandatory_attack_scenarios_explicit", mandatory_attack_tests.issubset(fortress_test_ids), sorted(mandatory_attack_tests - fortress_test_ids))
+    if os.environ.get("GITHUB_ACTIONS", "").strip().lower() == "true":
+        ok("ci_disposable_sandbox_runtime_proven", os.environ.get("IMMUNE_DISPOSABLE_SANDBOX_PROVEN") == "true")
     fortress_result = unittest.TextTestRunner(verbosity=1).run(fortress_suite)
     ok("fortress_adversarial_suite", fortress_result.wasSuccessful(), f"tests={fortress_result.testsRun} failures={len(fortress_result.failures)} errors={len(fortress_result.errors)}")
 

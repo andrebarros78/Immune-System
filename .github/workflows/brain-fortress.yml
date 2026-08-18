@@ -22,9 +22,12 @@ on:
       - 'config/brain-root-critical-files.json'
       - 'config/provider-live-test.json'
       - 'scripts/validate_brain_fortress.py'
+      - 'scripts/validate_container_sandbox.py'
       - 'scripts/validate_digital_twin.py'
       - 'scripts/validate_phase*.py'
       - 'scripts/provider_live_smoke.py'
+      - 'scripts/verify_provider_live_attestation.py'
+      - 'config/provider-live-attestation.json'
       - 'scripts/immune_runtime.py'
       - 'tests/fortress/**'
       - 'tests/digital_twin/**'
@@ -89,6 +92,26 @@ jobs:
           assert violations == [], violations
           print('SOVEREIGN_CORE_NETWORK_SUBPROCESS_FREE=true')
           PY
+
+      - name: Prove disposable Worker and Adapter OS sandbox
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker version
+          build_dir="$RUNNER_TEMP/immune-sandbox-build"
+          mkdir -p "$build_dir"
+          gcc -O2 -static tests/fortress/sandbox_probe.c -o "$build_dir/probe"
+          cat > "$build_dir/Dockerfile" <<'EOF'
+          FROM scratch
+          COPY probe /probe
+          ENTRYPOINT ["/probe"]
+          EOF
+          image="immune-sandbox-probe:${GITHUB_SHA}"
+          trap 'docker image rm --force "$image" >/dev/null 2>&1 || true' EXIT
+          docker build --network none -t "$image" "$build_dir"
+          python scripts/validate_container_sandbox.py --image "$image"
+          echo 'IMMUNE_DISPOSABLE_SANDBOX_PROVEN=true' >> "$GITHUB_ENV"
+          echo 'DISPOSABLE_WORKER_ADAPTER_OS_SANDBOX_PROVEN=true'
 
       - name: Prove official runtime Root of Trust boot and fail-closed containment
         shell: bash
@@ -172,9 +195,38 @@ jobs:
             echo "- Commit: ${GITHUB_SHA}"
           } >> "$GITHUB_STEP_SUMMARY"
 
+  provider-proof-mode:
+    name: Provider Proof Attestation
+    needs: fortress-core
+    runs-on: ubuntu-24.04
+    outputs:
+      reuse: ${{ steps.attestation.outputs.reuse }}
+    steps:
+      - name: Checkout exact commit without persisted credentials
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Fetch immutable live-proof baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=$(python -c "import json; print(json.load(open('config/provider-live-attestation.json'))['baseline_commit'])")
+          git fetch --no-tags --depth=1 origin "$base"
+
+      - name: Verify external live-provider attestation and surface identity
+        id: attestation
+        run: python scripts/verify_provider_live_attestation.py
+
   provider-proxy-live:
     name: GLM Live via Provider Proxy
-    needs: fortress-core
+    needs: [fortress-core, provider-proof-mode]
+    if: ${{ needs.provider-proof-mode.result == 'success' && needs.provider-proof-mode.outputs.reuse != 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment: immune-live-test
@@ -228,10 +280,7 @@ jobs:
             echo "PROVIDER_ATTEMPT=${attempt}"
             python scripts/provider_live_smoke.py
             rc=$?
-            if [ "$rc" -eq 0 ]; then
-              echo 'PROVIDER_PROXY_LIVE_PROVEN=true'
-              exit 0
-            fi
+            if [ "$rc" -eq 0 ]; then echo 'PROVIDER_PROXY_LIVE_PROVEN=true'; exit 0; fi
             if [ "$attempt" -eq 4 ]; then exit "$rc"; fi
             if [ "$rc" -eq 75 ]; then wait_seconds=$((attempt * 90)); echo "RATE_LIMIT_RETRY=true WAIT_SECONDS=${wait_seconds}"; sleep "$wait_seconds"; continue; fi
             if [ "$rc" -eq 76 ]; then wait_seconds=$((attempt * 30)); echo "TRANSIENT_PROVIDER_RETRY=true WAIT_SECONDS=${wait_seconds}"; sleep "$wait_seconds"; continue; fi
@@ -239,9 +288,32 @@ jobs:
           done
           exit 1
 
+  provider-proof:
+    name: Provider Proof Accepted
+    if: ${{ always() }}
+    needs: [provider-proof-mode, provider-proxy-live]
+    runs-on: ubuntu-24.04
+    env:
+      MODE_RESULT: ${{ needs.provider-proof-mode.result }}
+      REUSE: ${{ needs.provider-proof-mode.outputs.reuse }}
+      LIVE_RESULT: ${{ needs.provider-proxy-live.result }}
+    steps:
+      - name: Accept immutable attestation or fresh live proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$MODE_RESULT" = 'success'
+          if [ "$REUSE" = 'true' ]; then
+            test "$LIVE_RESULT" = 'skipped'
+            echo 'PROVIDER_PROOF=IMMUTABLE_LIVE_ATTESTATION_REUSED'
+          else
+            test "$LIVE_RESULT" = 'success'
+            echo 'PROVIDER_PROOF=FRESH_LIVE_PROVIDER'
+          fi
+
   brain-fortress-proven:
     name: BRAIN_FORTRESS_PROVEN
-    needs: [fortress-core, provider-proxy-live]
+    needs: [fortress-core, provider-proof]
     runs-on: ubuntu-24.04
     steps:
       - name: Emit sovereign fortress proof
@@ -256,7 +328,7 @@ jobs:
             echo 'Scope: SOVEREIGN_BRAIN_FORTRESS_V1_CLOSED_LAB'
             echo 'Seven rings: PROVEN'
             echo 'Base MISSION_PROVEN: preserved'
-            echo 'Provider live through external Proxy: PROVEN'
+            echo 'Provider proof: fresh live or externally verified immutable live attestation'
             echo 'Protected systems attached: 0'
             echo 'External effects on existing systems: 0'
             echo 'Physical hardware-backed Root of Trust: mandatory deployment gate, not claimed by this closed-lab proof'

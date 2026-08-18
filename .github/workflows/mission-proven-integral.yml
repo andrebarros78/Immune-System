@@ -18,6 +18,9 @@ on:
       - 'immune_twin/**'
       - 'tests/fortress/**'
       - 'scripts/validate_brain_fortress.py'
+      - 'scripts/validate_container_sandbox.py'
+      - 'scripts/verify_provider_live_attestation.py'
+      - 'config/provider-live-attestation.json'
       - 'BRAIN_FORTRESS_STATUS.md'
       - 'RELEASE_V1_1_STATUS.md'
       - 'tests/digital_twin/**'
@@ -102,6 +105,26 @@ jobs:
       - name: Revalidate closed Digital Twin
         run: python scripts/validate_digital_twin.py
 
+      - name: Prove disposable Worker and Adapter OS sandbox
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker version
+          build_dir="$RUNNER_TEMP/immune-sandbox-build"
+          mkdir -p "$build_dir"
+          gcc -O2 -static tests/fortress/sandbox_probe.c -o "$build_dir/probe"
+          cat > "$build_dir/Dockerfile" <<'EOF'
+          FROM scratch
+          COPY probe /probe
+          ENTRYPOINT ["/probe"]
+          EOF
+          image="immune-sandbox-probe:${GITHUB_SHA}"
+          trap 'docker image rm --force "$image" >/dev/null 2>&1 || true' EXIT
+          docker build --network none -t "$image" "$build_dir"
+          python scripts/validate_container_sandbox.py --image "$image"
+          echo 'IMMUNE_DISPOSABLE_SANDBOX_PROVEN=true' >> "$GITHUB_ENV"
+          echo 'DISPOSABLE_WORKER_ADAPTER_OS_SANDBOX_PROVEN=true'
+
       - name: Revalidate seven-ring Brain Fortress when present
         run: python scripts/validate_brain_fortress.py
 
@@ -128,9 +151,38 @@ jobs:
             echo "- Commit: ${GITHUB_SHA}"
           } >> "$GITHUB_STEP_SUMMARY"
 
+  provider-proof-mode:
+    name: Provider Proof Attestation
+    needs: core-integral-proof
+    runs-on: ubuntu-24.04
+    outputs:
+      reuse: ${{ steps.attestation.outputs.reuse }}
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Fetch immutable live-proof baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=$(python -c "import json; print(json.load(open('config/provider-live-attestation.json'))['baseline_commit'])")
+          git fetch --no-tags --depth=1 origin "$base"
+
+      - name: Verify external live-provider attestation and surface identity
+        id: attestation
+        run: python scripts/verify_provider_live_attestation.py
+
   live-provider-proof:
     name: GLM Live - Isolated
-    needs: core-integral-proof
+    needs: [core-integral-proof, provider-proof-mode]
+    if: ${{ needs.provider-proof-mode.result == 'success' && needs.provider-proof-mode.outputs.reuse != 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment: immune-live-test
@@ -181,43 +233,40 @@ jobs:
             echo "PROVIDER_ATTEMPT=${attempt}"
             python scripts/provider_live_smoke.py
             rc=$?
-            if [ "$rc" -eq 0 ]; then
-              echo 'LIVE_PROVIDER_CONTRACT_PROVEN=true'
-              exit 0
-            fi
-            if [ "$attempt" -eq 4 ]; then
-              exit "$rc"
-            fi
-            if [ "$rc" -eq 75 ]; then
-              wait_seconds=$((attempt * 90))
-              echo "RATE_LIMIT_RETRY=true WAIT_SECONDS=${wait_seconds}"
-              sleep "$wait_seconds"
-              continue
-            fi
-            if [ "$rc" -eq 76 ]; then
-              wait_seconds=$((attempt * 30))
-              echo "TRANSIENT_PROVIDER_RETRY=true WAIT_SECONDS=${wait_seconds}"
-              sleep "$wait_seconds"
-              continue
-            fi
+            if [ "$rc" -eq 0 ]; then echo 'LIVE_PROVIDER_CONTRACT_PROVEN=true'; exit 0; fi
+            if [ "$attempt" -eq 4 ]; then exit "$rc"; fi
+            if [ "$rc" -eq 75 ]; then wait_seconds=$((attempt * 90)); echo "RATE_LIMIT_RETRY=true WAIT_SECONDS=${wait_seconds}"; sleep "$wait_seconds"; continue; fi
+            if [ "$rc" -eq 76 ]; then wait_seconds=$((attempt * 30)); echo "TRANSIENT_PROVIDER_RETRY=true WAIT_SECONDS=${wait_seconds}"; sleep "$wait_seconds"; continue; fi
             exit "$rc"
           done
           exit 1
 
-      - name: Provider proof summary
+  provider-proof:
+    name: Provider Proof Accepted
+    if: ${{ always() }}
+    needs: [provider-proof-mode, live-provider-proof]
+    runs-on: ubuntu-24.04
+    env:
+      MODE_RESULT: ${{ needs.provider-proof-mode.result }}
+      REUSE: ${{ needs.provider-proof-mode.outputs.reuse }}
+      LIVE_RESULT: ${{ needs.live-provider-proof.result }}
+    steps:
+      - name: Accept immutable attestation or fresh live proof
         shell: bash
         run: |
-          {
-            echo '## Live provider proof'
-            echo '- GLM API: PROVEN'
-            echo '- Environment: immune-live-test'
-            echo '- Target: api.z.ai only'
-            echo '- Tools/execution authority exposed to model: 0'
-          } >> "$GITHUB_STEP_SUMMARY"
+          set -euo pipefail
+          test "$MODE_RESULT" = 'success'
+          if [ "$REUSE" = 'true' ]; then
+            test "$LIVE_RESULT" = 'skipped'
+            echo 'PROVIDER_PROOF=IMMUTABLE_LIVE_ATTESTATION_REUSED'
+          else
+            test "$LIVE_RESULT" = 'success'
+            echo 'PROVIDER_PROOF=FRESH_LIVE_PROVIDER'
+          fi
 
   mission-proven:
     name: MISSION_PROVEN
-    needs: [core-integral-proof, live-provider-proof]
+    needs: [core-integral-proof, provider-proof]
     runs-on: ubuntu-24.04
     steps:
       - name: Emit final proof
@@ -225,14 +274,14 @@ jobs:
         run: |
           echo 'MISSION_PROVEN=true'
           {
-            echo '# MISSION_PROVEN âœ…'
+            echo '# MISSION_PROVEN'
             echo ''
             echo "Commit: ${GITHUB_SHA}"
             echo 'Scope: IMMUNE_SYSTEM_V1_ISOLATED_INTEGRAL_PROOF'
             echo 'Phases 1-10: PROVEN'
             echo 'Digital Twin: PROVEN'
             echo 'GatewayEgress + checkpoint + synthetic mutation + rollback: PROVEN'
-            echo 'GLM live provider: PROVEN'
+            echo 'Provider proof: fresh live or externally verified immutable live attestation'
             echo 'Protected systems attached during proof: 0'
             echo 'External effects on existing systems: 0'
             echo ''

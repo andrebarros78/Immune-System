@@ -1,9 +1,10 @@
 {
   "schema": 1,
-  "generation": 1,
+  "generation": 3,
   "critical_files": [
     "config/brain-fortress.json",
     "config/brain-root-critical-files.json",
+    "config/provider-live-attestation.json",
     "constitution/IMUNE-DNA-001.md",
     "immune_control_plane/cli.py",
     "immune_core/cli.py",
@@ -14,12 +15,15 @@
     "immune_core/providers.py",
     "immune_core/workers.py",
     "immune_execution_broker/execution.py",
+    "immune_execution_broker/isolation.py",
     "immune_execution_broker/workers.py",
+    "immune_fortress/adapter_manifest.py",
     "immune_fortress/bootstrap.py",
     "immune_fortress/boundary.py",
     "immune_fortress/capability.py",
     "immune_fortress/policy_authority.py",
     "immune_fortress/root_trust.py",
+    "immune_gateway/adapter_sandbox.py",
     "immune_gateway/contracts.py",
     "immune_gateway/egress.py",
     "immune_gateway/ingress.py",
@@ -37,6 +41,8 @@
     "policies/financial.rego",
     "policies/mission-proven.rego",
     "policies/secrets.rego",
-    "scripts/immune_runtime.py"
+    "scripts/immune_runtime.py",
+    "scripts/validate_container_sandbox.py",
+    "scripts/verify_provider_live_attestation.py"
   ]
 }
