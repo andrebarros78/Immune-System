@@ -173,10 +173,10 @@ jobs:
     name: GLM Live via Provider Proxy
     needs: fortress-core
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 15
     environment: immune-live-test
     concurrency:
-      group: immune-brain-fortress-provider-live
+      group: immune-provider-live-smoke-isolated
       cancel-in-progress: false
     env:
       IMMUNE_PROVIDER_PRIMARY_API_KEY: ${{ secrets.GLM }}
@@ -221,7 +221,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4; do
             echo "PROVIDER_ATTEMPT=${attempt}"
             python scripts/provider_live_smoke.py
             rc=$?
@@ -229,9 +229,9 @@ jobs:
               echo 'PROVIDER_PROXY_LIVE_PROVEN=true'
               exit 0
             fi
-            if [ "$attempt" -eq 3 ]; then exit "$rc"; fi
-            if [ "$rc" -eq 75 ]; then sleep 65; continue; fi
-            if [ "$rc" -eq 76 ]; then sleep 20; continue; fi
+            if [ "$attempt" -eq 4 ]; then exit "$rc"; fi
+            if [ "$rc" -eq 75 ]; then wait_seconds=$((attempt * 90)); echo "RATE_LIMIT_RETRY=true WAIT_SECONDS=${wait_seconds}"; sleep "$wait_seconds"; continue; fi
+            if [ "$rc" -eq 76 ]; then wait_seconds=$((attempt * 30)); echo "TRANSIENT_PROVIDER_RETRY=true WAIT_SECONDS=${wait_seconds}"; sleep "$wait_seconds"; continue; fi
             exit "$rc"
           done
           exit 1
