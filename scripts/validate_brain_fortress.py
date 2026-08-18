@@ -110,6 +110,9 @@ def main() -> int:
     ok("base_mission_still_proven", "MISSION_PROVEN" in (ROOT / "MISSION_STATUS.md").read_text(encoding="utf-8"))
     ok("digital_twin_still_proven", "DIGITAL_TWIN_PROVEN" in (ROOT / "DIGITAL_TWIN_STATUS.md").read_text(encoding="utf-8"))
 
+    compromise_source = (ROOT / "tests" / "fortress" / "test_compromise_containment.py").read_text(encoding="utf-8")
+    ok("double_compromise_provider_gateway_required", "test_double_compromise_provider_plus_gateway_cannot_create_material_authority" in compromise_source)
+    ok("double_compromise_adapter_worker_required", "test_double_compromise_adapter_plus_worker_cannot_expand_action_or_executable" in compromise_source)
     fortress_suite = unittest.defaultTestLoader.discover(str(ROOT / "tests" / "fortress"), pattern="test_*.py")
     fortress_result = unittest.TextTestRunner(verbosity=1).run(fortress_suite)
     ok("fortress_adversarial_suite", fortress_result.wasSuccessful(), f"tests={fortress_result.testsRun} failures={len(fortress_result.failures)} errors={len(fortress_result.errors)}")
