@@ -16,12 +16,13 @@ if str(ROOT) not in sys.path:
 from immune_core.audit import AuditLedger
 from immune_core.checkpoints import CheckpointManager, WorkspaceManager
 from immune_core.engine import DurableLoopEngine
-from immune_core.execution import PrivilegedExecutor, SafeExecutor, WorkerManifest
+from immune_core.execution import WorkerManifest
+from immune_execution_broker.execution import PrivilegedExecutor, SafeExecutor
 from immune_core.identity import IdentityAuthority
 from immune_core.policy import PolicyGuard
 from immune_core.privilege import PrivilegeAuthority, PrivilegeError
 from immune_core.storage import SQLiteStateStore
-from immune_core.workers import WorkerRunner
+from immune_execution_broker.workers import WorkerRunner
 
 checks=[]
 failures=[]
@@ -31,13 +32,17 @@ def ok(name, condition, detail=""):
 
 ok("phase1_baseline_proven", "PHASE1_PROVEN" in (ROOT/"PHASE1_STATUS.md").read_text(encoding="utf-8"))
 ok("phase2_baseline_proven", "PHASE2_PROVEN" in (ROOT/"PHASE2_STATUS.md").read_text(encoding="utf-8"))
-required=["immune_core/checkpoints.py","immune_core/privilege.py","immune_core/execution.py","immune_core/workers.py","tests/phase3/test_execution.py","adr/ADR-0003-isolated-execution.md",".github/workflows/phase3-execution.yml"]
+required=["immune_core/checkpoints.py","immune_core/privilege.py","immune_core/execution.py","immune_core/workers.py","immune_execution_broker/execution.py","immune_execution_broker/workers.py","tests/phase3/test_execution.py","adr/ADR-0003-isolated-execution.md",".github/workflows/phase3-execution.yml"]
 for rel in required: ok(f"artifact:{rel}",(ROOT/rel).is_file())
-execution_text=(ROOT/"immune_core/execution.py").read_text(encoding="utf-8")
+core_execution_text=(ROOT/"immune_core/execution.py").read_text(encoding="utf-8")
+execution_text=(ROOT/"immune_execution_broker/execution.py").read_text(encoding="utf-8")
 priv_text=(ROOT/"immune_core/privilege.py").read_text(encoding="utf-8")
 checkpoint_text=(ROOT/"immune_core/checkpoints.py").read_text(encoding="utf-8")
-worker_text=(ROOT/"immune_core/workers.py").read_text(encoding="utf-8")
+core_worker_text=(ROOT/"immune_core/workers.py").read_text(encoding="utf-8")
+worker_text=(ROOT/"immune_execution_broker/workers.py").read_text(encoding="utf-8")
 markers={
+"core_has_no_subprocess":"subprocess" not in core_execution_text,
+"core_worker_is_protocol_only":"class WorkerRunner(Protocol)" in core_worker_text,
 "execution_no_shell":"shell=False" in execution_text,
 "execution_stdin_disabled":"stdin=subprocess.DEVNULL" in execution_text,
 "execution_timeout":"timeout=timeout" in execution_text,
@@ -98,7 +103,7 @@ with tempfile.TemporaryDirectory() as td:
     valid,bad_seq=audit.verify_chain(); ok("e2e_audit_chain_valid",valid and bad_seq is None)
     store.close()
 
-controlled=["immune_core/checkpoints.py","immune_core/privilege.py","immune_core/execution.py","immune_core/workers.py","tests/phase3/test_execution.py","scripts/validate_phase3.py","adr/ADR-0003-isolated-execution.md",".github/workflows/phase3-execution.yml"]
+controlled=["immune_core/checkpoints.py","immune_core/privilege.py","immune_core/execution.py","immune_core/workers.py","immune_execution_broker/execution.py","immune_execution_broker/workers.py","tests/phase3/test_execution.py","scripts/validate_phase3.py","adr/ADR-0003-isolated-execution.md",".github/workflows/phase3-execution.yml"]
 hashes={rel:hashlib.sha256((ROOT/rel).read_bytes()).hexdigest() for rel in controlled}
 evidence={"schema":1,"phase":"PHASE_3_ISOLATED_EXECUTION","validated_at":datetime.now(timezone.utc).isoformat(),"checks":checks,"summary":{"total":len(checks),"passed":sum(1 for c in checks if c["passed"]),"failed":len(failures)},"controlled_file_sha256":hashes,"result":"PHASE3_PROVEN" if not failures else "PHASE3_FAILED","scope_note":"PHASE3_PROVEN proves isolated task execution, checkpoint/rollback and sovereign privilege authorization. It does not claim host OS privilege escalation and is not MISSION_PROVEN for the complete product."}
 ev=ROOT/"evidence/phase3-validation.json"; ev.parent.mkdir(parents=True,exist_ok=True); ev.write_text(json.dumps(evidence,indent=2,ensure_ascii=False,sort_keys=True)+"\n",encoding="utf-8")

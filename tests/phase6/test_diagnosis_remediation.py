@@ -9,14 +9,15 @@ from immune_core.audit import AuditLedger
 from immune_core.checkpoints import CheckpointManager, WorkspaceManager
 from immune_core.diagnosis import DiagnosisError, IncidentEngine, ProgressDetector
 from immune_core.engine import DurableLoopEngine
-from immune_core.execution import PrivilegedExecutor, SafeExecutor, WorkerManifest
+from immune_core.execution import WorkerManifest
+from immune_execution_broker.execution import PrivilegedExecutor, SafeExecutor
 from immune_core.identity import IdentityAuthority
 from immune_core.observability import ObservabilityStore, SignalProcessor
 from immune_core.policy import PolicyGuard
 from immune_core.privilege import PrivilegeAuthority
 from immune_core.remediation import CorrectionLab, RemediationError, RemediationPlanner, ValidationEngine
 from immune_core.storage import SQLiteStateStore
-from immune_core.workers import WorkerRunner
+from immune_execution_broker.workers import WorkerRunner
 
 
 ROOT = Path(__file__).resolve().parents[2]

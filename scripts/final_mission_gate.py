@@ -79,7 +79,7 @@ def main() -> int:
 
     provider = load_json("config/provider-live-test.json")
     profiles = provider.get("providers") or []
-    require(provider.get("owner_scope") == "immune-core", "provider_owner")
+    require(provider.get("owner_scope") == "immune-provider-proxy", "provider_owner_outside_core")
     require(len(profiles) == 1, "isolated_provider_count")
     endpoint = str(profiles[0].get("endpoint", ""))
     require(endpoint.startswith("https://api.z.ai/"), "isolated_provider_endpoint")

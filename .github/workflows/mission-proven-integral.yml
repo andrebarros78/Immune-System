@@ -7,6 +7,12 @@ on:
     paths:
       - '.github/workflows/mission-proven-integral.yml'
       - 'immune_core/**'
+      - 'immune_fortress/**'
+      - 'immune_vault/**'
+      - 'immune_execution_broker/**'
+      - 'immune_provider_proxy/**'
+      - 'immune_presentation/**'
+      - 'immune_control_plane/**'
       - 'immune_gateway/**'
       - 'immune_twin/**'
       - 'tests/digital_twin/**'
@@ -36,6 +42,8 @@ jobs:
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -62,7 +70,7 @@ jobs:
           PY
 
       - name: Compile product
-        run: python -m compileall -q immune_core immune_gateway immune_lab immune_twin scripts tests
+        run: python -m compileall -q immune_core immune_fortress immune_vault immune_execution_broker immune_provider_proxy immune_presentation immune_control_plane immune_gateway immune_lab immune_twin scripts tests
 
       - name: Full regression suite
         run: python -m pytest -q
@@ -88,6 +96,9 @@ jobs:
 
       - name: Revalidate closed Digital Twin
         run: python scripts/validate_digital_twin.py
+
+      - name: Revalidate seven-ring Brain Fortress when present
+        run: python scripts/validate_brain_fortress.py
 
       - name: Evaluate sovereign final gate
         run: python scripts/final_mission_gate.py
@@ -129,6 +140,8 @@ jobs:
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup Python
         uses: actions/setup-python@v6

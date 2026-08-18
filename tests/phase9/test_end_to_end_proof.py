@@ -17,7 +17,8 @@ from immune_core.checkpoints import CheckpointManager, WorkspaceManager
 from immune_core.diagnosis import DiagnosisError, IncidentEngine, ProgressDetector
 from immune_core.discovery import DiscoveryEngine, DonorSensorAdapter, PathSensor
 from immune_core.engine import DurableLoopEngine
-from immune_core.execution import PrivilegedExecutor, SafeExecutor, WorkerManifest
+from immune_core.execution import WorkerManifest
+from immune_execution_broker.execution import PrivilegedExecutor, SafeExecutor
 from immune_core.identity import IdentityAuthority
 from immune_core.observability import AnomalyDetector, ObservabilityStore, SignalProcessor
 from immune_core.operator_dispatch import ControlledAction, OperatorCommandDispatcher, RunbookActionRegistry
@@ -30,7 +31,7 @@ from immune_core.runbooks import RunbookRunner
 from immune_core.skills import SkillRegistry
 from immune_core.state_backup import StateBackupManager
 from immune_core.storage import SQLiteStateStore
-from immune_core.workers import WorkerRunner
+from immune_execution_broker.workers import WorkerRunner
 from immune_lab.admission import REQUIRED_EVIDENCE, evaluate_donor
 from immune_gateway.adapters import TCPHealthGatewayAdapter
 from immune_gateway.ingress import GatewayIngress

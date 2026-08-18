@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "owner_scope": "immune-core",
+  "owner_scope": "immune-provider-proxy",
   "selection": "priority",
   "providers": [
     {

@@ -12,8 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from immune_core.provider_runtime import ProviderRuntimeConfig
-from immune_core.providers import OpenAICompatibleHTTPProvider, ProviderError, ProviderProtocolError, ProviderRequest, ProviderUnavailable
+from immune_provider_proxy.runtime import ProviderRuntimeConfig
+from immune_core.providers import ProviderError, ProviderProtocolError, ProviderRequest, ProviderUnavailable
+from immune_provider_proxy.http_provider import OpenAICompatibleHTTPProvider
 
 EXPECTED_TEST_MODE = "GITHUB_ISOLATED"
 EXPECTED_HOST = "api.z.ai"

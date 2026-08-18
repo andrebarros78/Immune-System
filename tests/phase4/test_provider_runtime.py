@@ -15,7 +15,7 @@ if str(ROOT) not in sys.path:
 
 from immune_core.audit import AuditLedger
 from immune_core.identity import IdentityAuthority
-from immune_core.provider_runtime import ProviderConfigurationError, ProviderRuntimeConfig
+from immune_provider_proxy.runtime import ProviderConfigurationError, ProviderRuntimeConfig
 from immune_core.providers import ProviderRequest
 from immune_core.storage import SQLiteStateStore
 
@@ -70,7 +70,7 @@ class ProviderRuntimeTests(unittest.TestCase):
 
     def write_config(self, provider: dict) -> Path:
         path = self.root / "providers.json"
-        path.write_text(json.dumps({"schema": 1, "owner_scope": "immune-core", "selection": "priority", "providers": [provider]}), encoding="utf-8")
+        path.write_text(json.dumps({"schema": 1, "owner_scope": "immune-provider-proxy", "selection": "priority", "providers": [provider]}), encoding="utf-8")
         return path
 
     def base_provider(self, endpoint="http://127.0.0.1:9999/v1/chat/completions", model="model-a"):
@@ -89,12 +89,15 @@ class ProviderRuntimeTests(unittest.TestCase):
 
     def test_repository_current_provider_is_configuration_not_core_binding(self):
         cfg = ProviderRuntimeConfig.load(ROOT / "config" / "provider-runtime.json")
-        self.assertEqual(cfg.owner_scope, "immune-core")
+        self.assertEqual(cfg.owner_scope, "immune-provider-proxy")
         self.assertEqual(cfg.enabled_profiles()[0].model, "glm-4.7-flash")
         core_source = (ROOT / "immune_core" / "providers.py").read_text(encoding="utf-8")
-        runtime_source = (ROOT / "immune_core" / "provider_runtime.py").read_text(encoding="utf-8")
+        runtime_source = (ROOT / "immune_provider_proxy" / "runtime.py").read_text(encoding="utf-8")
         self.assertNotIn("glm-4.7", core_source.lower())
         self.assertNotIn("glm-4.7", runtime_source.lower())
+        core_runtime = (ROOT / "immune_core" / "provider_runtime.py").read_text(encoding="utf-8")
+        self.assertNotIn("api_key_env", core_runtime)
+        self.assertNotIn("endpoint", core_runtime)
 
     def test_provider_can_be_swapped_only_by_configuration(self):
         first = ProviderRuntimeConfig.load(self.write_config(self.base_provider(model="model-one")))

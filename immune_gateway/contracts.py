@@ -47,15 +47,20 @@ class IngressReceipt:
 
 
 @dataclass(frozen=True)
+class AdapterActionPolicy:
+    required_scope: str
+    material_change: bool
+    irreversible: bool = False
+    checkpoint_required: bool = True
+
+
+@dataclass(frozen=True)
 class EgressRequest:
     mission_id: str
     system_id: str
     action: str
     parameters: dict[str, Any] = field(default_factory=dict)
-    material_change: bool = True
-    checkpoint_valid: bool = False
-    irreversible: bool = False
-    recovery_verified: bool = False
+    checkpoint_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -74,8 +79,8 @@ class ProtectedSystemAdapter(Protocol):
     adapter_id: str
     system_id: str
 
-    def collect(self, *, timeout_seconds: float = 2.0) -> GatewayObservation | None:
-        ...
-
-    def execute(self, action: str, parameters: dict[str, Any], *, timeout_seconds: float = 10.0) -> dict[str, Any]:
-        ...
+    def collect(self, *, timeout_seconds: float = 2.0) -> GatewayObservation | None: ...
+    def action_policy(self, action: str) -> AdapterActionPolicy: ...
+    def verify_checkpoint(self, checkpoint_id: str | None) -> bool: ...
+    def recovery_ready(self, checkpoint_id: str | None, action: str) -> bool: ...
+    def execute(self, action: str, parameters: dict[str, Any], *, timeout_seconds: float = 10.0) -> dict[str, Any]: ...

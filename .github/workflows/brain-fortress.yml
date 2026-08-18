@@ -1,0 +1,260 @@
+name: BRAIN_FORTRESS_PROVEN - Seven Ring Isolated Validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feat/brain-fortress-v1
+    paths:
+      - '.github/workflows/brain-fortress.yml'
+      - 'immune_core/**'
+      - 'immune_fortress/**'
+      - 'immune_vault/**'
+      - 'immune_execution_broker/**'
+      - 'immune_provider_proxy/**'
+      - 'immune_presentation/**'
+      - 'immune_control_plane/**'
+      - 'immune_gateway/**'
+      - 'immune_twin/**'
+      - 'config/brain-fortress.json'
+      - 'config/brain-root-critical-files.json'
+      - 'config/provider-live-test.json'
+      - 'scripts/validate_brain_fortress.py'
+      - 'scripts/validate_digital_twin.py'
+      - 'scripts/validate_phase*.py'
+      - 'scripts/provider_live_smoke.py'
+      - 'scripts/immune_runtime.py'
+      - 'tests/fortress/**'
+      - 'tests/digital_twin/**'
+      - 'tests/phase*/**'
+      - 'adr/ADR-0015-sovereign-brain-fortress.md'
+      - 'runbooks/BRAIN-FORTRESS-DEPLOYMENT.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: immune-brain-fortress-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fortress-core:
+    name: Seven Rings + Core + Recovery
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact commit without persisted credentials
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install test runner
+        run: python -m pip install --disable-pip-version-check 'pytest==9.1.1'
+
+      - name: Prove zero real protected targets
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          gateway=json.loads(Path('config/gateway-runtime.json').read_text())
+          fortress=json.loads(Path('config/brain-fortress.json').read_text())
+          assert gateway.get('systems') == []
+          assert [r['ring'] for r in fortress['rings']] == list(range(1,8))
+          assert fortress['rings'][0]['network'] is False
+          assert fortress['rings'][0]['subprocess'] is False
+          assert fortress['foundation']['production_hardware_backed_required'] is True
+          print('BRAIN_FORTRESS_DEFAULT_ISOLATION=true')
+          PY
+
+      - name: Compile all sovereign rings
+        run: |
+          python -m compileall -q \
+            immune_core immune_fortress immune_vault immune_execution_broker \
+            immune_provider_proxy immune_presentation immune_control_plane immune_gateway immune_lab immune_twin scripts tests
+
+      - name: Prove static sovereign Core boundary
+        run: |
+          python - <<'PY'
+          from immune_fortress.boundary import core_boundary_violations
+          violations=core_boundary_violations('.')
+          assert violations == [], violations
+          print('SOVEREIGN_CORE_NETWORK_SUBPROCESS_FREE=true')
+          PY
+
+      - name: Prove official runtime Root of Trust boot and fail-closed containment
+        shell: bash
+        run: |
+          set -euo pipefail
+          export IMMUNE_FORTRESS_ROOT_KEY_HEX="$(python -c "print('5a'*32)")"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from immune_fortress.root_trust import BrainRootOfTrust, ExternalHMACRootKey
+          root=Path('.').resolve()
+          cfg=json.loads(Path('config/brain-root-critical-files.json').read_text())
+          trust=BrainRootOfTrust(root, ExternalHMACRootKey(bytes.fromhex(os.environ['IMMUNE_FORTRESS_ROOT_KEY_HEX'])))
+          manifest,signature=trust.build(cfg['critical_files'],generation=int(cfg['generation']),source_commit=os.environ['GITHUB_SHA'])
+          out=Path(os.environ['RUNNER_TEMP'])
+          (out/'brain-root-manifest.json').write_text(json.dumps({
+            'generation':manifest.generation,'source_commit':manifest.source_commit,'files':manifest.files,'signer':manifest.signer
+          },sort_keys=True),encoding='utf-8')
+          (out/'brain-root-manifest.sig').write_text(signature,encoding='utf-8')
+          PY
+          python scripts/immune_runtime.py \
+            --db "$RUNNER_TEMP/should-not-open.sqlite3" \
+            --fortress-manifest "$RUNNER_TEMP/brain-root-manifest.json" \
+            --fortress-signature "$RUNNER_TEMP/brain-root-manifest.sig" \
+            --closed-lab-root --attest-only
+          test ! -e "$RUNNER_TEMP/should-not-open.sqlite3"
+          cp "$RUNNER_TEMP/brain-root-manifest.sig" "$RUNNER_TEMP/bad.sig"
+          printf '%064d' 0 > "$RUNNER_TEMP/bad.sig"
+          set +e
+          python scripts/immune_runtime.py \
+            --db "$RUNNER_TEMP/must-not-open.sqlite3" \
+            --fortress-manifest "$RUNNER_TEMP/brain-root-manifest.json" \
+            --fortress-signature "$RUNNER_TEMP/bad.sig" \
+            --closed-lab-root --attest-only
+          rc=$?
+          set -e
+          test "$rc" -eq 23
+          test ! -e "$RUNNER_TEMP/must-not-open.sqlite3"
+          echo 'OFFICIAL_RUNTIME_FAIL_CLOSED_BOOT_PROVEN=true'
+
+      - name: Full regression suite
+        run: python -m pytest -q
+
+      - name: Rebuild Phase 1 evidence
+        run: |
+          python scripts/bootstrap_phase1.py
+          python tests/phase1/validate_phase1.py
+
+      - name: Revalidate Phases 2 through 10
+        shell: bash
+        run: |
+          set -euo pipefail
+          for phase in 2 3 4 5 6 7 8 9 10; do
+            echo "VALIDATING_PHASE=${phase}"
+            python "scripts/validate_phase${phase}.py"
+          done
+
+      - name: Revalidate closed Digital Twin
+        run: python scripts/validate_digital_twin.py
+
+      - name: Revalidate Brain Fortress adversarial gate
+        run: python scripts/validate_brain_fortress.py
+
+      - name: Prove base mission remains valid
+        run: python scripts/final_mission_gate.py
+
+      - name: Core Fortress proof summary
+        shell: bash
+        run: |
+          {
+            echo '## Seven-ring Brain Fortress'
+            echo '- Sovereign Core direct network authority: 0'
+            echo '- Sovereign Core subprocess authority: 0'
+            echo '- Sovereign Core external provider credentials: 0'
+            echo '- Capability egress: exact + one-use + anti-replay'
+            echo '- Memory/Audit independent seals: PROVEN'
+            echo '- Root manifest tamper/rollback detection: PROVEN'
+            echo '- Physical hardware-backed root: REQUIRED AT HOST DEPLOYMENT'
+            echo '- Protected systems attached: 0'
+            echo '- External effects on existing systems: 0'
+            echo "- Commit: ${GITHUB_SHA}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  provider-proxy-live:
+    name: GLM Live via Provider Proxy
+    needs: fortress-core
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    environment: immune-live-test
+    concurrency:
+      group: immune-brain-fortress-provider-live
+      cancel-in-progress: false
+    env:
+      IMMUNE_PROVIDER_PRIMARY_API_KEY: ${{ secrets.GLM }}
+      IMMUNE_PROVIDER_CONFIG: config/provider-live-test.json
+      IMMUNE_TEST_MODE: GITHUB_ISOLATED
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - name: Checkout exact commit without persisted credentials
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Prove provider ownership is outside Core
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from immune_fortress.boundary import core_boundary_violations
+          p=json.loads(Path('config/provider-live-test.json').read_text())
+          assert p['owner_scope'] == 'immune-provider-proxy'
+          assert len(p.get('providers', [])) == 1
+          assert p['providers'][0]['endpoint'].startswith('https://api.z.ai/')
+          assert core_boundary_violations('.') == []
+          core=(Path('immune_core/providers.py').read_text()+Path('immune_core/provider_runtime.py').read_text()).lower()
+          assert 'urlopen' not in core
+          assert 'api_key_env' not in Path('immune_core/provider_runtime.py').read_text()
+          print('PROVIDER_PROXY_BOUNDARY=true')
+          PY
+
+      - name: Prove secret presence without revealing it
+        shell: bash
+        run: |
+          test -n "${IMMUNE_PROVIDER_PRIMARY_API_KEY:-}"
+          echo 'PROVIDER_PROXY_SECRET_PRESENT=true'
+
+      - name: Run live GLM smoke through Provider Proxy with bounded retry
+        shell: bash
+        run: |
+          set +e
+          for attempt in 1 2 3; do
+            echo "PROVIDER_ATTEMPT=${attempt}"
+            python scripts/provider_live_smoke.py
+            rc=$?
+            if [ "$rc" -eq 0 ]; then
+              echo 'PROVIDER_PROXY_LIVE_PROVEN=true'
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then exit "$rc"; fi
+            if [ "$rc" -eq 75 ]; then sleep 65; continue; fi
+            if [ "$rc" -eq 76 ]; then sleep 20; continue; fi
+            exit "$rc"
+          done
+          exit 1
+
+  brain-fortress-proven:
+    name: BRAIN_FORTRESS_PROVEN
+    needs: [fortress-core, provider-proxy-live]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Emit sovereign fortress proof
+        shell: bash
+        run: |
+          echo 'BRAIN_FORTRESS_PROVEN=true'
+          echo 'MISSION_PROVEN=true'
+          {
+            echo '# BRAIN_FORTRESS_PROVEN'
+            echo ''
+            echo "Commit: ${GITHUB_SHA}"
+            echo 'Scope: SOVEREIGN_BRAIN_FORTRESS_V1_CLOSED_LAB'
+            echo 'Seven rings: PROVEN'
+            echo 'Base MISSION_PROVEN: preserved'
+            echo 'Provider live through external Proxy: PROVEN'
+            echo 'Protected systems attached: 0'
+            echo 'External effects on existing systems: 0'
+            echo 'Physical hardware-backed Root of Trust: mandatory deployment gate, not claimed by this closed-lab proof'
+          } >> "$GITHUB_STEP_SUMMARY"

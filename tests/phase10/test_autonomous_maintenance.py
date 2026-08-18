@@ -14,7 +14,8 @@ from immune_core.autonomy import AutonomousMaintenanceController, InternalAgentR
 from immune_core.checkpoints import CheckpointManager, WorkspaceManager
 from immune_core.cognition import CognitiveCoordinator, CognitiveCore
 from immune_core.engine import DurableLoopEngine
-from immune_core.execution import PrivilegedExecutor, SafeExecutor, WorkerManifest
+from immune_core.execution import WorkerManifest
+from immune_execution_broker.execution import PrivilegedExecutor, SafeExecutor
 from immune_core.identity import IdentityAuthority
 from immune_core.memory import CognitiveMemory
 from immune_core.policy import PolicyGuard
@@ -22,7 +23,7 @@ from immune_core.privilege import PrivilegeAuthority
 from immune_core.providers import DeterministicNoAIProvider, ProviderManager, ProviderProposal, ProviderRequest
 from immune_core.skills import SkillRegistry
 from immune_core.storage import SQLiteStateStore
-from immune_core.workers import WorkerRunner
+from immune_execution_broker.workers import WorkerRunner
 
 NOW = 2_000_000_000
 

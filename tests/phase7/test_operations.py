@@ -14,7 +14,7 @@ from immune_core.engine import DurableLoopEngine
 from immune_core.identity import IdentityAuthority
 from immune_core.observability import ObservabilityStore, SignalProcessor
 from immune_core.operations import CommandGateway, OperationalStore, OperationsError, ReadModel, ReportBuilder
-from immune_core.panel import OperationalPanel, serve_read_only
+from immune_presentation.panel import OperationalPanel, serve_read_only
 from immune_core.policy import PolicyGuard
 from immune_core.remediation import RemediationPlanner
 from immune_core.runbooks import RunbookRunner

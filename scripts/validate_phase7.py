@@ -16,13 +16,13 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from immune_core.audit import AuditLedger
-from immune_core.cli import main as cli_main
+from immune_control_plane.cli import main as cli_main
 from immune_core.diagnosis import IncidentEngine
 from immune_core.engine import DurableLoopEngine
 from immune_core.identity import IdentityAuthority
 from immune_core.observability import ObservabilityStore, SignalProcessor
 from immune_core.operations import CommandGateway, OperationalEventRouter, OperationalStore, OperationsError, ReadModel, ReportBuilder
-from immune_core.panel import OperationalPanel
+from immune_presentation.panel import OperationalPanel
 from immune_core.policy import PolicyGuard
 from immune_core.remediation import RemediationPlanner
 from immune_core.runbooks import RunbookRunner
@@ -46,8 +46,8 @@ for phase in range(1, 7):
 
 required = [
     "immune_core/operations.py",
-    "immune_core/panel.py",
-    "immune_core/cli.py",
+    "immune_presentation/panel.py",
+    "immune_control_plane/cli.py",
     "immune_core/runbooks.py",
     "tests/phase7/test_operations.py",
     "runbooks/default.json",
@@ -57,14 +57,14 @@ required = [
 for rel in required:
     ok(f"artifact:{rel}", (ROOT / rel).is_file())
 
-for rel in ("immune_core/operations.py", "immune_core/panel.py", "immune_core/cli.py", "immune_core/runbooks.py"):
+for rel in ("immune_core/operations.py", "immune_presentation/panel.py", "immune_control_plane/cli.py", "immune_core/runbooks.py"):
     try:
         ast.parse((ROOT / rel).read_text(encoding="utf-8"))
         ok(f"ast:{rel}", True)
     except SyntaxError as exc:
         ok(f"ast:{rel}", False, exc)
 
-panel_text = (ROOT / "immune_core/panel.py").read_text(encoding="utf-8")
+panel_text = (ROOT / "immune_presentation/panel.py").read_text(encoding="utf-8")
 ops_text = (ROOT / "immune_core/operations.py").read_text(encoding="utf-8")
 runbooks_text = (ROOT / "immune_core/runbooks.py").read_text(encoding="utf-8")
 ok("panel_has_no_executor", "SafeExecutor" not in panel_text and "PrivilegedExecutor" not in panel_text and "WorkerRunner" not in panel_text)

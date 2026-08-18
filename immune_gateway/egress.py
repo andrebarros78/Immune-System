@@ -1,43 +1,39 @@
 from __future__ import annotations
 
 import time
+from typing import Mapping
 
 from immune_core.audit import AuditLedger
 from immune_core.identity import IdentityAuthority, IdentityError
 from immune_core.observability import ObservabilityStore
-from immune_core.policy import PolicyGuard
 from immune_core.storage import SQLiteStateStore
+from immune_fortress.capability import ActionCapabilityAuthority, CapabilityError
 
-from .contracts import (
-    EgressReceipt,
-    EgressRequest,
-    GatewayAuthorizationError,
-    GatewayProtocolError,
-    ProtectedSystemAdapter,
-)
+from .contracts import EgressReceipt, EgressRequest, GatewayAuthorizationError, GatewayProtocolError, ProtectedSystemAdapter
 from .runtime_config import GatewayRuntimeConfig
+
 
 _ACTIVE_MISSION_STATES = {"AUTHORIZED", "DISCOVERING", "RUNNING", "DEGRADED", "VALIDATING"}
 
 
 class GatewayEgress:
-    """Internal-only path used by the immune system to act on a protected system."""
+    """Capability-gated egress. Caller-provided authorization booleans do not exist."""
 
     def __init__(
         self,
         store: SQLiteStateStore,
         identity: IdentityAuthority,
-        policy: PolicyGuard,
+        capabilities: ActionCapabilityAuthority,
         audit: AuditLedger,
         config: GatewayRuntimeConfig,
-        adapters: dict[str, ProtectedSystemAdapter],
+        adapters: Mapping[str, ProtectedSystemAdapter],
     ) -> None:
         self.store = store
         self.identity = identity
-        self.policy = policy
+        self.capabilities = capabilities
         self.audit = audit
         self.config = config
-        self.adapters = adapters
+        self.adapters = dict(adapters)
         self.observability = ObservabilityStore(store, audit)
         self.store.conn.executescript(
             """
@@ -60,6 +56,7 @@ class GatewayEgress:
         request: EgressRequest,
         *,
         internal_token: str,
+        capability_token: str,
         timeout_seconds: float = 10.0,
         now: int | None = None,
     ) -> EgressReceipt:
@@ -68,32 +65,37 @@ class GatewayEgress:
         except IdentityError as exc:
             raise GatewayAuthorizationError(f"invalid internal gateway identity: {exc}") from exc
         mission = self.store.get_mission(request.mission_id)
-        if mission is None:
-            raise GatewayAuthorizationError("egress mission not found")
+        if mission is None or str(mission["state"]) not in _ACTIVE_MISSION_STATES:
+            raise GatewayAuthorizationError("egress mission is not active")
         if str(mission["system_id"]) != request.system_id:
             raise GatewayAuthorizationError("egress target differs from mission protected system")
         binding = self.config.binding(request.system_id)
         adapter = self.adapters.get(request.system_id)
-        if adapter is None:
-            raise GatewayProtocolError("protected-system adapter unavailable")
-        decision = self.policy.evaluate_token(
-            internal_token,
-            {
-                "mission_id": request.mission_id,
-                "action": "gateway_protected_system_egress",
-                "required_scope": "gateway:egress",
-                "mission_authorized": str(mission["state"]) in _ACTIVE_MISSION_STATES,
-                "system_authorized": adapter.system_id == request.system_id and adapter.adapter_id == binding.adapter,
-                "scope_ok": True,
-                "material_change": bool(request.material_change),
-                "checkpoint_valid": bool(request.checkpoint_valid),
-                "irreversible": bool(request.irreversible),
-                "recovery_verified": bool(request.recovery_verified),
-            },
-            now=now,
-        )
-        if decision.decision not in {"PERMITIR", "PERMITIR_COM_RESTRIÇÕES"}:
-            raise GatewayAuthorizationError(f"{decision.decision}: {decision.reason}")
+        if adapter is None or adapter.system_id != request.system_id or adapter.adapter_id != binding.adapter:
+            raise GatewayProtocolError("protected-system adapter unavailable or mismatched")
+        try:
+            action_policy = adapter.action_policy(request.action)
+        except Exception as exc:
+            raise GatewayAuthorizationError("adapter action is not registered") from exc
+        if not action_policy.required_scope:
+            raise GatewayAuthorizationError("adapter action lacks required scope")
+        checkpoint_valid = adapter.verify_checkpoint(request.checkpoint_id)
+        if (action_policy.checkpoint_required or action_policy.material_change) and not checkpoint_valid:
+            raise GatewayAuthorizationError("adapter checkpoint verification failed")
+        if action_policy.irreversible and not adapter.recovery_ready(request.checkpoint_id, request.action):
+            raise GatewayAuthorizationError("adapter recovery verification failed")
+        try:
+            capability_id = self.capabilities.consume(
+                capability_token,
+                mission_id=request.mission_id,
+                system_id=request.system_id,
+                action=request.action,
+                parameters=dict(request.parameters),
+                checkpoint_id=request.checkpoint_id,
+                now=now,
+            )
+        except CapabilityError as exc:
+            raise GatewayAuthorizationError(f"invalid action capability: {exc}") from exc
         started = time.time() if now is None else float(now)
         result = adapter.execute(request.action, dict(request.parameters), timeout_seconds=timeout_seconds)
         if not isinstance(result, dict):
@@ -111,6 +113,8 @@ class GatewayEgress:
                 "ok": ok,
                 "external_reference": external_reference,
                 "principal": principal.subject,
+                "capability_id": capability_id,
+                "checkpoint_id": request.checkpoint_id,
             },
             ts=started,
         )
@@ -128,16 +132,8 @@ class GatewayEgress:
                 "action": request.action,
                 "ok": ok,
                 "evidence_id": evidence.id,
+                "capability_id": capability_id,
             },
             now=started,
         )
-        return EgressReceipt(
-            request.mission_id,
-            request.system_id,
-            adapter.adapter_id,
-            request.action,
-            ok,
-            external_reference,
-            evidence.id,
-            detail,
-        )
+        return EgressReceipt(request.mission_id, request.system_id, adapter.adapter_id, request.action, ok, external_reference, evidence.id, detail)

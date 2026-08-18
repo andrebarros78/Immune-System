@@ -88,7 +88,9 @@ def main() -> int:
         "policy_guard": "PolicyGuard",
         "audit_chain": "verify_chain",
         "gateway_egress": "GatewayEgress",
-        "gateway_checkpoint_gate": "checkpoint_valid=False",
+        "gateway_checkpoint_gate": "SovereignAuthorizationError",
+        "gateway_one_use_capability": "capability_token",
+        "gateway_policy_authority": "SovereignPolicyAuthority",
         "gateway_twin_adapter": "DigitalTwinGatewayAdapter",
         "gateway_rollback": "restore_snapshot",
     }

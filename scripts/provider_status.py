@@ -10,7 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from immune_core.autonomy import InternalAgentRegistry
-from immune_core.provider_runtime import ProviderRuntimeConfig
+from immune_provider_proxy.runtime import ProviderRuntimeConfig
 
 
 def main() -> int:

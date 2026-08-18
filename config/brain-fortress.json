@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "name": "SOVEREIGN_BRAIN_FORTRESS",
+  "rings": [
+    {
+      "ring": 1,
+      "name": "SOVEREIGN_CORE",
+      "network": false,
+      "subprocess": false,
+      "adapters": false,
+      "external_credentials": false
+    },
+    {
+      "ring": 2,
+      "name": "MEMORY_AUDIT_VAULT",
+      "signed_promotions": true,
+      "external_audit_seals": true
+    },
+    {
+      "ring": 3,
+      "name": "POLICY_AUTHORITY",
+      "caller_authorization_booleans": false,
+      "one_use_capabilities": true
+    },
+    {
+      "ring": 4,
+      "name": "EXECUTION_PROVIDER_SANDBOX",
+      "execution_broker": "immune_execution_broker",
+      "provider_proxy": "immune_provider_proxy",
+      "control_plane": "immune_control_plane"
+    },
+    {
+      "ring": 5,
+      "name": "IMMUNE_GATEWAY_DMZ",
+      "anti_replay": true,
+      "signed_ingress": true,
+      "capability_egress": true
+    },
+    {
+      "ring": 6,
+      "name": "ADAPTERS",
+      "allowlist_required": true,
+      "risk_declared_by_adapter": true
+    },
+    {
+      "ring": 7,
+      "name": "EXTERNAL_WORLD",
+      "implicit_trust": false
+    }
+  ],
+  "foundation": {
+    "name": "ROOT_OF_TRUST",
+    "production_hardware_backed_required": true,
+    "closed_lab_backend": "external-hmac-lab"
+  },
+  "acceptance_state": "BRAIN_FORTRESS_PROVEN"
+}
