@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/mission-proven-integral.yml'
+      - '.github/workflows/brain-fortress.yml'
       - 'immune_core/**'
       - 'immune_fortress/**'
       - 'immune_vault/**'

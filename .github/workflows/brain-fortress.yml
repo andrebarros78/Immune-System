@@ -8,6 +8,7 @@ on:
       - feat/brain-fortress-v1
     paths:
       - '.github/workflows/brain-fortress.yml'
+      - '.github/workflows/mission-proven-integral.yml'
       - 'immune_core/**'
       - 'immune_fortress/**'
       - 'immune_vault/**'
