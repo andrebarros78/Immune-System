@@ -1,10 +1,12 @@
 # Sistema Imunológico V1.1.0 — Sovereign Brain Fortress
 
-**Estado: RELEASE_CANDIDATE_PROVEN — aguardando somente a tag imutável após a prova final deste commit.**
+**Estado: V1_1_CONSOLIDATED_PROVEN**
 
 Base preservada: `v1.0.1`.
 
 Escopo novo: `SOVEREIGN_BRAIN_FORTRESS_V1_CLOSED_LAB`.
+
+Tag alvo imutável: `v1.1.0`.
 
 ## Conteúdo da release
 
@@ -28,11 +30,12 @@ Escopo novo: `SOVEREIGN_BRAIN_FORTRESS_V1_CLOSED_LAB`.
 - `DIGITAL_TWIN_PROVEN`: preservado;
 - `BRAIN_FORTRESS_PROVEN`: comprovado;
 - GitHub Fortress main run `32135967148`: success;
-- GitHub Mission Integral main run `32135967165`: success.
+- GitHub Mission Integral main run `32135967165`: success;
+- GitHub Fortress release-document run `32136856684`: success.
 
 ## Regra da tag
 
-A tag anotada `v1.1.0` somente pode ser criada no commit deste documento se o workflow `BRAIN_FORTRESS_PROVEN - Seven Ring Isolated Validation` também terminar `success` nesse mesmo SHA.
+A tag anotada `v1.1.0` somente pode ser criada no commit que contém este estado `V1_1_CONSOLIDATED_PROVEN` após o workflow `BRAIN_FORTRESS_PROVEN - Seven Ring Isolated Validation` terminar `success` nesse mesmo SHA.
 
 A tag é imutável. `v1.0.0` e `v1.0.1` não serão movidas.
 

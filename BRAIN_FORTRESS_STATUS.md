@@ -4,7 +4,7 @@
 
 Escopo: `SOVEREIGN_BRAIN_FORTRESS_V1_CLOSED_LAB`.
 
-Commit técnico provado: `3c3421f88ed1c113e7d09a8f33911f3992f71f35`.
+Commit técnico da fortaleza: `3c3421f88ed1c113e7d09a8f33911f3992f71f35`.
 
 ## Evidência GitHub Actions em main
 
@@ -16,6 +16,10 @@ Commit técnico provado: `3c3421f88ed1c113e7d09a8f33911f3992f71f35`.
   - Core + Recovery + Digital Twin — job `95707241686` — `success`.
   - GLM Live - Isolated — job `95707417498` — `success`.
   - MISSION_PROVEN — job `95708795704` — `success`.
+- Release-document proof: `32136856684` — `success` no commit `f5d15f5f4bf01654bdfc7040ed22bbb98cee8afa`.
+  - Seven Rings + Core + Recovery — job `95710112594` — `success`.
+  - GLM Live via Provider Proxy — job `95710280924` — `success`.
+  - BRAIN_FORTRESS_PROVEN — job `95710330915` — `success`.
 
 ## Provas da cadeia
 
