@@ -1,52 +1,67 @@
-# Sovereign Brain Fortress — Estado Oficial
+# Sovereign Brain Fortress â€” Estado Oficial
 
 **Estado: BRAIN_FORTRESS_PROVEN**
 
 Escopo: `SOVEREIGN_BRAIN_FORTRESS_V1_CLOSED_LAB`.
 
-Commit técnico da fortaleza: `3c3421f88ed1c113e7d09a8f33911f3992f71f35`.
+Commit tÃ©cnico endurecido comprovado: `ea28c1b1755fabfef912f92272c7950316f31335`.
 
-## Evidência GitHub Actions em main
+## EvidÃªncia GitHub Actions â€” prova tÃ©cnica endurecida
 
-- Fortress run: `32135967148` — `success`.
-  - Seven Rings + Core + Recovery — job `95707241288` — `success`.
-  - GLM Live via Provider Proxy — job `95707387323` — `success`.
-  - BRAIN_FORTRESS_PROVEN — job `95708736176` — `success`.
-- Mission Integral run: `32135967165` — `success`.
-  - Core + Recovery + Digital Twin — job `95707241686` — `success`.
-  - GLM Live - Isolated — job `95707417498` — `success`.
-  - MISSION_PROVEN — job `95708795704` — `success`.
-- Release-document proof: `32136856684` — `success` no commit `f5d15f5f4bf01654bdfc7040ed22bbb98cee8afa`.
-  - Seven Rings + Core + Recovery — job `95710112594` — `success`.
-  - GLM Live via Provider Proxy — job `95710280924` — `success`.
-  - BRAIN_FORTRESS_PROVEN — job `95710330915` — `success`.
+- Fortress run `32154652997` â€” `success`.
+  - `Seven Rings + Core + Recovery` â€” job `95768816895` â€” `success`.
+  - `Provider Proof Attestation` â€” job `95769023275` â€” `success`.
+  - `Provider Proof Accepted` â€” job `95769081824` â€” `success`.
+  - `BRAIN_FORTRESS_PROVEN` â€” job `95769116431` â€” `success`.
+- Mission Integral run `32154653079` â€” `success`.
+  - `Core + Recovery + Digital Twin` â€” job `95768816656` â€” `success`.
+  - `Provider Proof Attestation` â€” job `95769028222` â€” `success`.
+  - `Provider Proof Accepted` â€” job `95769099422` â€” `success`.
+  - `MISSION_PROVEN` â€” job `95769142792` â€” `success`.
 
-## Provas da cadeia
+O job GLM foi deliberadamente `skipped` nesta prova porque a superfÃ­cie do Provider Proxy permaneceu byte a byte idÃªntica ao commit `f5d15f5f4bf01654bdfc7040ed22bbb98cee8afa`. A attestation consultou o GitHub e confirmou o run externo `32136856684` e o job live `95710280924` como `success`. Se qualquer arquivo da superfÃ­cie do provider mudar, a attestation deixa de ser reutilizÃ¡vel e um novo live smoke passa a ser obrigatÃ³rio.
 
-- regressão completa: 215/215;
-- Fases 1–10: PROVEN;
-- Digital Twin: 50/50 checks, 7 cenários;
-- Brain Fortress: 63/63 checks, 17 testes adversariais;
-- Phase 9 endurance: zero falhas;
-- Phase 10 endurance determinístico: zero degradações;
-- Core static boundary: zero violações;
-- protected systems attached durante a prova: 0;
-- efeitos externos nos sistemas existentes: 0.
+## Provas atuais
 
-## Sete anéis
+- regressÃ£o completa local: `229/229`;
+- subtestes adversariais parametrizados: `9`;
+- Fases 1â€“10: PROVEN no runner integral;
+- Digital Twin: PROVEN, 7 cenÃ¡rios;
+- Brain Fortress gate local: `88/88` checks;
+- testes Fortress: `31`;
+- Root Manifest generation: `3`;
+- arquivos crÃ­ticos cobertos: `42`;
+- protected systems attached durante a prova: `0`;
+- efeitos externos nos sistemas existentes: `0`;
+- first-party secret scan: `0` achados.
 
-1. SOVEREIGN_CORE — zero rede, subprocesso, adapter, credencial externa, painel HTTP e control-plane.
-2. MEMORY_AUDIT_VAULT — promoção de memória selada e audit checkpoints externos assinados.
-3. POLICY_AUTHORITY — fatos derivados de estado soberano e capability criptográfica one-shot.
-4. EXECUTION_PROVIDER_SANDBOX — execução, Provider Proxy e control-plane fora do Core.
-5. IMMUNE_GATEWAY_DMZ — ingress assinado/anti-replay e egress capability-gated.
-6. ADAPTERS — allowlist e política de risco pertencem ao adapter homologado.
-7. EXTERNAL_WORLD — nenhuma confiança implícita.
+## Sete anÃ©is
 
-Fundação: Root of Trust com manifesto assinado e proteção contra rollback de geração. Falha de attestation resulta em `CONTAINED_READ_ONLY` antes da abertura do estado soberano.
+1. **SOVEREIGN_CORE** â€” zero rede, subprocesso, adapter, credencial externa, painel HTTP e control-plane; scanner AST tambÃ©m bloqueia rotas indiretas de processo/FFI/transporte e aliases perigosos.
+2. **MEMORY_AUDIT_VAULT** â€” promoÃ§Ã£o de memÃ³ria selada e audit checkpoints externos assinados; adulteraÃ§Ã£o Ã© detectada.
+3. **POLICY_AUTHORITY** â€” fatos derivados de estado soberano e capability criptogrÃ¡fica one-shot ligada a missÃ£o, sistema, aÃ§Ã£o, parÃ¢metros e checkpoint.
+4. **EXECUTION_PROVIDER_SANDBOX** â€” Execution Broker e Provider Proxy fora do Core. Worker nÃ£o confiÃ¡vel usa sandbox descartÃ¡vel com `network=none`, `pids-limit=1`, 128 MiB, 0.5 CPU, root read-only, tmpfs efÃªmero, `cap-drop ALL`, `no-new-privileges` e zero secrets herdados no closed-lab.
+5. **IMMUNE_GATEWAY_DMZ** â€” ingress assinado/anti-replay e egress capability-gated; booleans de autorizaÃ§Ã£o do chamador nÃ£o existem no contrato material.
+6. **ADAPTERS** â€” manifesto assinado, capability allowlist, binding ao SHA-256 da imagem, sandbox descartÃ¡vel e rede deny-by-default no closed-lab.
+7. **EXTERNAL_WORLD** â€” nenhuma confianÃ§a implÃ­cita; sistemas reais permanecem desconectados durante a prova.
 
-## Limite da prova
+## Ataques explicitamente comprovados
 
-A raiz de confiança utilizada no closed-lab é externa e efêmera. Uma implantação física somente pode entrar em modo `OPERATIONAL` com backend RootKeyProvider hardware-backed/TPM/HSM equivalente e evidência específica daquele host. Esta prova não declara TPM físico deste PC como comprovado.
+- provider comprometido tentando autoridade de execuÃ§Ã£o;
+- prompt injection antes do transporte;
+- Gateway com capability forjada/replay;
+- Adapter tentando expansÃ£o de capability/aÃ§Ã£o/imagem;
+- Worker tentando executÃ¡vel fora da allowlist;
+- sandbox tentando rede, child-process, escrita no root e leitura de secret;
+- memory poisoning e adulteraÃ§Ã£o do selo;
+- reescrita do audit ledger;
+- identidade/capability expirada, wrong-scope e replay;
+- tamper conjunto de ConstituiÃ§Ã£o + PolicyGuard + manifesto sem a root externa;
+- assinatura/root key invÃ¡lida ou ausente â†’ `CONTAINED_READ_ONLY`;
+- comprometimento combinado provider+gateway e adapter+worker sem aquisiÃ§Ã£o de soberania.
 
-O `MISSION_PROVEN` anterior permanece preservado. `BRAIN_FORTRESS_PROVEN` acrescenta a prova de contenção e soberania dos sete anéis.
+## Root of Trust e limite da prova
+
+A raiz de confianÃ§a utilizada no closed-lab Ã© externa e efÃªmera (`ExternalHMACRootKey`). O runtime atesta antes de criar/abrir o SQLite soberano e contÃ©m falha em `CONTAINED_READ_ONLY`.
+
+Uma implantaÃ§Ã£o fÃ­sica somente pode entrar em `OPERATIONAL` com RootKeyProvider hardware-backed/TPM/HSM equivalente, processos/identidades separados, firewall/IPC prÃ³prios e evidÃªncia especÃ­fica daquele host. Esta prova nÃ£o declara TPM fÃ­sico deste PC como comprovado e nÃ£o usa nenhum sistema existente como alvo.

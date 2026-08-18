@@ -16,6 +16,9 @@ A prova `BRAIN_FORTRESS_PROVEN` do repositório é deliberadamente executada sem
 10. Secret/Provider credentials existem apenas no broker/proxy apropriado, nunca no Core.
 11. Audit seal externo e Memory Vault possuem chaves separadas.
 12. Recovery/rollback do host é testado antes de anexar o primeiro sistema protegido.
+13. Worker nÃ£o confiÃ¡vel executa em sandbox nativo/container equivalente com rede deny-by-default, limites de processo/CPU/memÃ³ria, filesystem mÃ­nimo/read-only quando aplicÃ¡vel, `no-new-privileges` equivalente e teardown comprovado.
+14. Adapter nÃ£o confiÃ¡vel possui manifesto assinado, artefato/digest pinado e processo/identidade prÃ³prios; rede Ã© negada por padrÃ£o e liberada somente para IPC/target explicitamente contratado.
+15. A imagem/binÃ¡rio efetivamente iniciado Ã© atestado contra o digest do manifesto antes de receber qualquer capability.
 
 ## Falha em qualquer gate
 

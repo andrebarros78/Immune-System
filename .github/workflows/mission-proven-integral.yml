@@ -21,6 +21,8 @@ on:
       - 'scripts/validate_container_sandbox.py'
       - 'scripts/verify_provider_live_attestation.py'
       - 'config/provider-live-attestation.json'
+      - 'adr/ADR-0015-sovereign-brain-fortress.md'
+      - 'runbooks/BRAIN-FORTRESS-DEPLOYMENT.md'
       - 'BRAIN_FORTRESS_STATUS.md'
       - 'RELEASE_V1_1_STATUS.md'
       - 'tests/digital_twin/**'
