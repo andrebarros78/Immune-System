@@ -1,0 +1,571 @@
+{
+    "schema":  1,
+    "mission":  "BUILD_WINDOWS_INSTALLER_HOST_PROOF",
+    "completed_at_utc":  "2026-08-21T22:20:56.5447603Z",
+    "result":  "PASS",
+    "final_state":  "CONTAINED_READ_ONLY",
+    "root_attested":  true,
+    "protected_systems":  0,
+    "setup_sha256":  "3c5b3552fcf67f4d5c54a1a3c372a40e2135b91a1a5f3ecd6b89d06a8f7c9202",
+    "authenticode_status":  "NotSigned",
+    "core_tag":  "v1.1.1",
+    "core_commit":  "d4750b24336d9b88663473d2db32a796e419e46f",
+    "stages":  [
+                   {
+                       "stage":  "INSTALL",
+                       "at_utc":  "2026-08-21T22:18:32.7679041Z",
+                       "install_root_exists":  true,
+                       "data_root_exists":  true,
+                       "services":  [
+                                        {
+                                            "name":  "SistemaImuneCore",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\core.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneVault",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\vault.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImunePolicy",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\policy.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneExecution",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\execution.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneGateway",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\gateway.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneProvider",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\provider.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneAdapter",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\adapter.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneWatchdog",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\watchdog.ini\""
+                                        }
+                                    ],
+                       "firewall":  [
+                                        {
+                                            "service":  "SistemaImuneCore",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneVault",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImunePolicy",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneExecution",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneAdapter",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneWatchdog",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        }
+                                    ],
+                       "security":  {
+                                        "checked_at_utc":  "2026-08-21T22:17:54.9416511Z",
+                                        "secure_boot":  true,
+                                        "tpm_present":  true,
+                                        "tpm_ready":  true,
+                                        "hardware_backed_root":  true,
+                                        "root_attested":  true,
+                                        "mode":  "ROOT_ATTESTED",
+                                        "reason":  "TPM_ROOT_ATTESTED"
+                                    },
+                       "install_state":  {
+                                             "schema":  1,
+                                             "installer_version":  "1.2.0",
+                                             "core_version":  "v1.1.1",
+                                             "core_commit":  "d4750b24336d9b88663473d2db32a796e419e46f",
+                                             "installed_at_utc":  "2026-08-21T22:18:13.4567138Z",
+                                             "root_attested":  true,
+                                             "state":  "CONTAINED_READ_ONLY",
+                                             "protected_systems":  0,
+                                             "target_contract":  "C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\system-contract.json",
+                                             "service_count":  8
+                                         },
+                       "contract":  {
+                                        "schema":  1,
+                                        "system_id":  null,
+                                        "name":  null,
+                                        "type":  "NONE",
+                                        "target":  null,
+                                        "mode_initial":  "CONTAINED_READ_ONLY",
+                                        "state":  "UNATTACHED",
+                                        "protected_systems":  0,
+                                        "adapter":  null,
+                                        "interfaces_allowed":  [
+
+                                                               ],
+                                        "actions_allowed":  [
+
+                                                            ],
+                                        "actions_prohibited":  [
+                                                                   "material_action_without_homologation"
+                                                               ],
+                                        "created_at_utc":  "2026-08-21T22:17:55.5509130Z"
+                                    }
+                   },
+                   {
+                       "stage":  "REPAIR",
+                       "at_utc":  "2026-08-21T22:19:43.0417739Z",
+                       "install_root_exists":  true,
+                       "data_root_exists":  true,
+                       "services":  [
+                                        {
+                                            "name":  "SistemaImuneCore",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\core.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneVault",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\vault.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImunePolicy",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\policy.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneExecution",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\execution.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneGateway",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\gateway.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneProvider",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\provider.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneAdapter",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\adapter.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneWatchdog",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\watchdog.ini\""
+                                        }
+                                    ],
+                       "firewall":  [
+                                        {
+                                            "service":  "SistemaImuneCore",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneVault",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImunePolicy",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneExecution",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneAdapter",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneWatchdog",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        }
+                                    ],
+                       "security":  {
+                                        "checked_at_utc":  "2026-08-21T22:19:03.2446676Z",
+                                        "secure_boot":  true,
+                                        "tpm_present":  true,
+                                        "tpm_ready":  true,
+                                        "hardware_backed_root":  true,
+                                        "root_attested":  true,
+                                        "mode":  "ROOT_ATTESTED",
+                                        "reason":  "TPM_ROOT_ATTESTED"
+                                    },
+                       "install_state":  {
+                                             "schema":  1,
+                                             "installer_version":  "1.2.0",
+                                             "core_version":  "v1.1.1",
+                                             "core_commit":  "d4750b24336d9b88663473d2db32a796e419e46f",
+                                             "installed_at_utc":  "2026-08-21T22:19:24.7992841Z",
+                                             "root_attested":  true,
+                                             "state":  "CONTAINED_READ_ONLY",
+                                             "protected_systems":  0,
+                                             "target_contract":  "C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\system-contract.json",
+                                             "service_count":  8
+                                         },
+                       "contract":  {
+                                        "schema":  1,
+                                        "system_id":  null,
+                                        "name":  null,
+                                        "type":  "NONE",
+                                        "target":  null,
+                                        "mode_initial":  "CONTAINED_READ_ONLY",
+                                        "state":  "UNATTACHED",
+                                        "protected_systems":  0,
+                                        "adapter":  null,
+                                        "interfaces_allowed":  [
+
+                                                               ],
+                                        "actions_allowed":  [
+
+                                                            ],
+                                        "actions_prohibited":  [
+                                                                   "material_action_without_homologation"
+                                                               ],
+                                        "created_at_utc":  "2026-08-21T22:17:55.5509130Z"
+                                    }
+                   },
+                   {
+                       "stage":  "UNINSTALL_PRESERVE_DATA",
+                       "at_utc":  "2026-08-21T22:20:17.7169848Z",
+                       "install_root_exists":  false,
+                       "data_root_exists":  true,
+                       "services":  [
+                                        {
+                                            "name":  "SistemaImuneCore",
+                                            "state":  "MISSING"
+                                        },
+                                        {
+                                            "name":  "SistemaImuneVault",
+                                            "state":  "MISSING"
+                                        },
+                                        {
+                                            "name":  "SistemaImunePolicy",
+                                            "state":  "MISSING"
+                                        },
+                                        {
+                                            "name":  "SistemaImuneExecution",
+                                            "state":  "MISSING"
+                                        },
+                                        {
+                                            "name":  "SistemaImuneGateway",
+                                            "state":  "MISSING"
+                                        },
+                                        {
+                                            "name":  "SistemaImuneProvider",
+                                            "state":  "MISSING"
+                                        },
+                                        {
+                                            "name":  "SistemaImuneAdapter",
+                                            "state":  "MISSING"
+                                        },
+                                        {
+                                            "name":  "SistemaImuneWatchdog",
+                                            "state":  "MISSING"
+                                        }
+                                    ],
+                       "firewall":  [
+                                        {
+                                            "service":  "SistemaImuneCore",
+                                            "exists":  false,
+                                            "enabled":  null,
+                                            "action":  null
+                                        },
+                                        {
+                                            "service":  "SistemaImuneVault",
+                                            "exists":  false,
+                                            "enabled":  null,
+                                            "action":  null
+                                        },
+                                        {
+                                            "service":  "SistemaImunePolicy",
+                                            "exists":  false,
+                                            "enabled":  null,
+                                            "action":  null
+                                        },
+                                        {
+                                            "service":  "SistemaImuneExecution",
+                                            "exists":  false,
+                                            "enabled":  null,
+                                            "action":  null
+                                        },
+                                        {
+                                            "service":  "SistemaImuneAdapter",
+                                            "exists":  false,
+                                            "enabled":  null,
+                                            "action":  null
+                                        },
+                                        {
+                                            "service":  "SistemaImuneWatchdog",
+                                            "exists":  false,
+                                            "enabled":  null,
+                                            "action":  null
+                                        }
+                                    ],
+                       "security":  {
+                                        "checked_at_utc":  "2026-08-21T22:19:03.2446676Z",
+                                        "secure_boot":  true,
+                                        "tpm_present":  true,
+                                        "tpm_ready":  true,
+                                        "hardware_backed_root":  true,
+                                        "root_attested":  true,
+                                        "mode":  "ROOT_ATTESTED",
+                                        "reason":  "TPM_ROOT_ATTESTED"
+                                    },
+                       "install_state":  {
+                                             "schema":  1,
+                                             "installer_version":  "1.2.0",
+                                             "core_version":  "v1.1.1",
+                                             "core_commit":  "d4750b24336d9b88663473d2db32a796e419e46f",
+                                             "installed_at_utc":  "2026-08-21T22:19:24.7992841Z",
+                                             "root_attested":  true,
+                                             "state":  "CONTAINED_READ_ONLY",
+                                             "protected_systems":  0,
+                                             "target_contract":  "C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\system-contract.json",
+                                             "service_count":  8
+                                         },
+                       "contract":  {
+                                        "schema":  1,
+                                        "system_id":  null,
+                                        "name":  null,
+                                        "type":  "NONE",
+                                        "target":  null,
+                                        "mode_initial":  "CONTAINED_READ_ONLY",
+                                        "state":  "UNATTACHED",
+                                        "protected_systems":  0,
+                                        "adapter":  null,
+                                        "interfaces_allowed":  [
+
+                                                               ],
+                                        "actions_allowed":  [
+
+                                                            ],
+                                        "actions_prohibited":  [
+                                                                   "material_action_without_homologation"
+                                                               ],
+                                        "created_at_utc":  "2026-08-21T22:17:55.5509130Z"
+                                    }
+                   },
+                   {
+                       "stage":  "REINSTALL_FINAL",
+                       "at_utc":  "2026-08-21T22:20:56.5442479Z",
+                       "install_root_exists":  true,
+                       "data_root_exists":  true,
+                       "services":  [
+                                        {
+                                            "name":  "SistemaImuneCore",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\core.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneVault",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\vault.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImunePolicy",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\policy.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneExecution",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\execution.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneGateway",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\gateway.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneProvider",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\provider.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneAdapter",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\adapter.ini\""
+                                        },
+                                        {
+                                            "name":  "SistemaImuneWatchdog",
+                                            "state":  "Running",
+                                            "start_mode":  "Auto",
+                                            "account":  "NT AUTHORITY\\LocalService",
+                                            "path":  "\"C:\\Program Files\\BarrosTech\\Sistema Imunologico\\host\\ImmuneServiceHost.exe\" --config \"C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\service-config\\watchdog.ini\""
+                                        }
+                                    ],
+                       "firewall":  [
+                                        {
+                                            "service":  "SistemaImuneCore",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneVault",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImunePolicy",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneExecution",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneAdapter",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        },
+                                        {
+                                            "service":  "SistemaImuneWatchdog",
+                                            "exists":  true,
+                                            "enabled":  "True",
+                                            "action":  "Block"
+                                        }
+                                    ],
+                       "security":  {
+                                        "checked_at_utc":  "2026-08-21T22:20:19.2792461Z",
+                                        "secure_boot":  true,
+                                        "tpm_present":  true,
+                                        "tpm_ready":  true,
+                                        "hardware_backed_root":  true,
+                                        "root_attested":  true,
+                                        "mode":  "ROOT_ATTESTED",
+                                        "reason":  "TPM_ROOT_ATTESTED"
+                                    },
+                       "install_state":  {
+                                             "schema":  1,
+                                             "installer_version":  "1.2.0",
+                                             "core_version":  "v1.1.1",
+                                             "core_commit":  "d4750b24336d9b88663473d2db32a796e419e46f",
+                                             "installed_at_utc":  "2026-08-21T22:20:38.4210741Z",
+                                             "root_attested":  true,
+                                             "state":  "CONTAINED_READ_ONLY",
+                                             "protected_systems":  0,
+                                             "target_contract":  "C:\\ProgramData\\BarrosTech\\Sistema Imunologico\\system-contract.json",
+                                             "service_count":  8
+                                         },
+                       "contract":  {
+                                        "schema":  1,
+                                        "system_id":  null,
+                                        "name":  null,
+                                        "type":  "NONE",
+                                        "target":  null,
+                                        "mode_initial":  "CONTAINED_READ_ONLY",
+                                        "state":  "UNATTACHED",
+                                        "protected_systems":  0,
+                                        "adapter":  null,
+                                        "interfaces_allowed":  [
+
+                                                               ],
+                                        "actions_allowed":  [
+
+                                                            ],
+                                        "actions_prohibited":  [
+                                                                   "material_action_without_homologation"
+                                                               ],
+                                        "created_at_utc":  "2026-08-21T22:20:19.8890596Z"
+                                    }
+                   }
+               ]
+}
